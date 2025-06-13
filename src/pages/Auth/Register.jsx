@@ -1,33 +1,26 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { login } from "../../services/authService";
-import { FiMail, FiLock } from "react-icons/fi";
+import { FiMail, FiLock, FiUser } from "react-icons/fi";
+import { Link } from "react-router-dom";
 
-export default function Login() {
+export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  const [name, setName] = useState("");
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      const user = await login(email, password);
-      navigate(`/${user.role.toLowerCase()}/dashboard`, { replace: true });
-    } catch (err) {
-      alert("Sai email hoặc mật khẩu");
-    }
+    // Gọi API đăng ký ở đây
+    alert("Đăng ký thành công!");
   };
 
   return (
-    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-gray-800 relative min-h-screen">
-      {/* Background blur layer */}
+    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-gray-800 relative">
       <div className="absolute inset-0 bg-[url('/barbershop-background.jpg')] bg-cover bg-center opacity-20"></div>
 
       <form 
-        onSubmit={handleSubmit} 
         className="relative z-10 bg-white/10 backdrop-blur-lg p-10 rounded-3xl shadow-2xl w-full max-w-md border border-white/20"
+        onSubmit={handleSubmit}
       >
-        {/* Logo */}
         <div className="flex justify-center mb-6">
           <img 
             src="https://marketplace.canva.com/EAFzl_fI3WU/1/0/1600w/canva-red-and-black-illustrative-barber-shop-logo-A5183UnPgkI.jpg" 
@@ -37,14 +30,25 @@ export default function Login() {
         </div>
 
         <h2 className="text-3xl font-extrabold text-center text-yellow-400 mb-8 font-serif drop-shadow-lg">
-          Welcome to Barber Art
+          Đăng ký tài khoản
         </h2>
+
+        <div className="relative mb-6">
+          <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-yellow-300 text-xl" />
+          <input
+            type="text"
+            placeholder="Họ và tên"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full pl-12 pr-4 py-3 rounded-xl bg-white/20 placeholder-white text-white focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          />
+        </div>
 
         <div className="relative mb-6">
           <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-yellow-300 text-xl" />
           <input
             type="email"
-            placeholder="Email của bạn"
+            placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full pl-12 pr-4 py-3 rounded-xl bg-white/20 placeholder-white text-white focus:outline-none focus:ring-2 focus:ring-yellow-400"
@@ -62,24 +66,18 @@ export default function Login() {
           />
         </div>
 
-        <button
-          type="submit"
+        <button 
+          type="submit" 
           className="w-full py-3 rounded-xl bg-gradient-to-r from-yellow-500 to-yellow-400 text-black font-bold text-lg shadow-md hover:scale-105 transition"
         >
-          Đăng nhập
+          Đăng ký
         </button>
 
-        {/* Link đăng ký và quên mật khẩu */}
         <div className="mt-6 text-center text-sm text-white">
-          <p className="mb-2">
-            Chưa có tài khoản?{" "}
-            <Link to="/register" className="text-yellow-400 font-semibold hover:underline">
-              Đăng ký ngay
-            </Link>
-          </p>
           <p>
-            <Link to="/forgot-password" className="text-yellow-400 font-semibold hover:underline">
-              Quên mật khẩu?
+            Đã có tài khoản?{" "}
+            <Link to="/login" className="text-yellow-400 font-semibold hover:underline">
+              Đăng nhập ngay
             </Link>
           </p>
         </div>
