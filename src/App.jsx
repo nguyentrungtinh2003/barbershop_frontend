@@ -10,20 +10,23 @@ import Register from "./pages/Auth/Register";
 import ForgotPassword from "./pages/Auth/ForgotPassword";
 import ResetPassword from "./pages/Auth/ResetPassword";
 
+// Import Homepage
+import HomePage from "./pages/HomePage"; // 🔁 Bạn cần tạo file này
+
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Default route */}
-        <Route path="/" element={<Navigate to="/login" />} />
+        {/* ✅ Public homepage - KHÔNG dùng PrivateRoute */}
+        <Route path="/" element={<HomePage />} />
 
-        {/* Auth routes */}
+        {/* ✅ Auth routes */}
         <Route path="/login" element={<AuthLayout><Login /></AuthLayout>} />
         <Route path="/register" element={<AuthLayout><Register /></AuthLayout>} />
         <Route path="/forgot-password" element={<AuthLayout><ForgotPassword /></AuthLayout>} />
         <Route path="/reset-password" element={<AuthLayout><ResetPassword /></AuthLayout>} />
 
-        {/* Admin routes */}
+        {/* ✅ Admin routes */}
         {routes.Admin.map((route, idx) => (
           <Route
             key={idx}
@@ -36,7 +39,7 @@ function App() {
           />
         ))}
 
-        {/* Owner routes */}
+        {/* ✅ Owner routes */}
         {routes.Owner.map((route, idx) => (
           <Route
             key={idx}
@@ -49,7 +52,34 @@ function App() {
           />
         ))}
 
-        {/* Tương tự thêm cho Barber và Customer nếu bạn có */}
+        {/* ✅ Barber routes */}
+        {routes.Barber.map((route, idx) => (
+          <Route
+            key={idx}
+            path={route.path}
+            element={
+              <PrivateRoute allowedRoles={["Barber"]}>
+                <MainLayout>{route.element}</MainLayout>
+              </PrivateRoute>
+            }
+          />
+        ))}
+
+        {/* ✅ Customer routes */}
+        {routes.Customer.map((route, idx) => (
+          <Route
+            key={idx}
+            path={route.path}
+            element={
+              <PrivateRoute allowedRoles={["Customer"]}>
+                <MainLayout>{route.element}</MainLayout>
+              </PrivateRoute>
+            }
+          />
+        ))}
+
+        {/* Fallback nếu không khớp */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
   );

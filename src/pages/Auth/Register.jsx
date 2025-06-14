@@ -1,20 +1,20 @@
 import React, { useState } from "react";
-import { FiMail, FiLock, FiUser } from "react-icons/fi";
+import { FiLock, FiUser, FiPhone } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
 export default function Register() {
-  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Gọi API đăng ký ở đây
+    // Gọi API đăng ký ở đây với name, phone, password
     alert("Đăng ký thành công!");
   };
 
   return (
-    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-gray-800 relative">
+    <div className="w-full h-full px-2 flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-gray-800 relative">
       <div className="absolute inset-0 bg-[url('/barbershop-background.jpg')] bg-cover bg-center opacity-20"></div>
 
       <form 
@@ -45,12 +45,12 @@ export default function Register() {
         </div>
 
         <div className="relative mb-6">
-          <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-yellow-300 text-xl" />
+          <FiPhone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-yellow-300 text-xl" />
           <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="tel"
+            placeholder="Số điện thoại"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
             className="w-full pl-12 pr-4 py-3 rounded-xl bg-white/20 placeholder-white text-white focus:outline-none focus:ring-2 focus:ring-yellow-400"
           />
         </div>

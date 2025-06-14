@@ -1,19 +1,19 @@
 import React, { useState } from "react";
-import { FiMail, FiArrowLeft } from "react-icons/fi";
+import { FiArrowLeft, FiPhone } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
 export default function ForgotPassword() {
-  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Gọi API gửi email khôi phục mật khẩu
-    alert("Hướng dẫn khôi phục đã được gửi qua email!");
+    // Gọi API gửi OTP hoặc liên kết khôi phục qua số điện thoại
+    alert("Hướng dẫn khôi phục đã được gửi qua số điện thoại!");
   };
 
   return (
-    <div className="h-full w-full flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-gray-800 relative">
+    <div className="h-full w-full px-2 flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-gray-800 relative">
       <div className="absolute inset-0 bg-[url('/barbershop-background.jpg')] bg-cover bg-center opacity-20"></div>
 
       <form 
@@ -45,12 +45,12 @@ export default function ForgotPassword() {
         </h2>
 
         <div className="relative mb-6">
-          <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-yellow-300 text-xl" />
+          <FiPhone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-yellow-300 text-xl" />
           <input
-            type="email"
-            placeholder="Nhập email của bạn"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="tel"
+            placeholder="Nhập số điện thoại của bạn"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
             className="w-full pl-12 pr-4 py-3 rounded-xl bg-white/20 placeholder-white text-white focus:outline-none focus:ring-2 focus:ring-yellow-400"
           />
         </div>

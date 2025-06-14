@@ -16,7 +16,7 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="h-full w-full flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-gray-800 relative">
+    <div className="h-full w-full px-2 flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-gray-800 relative">
       <div className="absolute inset-0 bg-[url('/barbershop-background.jpg')] bg-cover bg-center opacity-20"></div>
 
       <form className="relative z-10 bg-white/10 backdrop-blur-lg p-10 rounded-3xl shadow-2xl w-full max-w-md border border-white/20" onSubmit={handleSubmit}>

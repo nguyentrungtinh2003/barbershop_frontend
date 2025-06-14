@@ -1,33 +1,36 @@
 {
   "users": [
-    {
-      "id": "u1",
-      "name": "Super Admin",
-      "email": "admin@example.com",
-      "phone": "0901234567",
-      "role": "Admin",
-      "status": "Active",
-      "createdAt": "2025-06-10T10:00:00Z"
-    },
-    {
-      "id": "u2",
-      "name": "John Owner",
-      "email": "owner1@example.com",
-      "phone": "0911111111",
-      "role": "Owner",
-      "status": "Active",
-      "createdAt": "2025-06-11T10:00:00Z"
-    },
-    {
-      "id": "u3",
-      "name": "Barber A",
-      "email": "barber1@example.com",
-      "phone": "0922222222",
-      "role": "Barber",
-      "status": "Active",
-      "createdAt": "2025-06-12T10:00:00Z"
-    }
-  ],
+  {
+    "id": "u1",
+    "name": "Super Admin",
+    "email": "admin@example.com",
+    "phone": "0901234567",
+    "password": "admin123",
+    "role": "Admin",
+    "status": "Active",
+    "createdAt": "2025-06-10T10:00:00Z"
+  },
+  {
+    "id": "u2",
+    "name": "John Owner",
+    "email": "owner1@example.com",
+    "phone": "0911111111",
+    "password": "owner123",
+    "role": "Owner",
+    "status": "Active",
+    "createdAt": "2025-06-11T10:00:00Z"
+  },
+  {
+    "id": "u3",
+    "name": "Barber A",
+    "email": "barber1@example.com",
+    "phone": "0922222222",
+    "password": "barber123",
+    "role": "Barber",
+    "status": "Active",
+    "createdAt": "2025-06-12T10:00:00Z"
+  }
+],
   "barbers": [
     {
       "id": "b1",
