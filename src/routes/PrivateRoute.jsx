@@ -6,7 +6,7 @@ export default function PrivateRoute({ children, allowedRoles }) {
 
   if (!user) return <Navigate to="/login" />;
 
-  if (!allowedRoles.includes(user.role)) {
+  if (!allowedRoles.includes(user.roleEnum)) {
     return <div>Bạn không có quyền truy cập.</div>;
   }
 

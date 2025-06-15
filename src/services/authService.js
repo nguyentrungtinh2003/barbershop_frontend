@@ -1,14 +1,17 @@
 import axios from "../utils/axiosInstance";
 
-export async function login(phone, password) {
-  const res = await axios.get(`/users?phone=${phone}`);
-  const user = res.data[0];
+export async function login(phoneNumber, password) {
+  const res = await axios.post(
+    `/login`,
+    { phoneNumber, password },
+    {
+      withCredentials: true,
+    }
+  );
 
-  if (user && user.password === password) {
+  if (res.data.statusCode === 200) {
+    const user = res.data.data;
     localStorage.setItem("user", JSON.stringify(user));
     return user;
-  } else {
-    throw new Error("Sai số điện thoại hoặc mật khẩu");
   }
 }
-
