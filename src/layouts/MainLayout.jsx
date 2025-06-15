@@ -1,15 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 export default function MainLayout({ children }) {
+  const userData = JSON.parse(localStorage.getItem("user"));
+  const role = userData?.role || "Barber"; // fallback nếu null
+
   return (
     <div>
-      <nav className="p-4 bg-gray-800 text-white flex gap-4">
-        <Link to="/">Home</Link>
-        <Link to="/admin/dashboard">Admin</Link>
-        <Link to="/owner/dashboard">Owner</Link>
-      </nav>
-      <div className="p-4">{children}</div>
+      <Navbar role={role} />
+      <div className="">{children}</div>
     </div>
   );
 }

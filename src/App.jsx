@@ -18,7 +18,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* ✅ Public homepage - KHÔNG dùng PrivateRoute */}
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<MainLayout><HomePage /></MainLayout>} />
 
         {/* ✅ Auth routes */}
         <Route path="/login" element={<AuthLayout><Login /></AuthLayout>} />
