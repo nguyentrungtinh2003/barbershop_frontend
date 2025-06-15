@@ -12,7 +12,7 @@ export default function Login() {
     e.preventDefault();
     try {
       const user = await login(phone, password);
-      navigate(`/${user.role.toLowerCase()}/dashboard`, { replace: true });
+      navigate(`/${user.roleEnum.toLowerCase()}/dashboard`, { replace: true });
     } catch (err) {
       alert("⚠️ Sai số điện thoại hoặc mật khẩu");
     }
@@ -77,12 +77,18 @@ export default function Login() {
         <div className="mt-6 text-center text-sm text-white">
           <p className="mb-2">
             Chưa có tài khoản?{" "}
-            <Link to="/register" className="text-yellow-400 font-semibold hover:underline">
+            <Link
+              to="/register"
+              className="text-yellow-400 font-semibold hover:underline"
+            >
               Đăng ký ngay
             </Link>
           </p>
           <p>
-            <Link to="/forgot-password" className="text-yellow-400 font-semibold hover:underline">
+            <Link
+              to="/forgot-password"
+              className="text-yellow-400 font-semibold hover:underline"
+            >
               Quên mật khẩu?
             </Link>
           </p>
