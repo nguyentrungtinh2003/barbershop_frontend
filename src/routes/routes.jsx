@@ -1,4 +1,5 @@
 import Users from "../pages/admin/Users";
+import Services from "../pages/admin/Services";
 import AdminDashboard from "../pages/admin/Dashboard";
 import OwnerDashboard from "../pages/owner/Dashboard";
 import Dashboard from "../pages/barber/Dashboard";
@@ -8,9 +9,7 @@ import AddUser from "../pages/admin/AddUserForm";
 import EditUser from "../pages/admin/EditUser";
 
 export const routes = {
-  Public: [
-    { path: "/", element: <HomePage /> },
-  ],
+  Public: [{ path: "/", element: <HomePage /> }],
   Admin: [
     { path: "/admin/dashboard", element: <AdminDashboard /> },
     { path: "/admin/users", element: <Users /> },
@@ -19,13 +18,8 @@ export const routes = {
   ],
   Owner: [
     { path: "/owner/dashboard", element: <OwnerDashboard /> },
+    { path: "/owner/services", element: <Services /> },
   ],
-  Barber: [
-    { path: "/barber/dashboard", element: <Dashboard /> },
-  ],
-  Customer: [
-    { path: "/customer/dashboard", element: <CustomerDashboard /> },
-  ],
+  Barber: [{ path: "/barber/dashboard", element: <Dashboard /> }],
+  Customer: [{ path: "/customer/dashboard", element: <CustomerDashboard /> }],
 };
-
-

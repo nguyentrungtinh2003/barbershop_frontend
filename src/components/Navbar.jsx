@@ -2,21 +2,24 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 
-// Menu theo vai trò
 const NAV_ITEMS = {
-  Admin: [
+  ADMIN: [
     { label: "Dashboard", path: "/admin/dashboard" },
     { label: "Quản lý người dùng", path: "/admin/users" },
   ],
-  Owner: [
+  OWNER: [
     { label: "Tiệm của tôi", path: "/owner/shop" },
     { label: "Barber", path: "/owner/barbers" },
     { label: "Lịch hẹn", path: "/owner/schedule" },
     { label: "Giá dịch vụ", path: "/owner/pricing" },
   ],
-  Barber: [
+  BARBER: [
     { label: "Lịch của tôi", path: "/barber/schedule" },
     { label: "Hồ sơ", path: "/barber/profile" },
+  ],
+  CUSTOMER: [
+    { label: "Lịch sử đặt lịch", path: "/customer/dashboard" },
+    { label: "Hồ sơ", path: "/customer/users" },
   ],
 };
 
@@ -25,7 +28,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const user = JSON.parse(localStorage.getItem("user")) || null;
-  const role = user?.role;
+  const role = user?.roleEnum;
   const menuItems = NAV_ITEMS[role] || [];
 
   const handleLogout = () => {
@@ -34,47 +37,50 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-gray-900 text-white px-6 py-3 shadow-lg">
-      <div className="flex justify-between items-center mx-auto">
+    <nav className="bg-gradient-to-r from-gray-900 to-gray-800 text-white shadow-lg sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
         {/* Logo */}
         <div
           onClick={() => navigate("/")}
-          className="text-xl font-bold cursor-pointer hover:text-yellow-300 transition"
+          className="text-2xl font-bold cursor-pointer hover:text-yellow-400 transition"
         >
           💈 BarberBooking
         </div>
 
-        {/* Hamburger toggle (mobile only) */}
+        {/* Hamburger Icon */}
         <button
-          className="md:hidden text-white text-xl"
+          className="md:hidden text-white text-2xl"
           onClick={() => setIsOpen(!isOpen)}
         >
           {isOpen ? <FaTimes /> : <FaBars />}
         </button>
 
-        {/* Menu (desktop) */}
-        <ul className="hidden md:flex gap-6 items-center">
+        {/* Desktop Menu */}
+        <ul className="hidden md:flex gap-6 items-center font-medium">
           {menuItems.map((item) => (
             <li key={item.path}>
-              <Link to={item.path} className="hover:text-yellow-300 transition">
+              <Link
+                to={item.path}
+                className="hover:text-yellow-400 transition duration-300"
+              >
                 {item.label}
               </Link>
             </li>
           ))}
         </ul>
 
-        {/* User Info (desktop) */}
+        {/* User Info */}
         {user ? (
           <div className="hidden md:flex items-center gap-4">
             <img
               src={user.avatar || "https://i.pravatar.cc/150?u=default"}
               alt="Avatar"
-              className="w-8 h-8 rounded-full border border-gray-400"
+              className="w-9 h-9 rounded-full border-2 border-yellow-400 shadow"
             />
-            <span className="text-sm font-medium">{user.name}</span>
+            <span className="text-sm font-semibold">{user.name}</span>
             <button
               onClick={handleLogout}
-              className="bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1 rounded transition"
+              className="bg-red-500 hover:bg-red-600 text-white text-xs px-4 py-1 rounded-full shadow transition"
             >
               Đăng xuất
             </button>
@@ -83,7 +89,7 @@ export default function Navbar() {
           <div className="hidden md:flex">
             <button
               onClick={() => navigate("/login")}
-              className="bg-yellow-400 text-black font-semibold text-sm px-4 py-1 rounded-xl shadow hover:scale-105 transition"
+              className="bg-yellow-400 text-black font-semibold text-sm px-5 py-1.5 rounded-full shadow hover:scale-105 transition"
             >
               Đăng nhập
             </button>
@@ -91,16 +97,16 @@ export default function Navbar() {
         )}
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden mt-4 space-y-4 px-4 pb-4 border-t border-gray-700">
+        <div className="md:hidden bg-gray-800 px-4 pt-4 pb-6 space-y-4">
           <ul className="space-y-2">
             {menuItems.map((item) => (
               <li key={item.path}>
                 <Link
                   to={item.path}
-                  className="block text-white hover:text-yellow-300"
                   onClick={() => setIsOpen(false)}
+                  className="block text-white hover:text-yellow-400 transition"
                 >
                   {item.label}
                 </Link>
@@ -108,25 +114,28 @@ export default function Navbar() {
             ))}
           </ul>
           {user ? (
-            <div className="hidden md:flex items-center gap-4">
+            <div className="flex items-center gap-3 mt-4">
               <img
                 src={user.avatar || "https://i.pravatar.cc/150?u=default"}
                 alt="Avatar"
-                className="w-8 h-8 rounded-full border border-gray-400"
+                className="w-9 h-9 rounded-full border-2 border-yellow-400"
               />
-              <span className="text-sm font-medium">{user.name}</span>
+              <span className="text-sm font-semibold">{user.name}</span>
               <button
                 onClick={handleLogout}
-                className="bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1 rounded transition"
+                className="ml-auto bg-red-500 hover:bg-red-600 text-white text-xs px-4 py-1 rounded-full transition"
               >
                 Đăng xuất
               </button>
             </div>
           ) : (
-            <div className="hidden md:flex">
+            <div className="mt-4">
               <button
-                onClick={() => navigate("/login")}
-                className="bg-yellow-500 hover:bg-yellow-600 text-white text-sm px-4 py-1 rounded transition"
+                onClick={() => {
+                  setIsOpen(false);
+                  navigate("/login");
+                }}
+                className="bg-yellow-400 hover:bg-yellow-500 text-black w-full text-sm py-2 rounded-full shadow"
               >
                 Đăng nhập
               </button>

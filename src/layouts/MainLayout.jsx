@@ -4,7 +4,7 @@ import Navbar from "../components/Navbar";
 
 export default function MainLayout({ children }) {
   const userData = JSON.parse(localStorage.getItem("user"));
-  const role = userData?.role || "Barber"; // fallback nếu null
+  const role = userData?.roleEnum || "BARBER"; // fallback nếu null
 
   return (
     <div>
