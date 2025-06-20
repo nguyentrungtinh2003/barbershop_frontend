@@ -32,8 +32,8 @@ export default function Navbar() {
   const menuItems = NAV_ITEMS[role] || [];
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    navigate("/login");
+    localStorage.clear();
+    navigate("/");
   };
 
   return (
@@ -73,11 +73,11 @@ export default function Navbar() {
         {user ? (
           <div className="hidden md:flex items-center gap-4">
             <img
-              src={user.avatar || "https://i.pravatar.cc/150?u=default"}
+              src={user.img}
               alt="Avatar"
               className="w-9 h-9 rounded-full border-2 border-yellow-400 shadow"
             />
-            <span className="text-sm font-semibold">{user.name}</span>
+            <span className="text-sm font-semibold">{user.username}</span>
             <button
               onClick={handleLogout}
               className="bg-red-500 hover:bg-red-600 text-white text-xs px-4 py-1 rounded-full shadow transition"
@@ -116,7 +116,7 @@ export default function Navbar() {
           {user ? (
             <div className="flex items-center gap-3 mt-4">
               <img
-                src={(user.img && user.img) || ""}
+                src={user.img}
                 alt="Avatar"
                 className="w-9 h-9 rounded-full border-2 border-yellow-400"
               />

@@ -17,3 +17,35 @@ export async function login(username, password) {
     return user;
   }
 }
+
+export async function forgot({ email, otp, password }) {
+  const res = await instance.post(
+    `/forgot-password`,
+    { email, otp, password },
+    {
+      withCredentials: true,
+    }
+  );
+
+  if (res.data.statusCode === 200) {
+    const user = res.data.data;
+
+    return user;
+  }
+}
+
+export async function reset({ email, otp, password }) {
+  const res = await instance.post(
+    `/reset-password`,
+    { email, otp, password },
+    {
+      withCredentials: true,
+    }
+  );
+
+  if (res.data.statusCode === 200) {
+    const user = res.data.data;
+
+    return user;
+  }
+}

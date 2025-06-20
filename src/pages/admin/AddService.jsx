@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { createService } from "../../services/serviceServices";
 
-export default function AddServiceForm({ onClose }) {
+export default function AddService({ onClose }) {
   const [formData, setFormData] = useState({
     name: "",
     description: "",

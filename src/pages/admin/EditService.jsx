@@ -12,7 +12,6 @@ export default function EditService({ service, onClose }) {
       onClose(); // đóng modal sau khi cập nhật
     } catch (error) {
       console.error("Lỗi cập nhật dịch vụ:", error);
-      alert("Cập nhật thất bại!");
     }
   };
 
@@ -26,7 +25,7 @@ export default function EditService({ service, onClose }) {
           onClick={onClose}
           className="text-red-500 font-semibold hover:underline"
         >
-          Đóng ✖
+          X
         </button>
       </div>
 

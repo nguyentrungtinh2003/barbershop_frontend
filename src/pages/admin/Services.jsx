@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { getServices, deleteService } from "../../services/serviceServices";
 import { FaTrashAlt, FaEdit, FaPlus } from "react-icons/fa";
-import AddServiceForm from "./AddServiceForm";
-import EditServiceForm from "./EditService";
+import AddService from "./AddService";
+import EditService from "./EditService";
 
 export default function Services() {
   const [services, setServices] = useState([]);
@@ -120,7 +120,7 @@ export default function Services() {
       {showAddModal && (
         <div className="fixed inset-0 bg-[rgba(0,0,0,0.7)] flex justify-center items-center z-50">
           <div className="bg-black border border-yellow-400 p-6 rounded-lg w-full max-w-xl text-white shadow-xl">
-            <AddServiceForm
+            <AddService
               onClose={() => {
                 setShowAddModal(false);
                 fetchServices();
@@ -134,7 +134,7 @@ export default function Services() {
       {showEditModal && selectedService && (
         <div className="fixed inset-0 bg-[rgba(0,0,0,0.7)] flex justify-center items-center z-50">
           <div className="bg-black border border-yellow-400 p-6 rounded-lg w-full max-w-xl text-white shadow-xl">
-            <EditServiceForm
+            <EditService
               service={selectedService}
               onClose={() => {
                 setShowEditModal(false);

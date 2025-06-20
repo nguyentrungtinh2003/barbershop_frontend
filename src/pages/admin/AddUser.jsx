@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { register } from "../../services/userServices";
 
-export default function AddUserForm({ onAdd, onClose }) {
+export default function AddUser({ onAdd, onClose }) {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
