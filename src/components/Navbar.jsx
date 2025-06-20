@@ -116,11 +116,11 @@ export default function Navbar() {
           {user ? (
             <div className="flex items-center gap-3 mt-4">
               <img
-                src={user.avatar || "https://i.pravatar.cc/150?u=default"}
+                src={(user.img && user.img) || ""}
                 alt="Avatar"
                 className="w-9 h-9 rounded-full border-2 border-yellow-400"
               />
-              <span className="text-sm font-semibold">{user.name}</span>
+              <span className="text-sm font-semibold">{user.username}</span>
               <button
                 onClick={handleLogout}
                 className="ml-auto bg-red-500 hover:bg-red-600 text-white text-xs px-4 py-1 rounded-full transition"

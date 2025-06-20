@@ -1,7 +1,7 @@
-import axios from "../utils/axiosInstance";
+import instance from "../utils/axiosInstance";
 
-export const createService = (data) => axios.post("/api/services", data);
-export const getServices = () => axios.get("/api/services");
+export const createService = (data) => instance.post("/api/services", data);
+export const getServices = () => instance.get("/api/services");
 export const updateService = (id, data) =>
-  axios.put(`/api/services/${id}`, data);
-export const deleteService = (id) => axios.delete(`/api/services/${id}`);
+  instance.put(`/api/services/${id}`, data);
+export const deleteService = (id) => instance.delete(`/api/services/${id}`);

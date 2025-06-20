@@ -1,14 +1,19 @@
-import axios from "../utils/axiosInstance";
+import instance from "../utils/axiosInstance";
 
-export const getUsers = () => axios.get("/users");
-export const getUserById = (id) => axios.get(`/users/${id}`);
+export const getUsers = (page, size) =>
+  instance.get(`/admin/users/page?page=${page}&size=${size}`);
+export const getUserById = (id) => instance.get(`/users/${id}`);
 export const register = (formData) =>
-  axios.post("/register", formData, {
+  instance.post("/register", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
   });
 
 export const updateUser = (id, updatedUser) =>
-  axios.put(`/users/${id}`, updatedUser);
-export const deleteUser = (id) => axios.delete(`/users/${id}`);
+  instance.put(`/owner/users/update/${id}`, updatedUser, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+export const deleteUser = (id) => instance.delete(`/users/${id}`);

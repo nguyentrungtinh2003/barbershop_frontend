@@ -1,9 +1,9 @@
-import axios from "../utils/axiosInstance";
+import instance from "../utils/axiosInstance";
 
-export async function login(phoneNumber, password) {
-  const res = await axios.post(
+export async function login(username, password) {
+  const res = await instance.post(
     `/login`,
-    { phoneNumber, password },
+    { username, password },
     {
       withCredentials: true,
     }
@@ -12,6 +12,8 @@ export async function login(phoneNumber, password) {
   if (res.data.statusCode === 200) {
     const user = res.data.data;
     localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("token", res.data.token);
+
     return user;
   }
 }

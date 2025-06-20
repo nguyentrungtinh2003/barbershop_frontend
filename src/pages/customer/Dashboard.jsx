@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { FiEdit, FiEye, FiTrash2 } from "react-icons/fi";
 
 export default function CustomerDashboard() {
   const [formData, setFormData] = useState({
@@ -44,7 +45,7 @@ export default function CustomerDashboard() {
   return (
     <div className="bg-gray-900 min-h-screen p-6 text-white">
       <h1 className="text-3xl font-bold text-center mb-8">
-        Xin chào, <span className="text-yellow-400">{user.name}</span>
+        Xin chào, <span className="text-yellow-400">{user.username}</span>
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -121,13 +122,18 @@ export default function CustomerDashboard() {
               <table className="min-w-full text-sm border border-gray-700">
                 <thead className="bg-gray-700 text-yellow-300">
                   <tr>
-                    {["Ngày", "Giờ", "Dịch vụ", "Tiệm", "Barber"].map(
-                      (head) => (
-                        <th key={head} className="p-2 border border-gray-700">
-                          {head}
-                        </th>
-                      )
-                    )}
+                    {[
+                      "Ngày",
+                      "Giờ",
+                      "Dịch vụ",
+                      "Tiệm",
+                      "Barber",
+                      "Hành động",
+                    ].map((head) => (
+                      <th key={head} className="p-2 border border-gray-700">
+                        {head}
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
@@ -150,6 +156,29 @@ export default function CustomerDashboard() {
                       </td>
                       <td className="p-2 border border-gray-700">
                         {item.barber}
+                      </td>
+                      <td className="p-2 border border-gray-700 flex gap-2 justify-center">
+                        <button
+                          onClick={() => handleView(item.id)}
+                          className="text-blue-400 hover:text-blue-300"
+                          title="Xem chi tiết"
+                        >
+                          <FiEye size={16} />
+                        </button>
+                        <button
+                          onClick={() => handleEdit(item.id)}
+                          className="text-green-400 hover:text-green-300"
+                          title="Chỉnh sửa"
+                        >
+                          <FiEdit size={16} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(item.id)}
+                          className="text-red-400 hover:text-red-300"
+                          title="Xoá"
+                        >
+                          <FiTrash2 size={16} />
+                        </button>
                       </td>
                     </tr>
                   ))}

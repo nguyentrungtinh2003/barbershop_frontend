@@ -1,20 +1,29 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { login } from "../../services/authService";
-import { FiPhone, FiLock } from "react-icons/fi";
+import { FiPhone, FiLock, FiUser } from "react-icons/fi";
 
 export default function Login() {
-  const [phone, setPhone] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      const user = await login(phone, password);
-      navigate(`/${user.roleEnum.toLowerCase()}/dashboard`, { replace: true });
-    } catch (err) {
-      alert("⚠️ Sai số điện thoại hoặc mật khẩu");
+      const user = await login(username, password); // login() phải trả về user object có `roleEnum`
+
+      if (user && user.roleEnum) {
+        navigate(`/${user.roleEnum.toLowerCase()}/dashboard`, {
+          replace: true,
+        });
+      } else {
+        alert("Không tìm thấy quyền người dùng!");
+      }
+    } catch (error) {
+      console.error("Login thất bại:", error);
+      alert("Đăng nhập thất bại!");
     }
   };
 
@@ -41,12 +50,12 @@ export default function Login() {
 
         {/* Số điện thoại */}
         <div className="relative mb-6">
-          <FiPhone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-yellow-300 text-xl" />
+          <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-yellow-300 text-xl" />
           <input
-            type="tel"
-            placeholder="Số điện thoại"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            type="text"
+            placeholder="Tên đăng nhập"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             className="w-full pl-12 pr-4 py-3 rounded-xl bg-white/20 placeholder-white text-white focus:outline-none focus:ring-2 focus:ring-yellow-400"
             required
           />

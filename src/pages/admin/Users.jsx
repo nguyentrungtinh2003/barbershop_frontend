@@ -10,29 +10,34 @@ export default function Users() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [showAddForm, setShowAddForm] = useState(false);
 
+  // Lấy danh sách user từ backend
   const fetchUsers = async () => {
-    setLoading(true);
     try {
-      const res = await getUsers();
-      setUsers(res.data);
+      const res = await getUsers(0, 6);
+      setUsers(res.data.data.content);
     } catch (error) {
-      console.error("Lỗi khi tải người dùng", error);
-    } finally {
-      setLoading(false);
+      console.error("Lỗi lấy danh sách người dùng:", error);
+    }
+  };
+
+  // Thêm user mới
+  const handleAddUser = async (newUser) => {
+    try {
+      const res = await axios.post("/users", newUser);
+      alert("Thêm người dùng thành công!");
+      setShowAddForm(false);
+      fetchUsers();
+    } catch (error) {
+      console.error("Lỗi thêm người dùng:", error);
+      alert("Thêm thất bại");
     }
   };
 
   useEffect(() => {
     fetchUsers();
   }, []);
-
-  const handleDelete = async (id) => {
-    if (window.confirm("Bạn có chắc chắn muốn xoá người dùng này?")) {
-      await deleteUser(id);
-      fetchUsers();
-    }
-  };
 
   return (
     <div className="p-6 mx-auto bg-gradient-to-br from-black via-gray-900 to-gray-800 min-h-screen text-white font-vietnam">
@@ -69,18 +74,18 @@ export default function Users() {
                   key={user.id}
                   className="border-b border-gray-700 hover:bg-gray-800 transition"
                 >
-                  <td className="px-6 py-4 font-medium">{user.name}</td>
+                  <td className="px-6 py-4 font-medium">{user.username}</td>
                   <td className="px-6 py-4">{user.email}</td>
-                  <td className="px-6 py-4 capitalize">{user.role}</td>
+                  <td className="px-6 py-4 capitalize">{user.roleEnum}</td>
                   <td className="px-6 py-4">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        user.status === "active"
+                        user.deleted === false
                           ? "bg-green-500/20 text-green-300"
                           : "bg-red-500/20 text-red-300"
                       }`}
                     >
-                      {user.status === "active" ? "Hoạt động" : "Đã khoá"}
+                      {user.deleted === false ? "Hoạt động" : "Đã khoá"}
                     </span>
                   </td>
                   <td className="px-6 py-4 flex justify-center gap-4">
@@ -121,6 +126,7 @@ export default function Users() {
         <div className="fixed inset-0 bg-[rgba(0,0,0,0.7)] flex justify-center items-center z-50">
           <div className="bg-black border border-yellow-400 p-6 rounded-lg w-full max-w-xl text-white shadow-xl">
             <AddUserForm
+              onAdd={handleAddUser}
               onClose={() => {
                 setShowAddModal(false);
                 fetchUsers();
