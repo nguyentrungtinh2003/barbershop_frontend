@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { updateUser } from "../../services/userServices";
+import { updateShop } from "../../services/shopServices";
 
-export default function EditUser({ user, onClose }) {
-  const [formData, setFormData] = useState(user);
+export default function EditShop({ shop, onClose }) {
+  const [formData, setFormData] = useState(shop);
   const [img, setImg] = useState(null);
-  const [imgPre, setImgPre] = useState(user.img);
+  const [imgPre, setImgPre] = useState(shop.img);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,39 +21,33 @@ export default function EditUser({ user, onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       const data = new FormData();
-
-      const userData = {
-        ...formData,
-        birthDay: formData.birthDay ? `${formData.birthDay}T00:00:00` : null, // hoặc undefined nếu backend chấp nhận
-      };
-
       data.append(
-        "user",
-        new Blob([JSON.stringify(userData)], { type: "application/json" })
+        "shop",
+        new Blob([JSON.stringify(formData)], { type: "application/json" })
       );
 
       if (img) {
         data.append("img", img);
       }
 
-      await updateUser(user.id, data);
-      alert("Cập nhật thành công!");
+      await updateShop(shop.id, data);
+      alert("Cập nhật cửa hàng thành công!");
       onClose();
     } catch (error) {
-      console.error("Lỗi cập nhật:", error);
+      console.error("Lỗi cập nhật cửa hàng:", error);
     }
   };
 
-  if (!formData) return <div className="p-4">Đang tải người dùng...</div>;
+  if (!formData) return <div className="p-4">Đang tải cửa hàng...</div>;
 
   return (
     <div className="p-6 bg-gray-800 rounded-2xl shadow-xl text-white max-w-2xl mx-auto">
-      {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-yellow-400">
-          Chỉnh sửa người dùng
+          Chỉnh sửa cửa hàng
         </h2>
         <button
           onClick={onClose}
@@ -63,17 +57,16 @@ export default function EditUser({ user, onClose }) {
         </button>
       </div>
 
-      {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input
             type="text"
-            name="username"
-            value={formData.username || ""}
+            name="name"
+            value={formData.name || ""}
             onChange={handleChange}
-            placeholder="Tên người dùng"
+            placeholder="Tên cửa hàng"
             required
-            className="px-4 py-2 rounded-lg bg-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            className="px-4 py-2 rounded-lg bg-gray-700"
           />
           <input
             type="email"
@@ -82,7 +75,7 @@ export default function EditUser({ user, onClose }) {
             onChange={handleChange}
             placeholder="Email"
             required
-            className="px-4 py-2 rounded-lg bg-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            className="px-4 py-2 rounded-lg bg-gray-700"
           />
           <input
             type="text"
@@ -90,7 +83,7 @@ export default function EditUser({ user, onClose }) {
             value={formData.phoneNumber || ""}
             onChange={handleChange}
             placeholder="Số điện thoại"
-            className="px-4 py-2 rounded-lg bg-gray-700 focus:outline-none"
+            className="px-4 py-2 rounded-lg bg-gray-700"
           />
           <input
             type="text"
@@ -98,46 +91,36 @@ export default function EditUser({ user, onClose }) {
             value={formData.address || ""}
             onChange={handleChange}
             placeholder="Địa chỉ"
-            className="px-4 py-2 rounded-lg bg-gray-700 focus:outline-none"
+            className="px-4 py-2 rounded-lg bg-gray-700"
           />
           <input
-            type="date"
-            name="birthDay"
-            value={formData.birthDay ? formData.birthDay.slice(0, 10) : ""}
+            type="text"
+            name="slogan"
+            value={formData.slogan || ""}
             onChange={handleChange}
-            className="px-4 py-2 rounded-lg bg-gray-700 focus:outline-none"
+            placeholder="Slogan"
+            className="px-4 py-2 rounded-lg bg-gray-700"
           />
-          <select
-            name="roleEnum"
-            value={formData.roleEnum || "USER"}
-            onChange={handleChange}
-            className="px-4 py-2 rounded-lg bg-gray-700 focus:outline-none"
-          >
-            <option value="ADMIN">Admin</option>
-            <option value="OWNER">Owner</option>
-            <option value="BARBER">Barber</option>
-            <option value="USER">User</option>
-          </select>
         </div>
 
         {/* File input */}
         <div>
           <label className="block mb-1 font-medium text-gray-300">
-            Ảnh đại diện
+            Ảnh cửa hàng
           </label>
           <input
             type="file"
             name="img"
             accept="image/*"
             onChange={handleFileChange}
-            className="w-full px-4 py-2 rounded-lg bg-gray-700 focus:outline-none"
+            className="w-full px-4 py-2 rounded-lg bg-gray-700"
           />
           {/* Hiển thị ảnh nếu có */}
           <div className="mt-4">
             <img
               src={img ? URL.createObjectURL(img) : imgPre}
-              alt="Ảnh đại diện"
-              className="w-32 h-32 object-cover rounded-full border-2 border-yellow-400"
+              alt="Ảnh cửa hàng"
+              className="w-40 h-40 object-cover rounded-lg border-2 border-yellow-400"
             />
           </div>
         </div>
@@ -148,15 +131,14 @@ export default function EditUser({ user, onClose }) {
           value={formData.description || ""}
           onChange={handleChange}
           placeholder="Mô tả"
-          className="w-full px-4 py-2 rounded-lg bg-gray-700 focus:outline-none"
+          className="w-full px-4 py-2 rounded-lg bg-gray-700"
           rows={3}
         ></textarea>
 
-        {/* Nút lưu */}
         <div className="text-right">
           <button
             type="submit"
-            className="bg-yellow-400 hover:bg-yellow-500 text-black px-6 py-2 rounded-lg font-semibold transition duration-200"
+            className="bg-yellow-400 hover:bg-yellow-500 text-black px-6 py-2 rounded-lg font-semibold"
           >
             💾 Lưu thay đổi
           </button>
