@@ -5,11 +5,12 @@ import { FaBars, FaTimes } from "react-icons/fa";
 const NAV_ITEMS = {
   ADMIN: [
     { label: "Dashboard", path: "/admin/dashboard" },
-    { label: "Quản lý người dùng", path: "/admin/users" },
+    { label: "User", path: "/admin/users" },
+    { label: "Shop", path: "/admin/shops" },
   ],
   OWNER: [
     { label: "Tiệm của tôi", path: "/owner/shop" },
-    { label: "Barber", path: "/owner/barbers" },
+    { label: "Quản lí tiệm", path: "/owner/shops" },
     { label: "Lịch hẹn", path: "/owner/schedule" },
     { label: "Giá dịch vụ", path: "/owner/pricing" },
   ],

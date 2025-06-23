@@ -3,6 +3,9 @@ import instance from "../utils/axiosInstance";
 export const getShops = (page, size) =>
   instance.get(`/admin/shops/page?page=${page}&size=${size}`);
 
+export const getShopsByOwnerId = (ownerId) =>
+  instance.get(`/owner/shops/owner/${ownerId}`);
+
 export const createShop = (formData) =>
   instance.post("/admin/shops/add", formData, {
     headers: {

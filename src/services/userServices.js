@@ -1,5 +1,6 @@
 import instance from "../utils/axiosInstance";
 
+export const getAllUsers = () => instance.get(`/owner/users/all`);
 export const getUsers = (page, size) =>
   instance.get(`/admin/users/page?page=${page}&size=${size}`);
 

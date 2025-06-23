@@ -1,6 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { getShops, deleteShop, restoreShop } from "../../services/shopServices";
-import { FaTrashAlt, FaEdit, FaPlus, FaLock, FaLockOpen } from "react-icons/fa";
+import {
+  getShops,
+  deleteShop,
+  restoreShop,
+  getShopsByOwnerId,
+} from "../../services/shopServices";
+import {
+  FaTrashAlt,
+  FaEdit,
+  FaPlus,
+  FaLock,
+  FaLockOpen,
+  FaTimesCircle,
+  FaCheckCircle,
+} from "react-icons/fa";
 import AddShop from "./AddShop";
 import EditShop from "./EditShop";
 export default function Shops() {
@@ -14,13 +27,25 @@ export default function Shops() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedShop, setSelectedShop] = useState(null);
 
+  const user = JSON.parse(localStorage.getItem("user"));
+
   const fetchShops = async (currentPage = page) => {
     setLoading(true);
     try {
-      const res = await getShops(currentPage, size);
-      setShops(res.data.data.content);
-      setTotalPages(res.data.data.totalPages);
-      setPage(currentPage);
+      console.log(user.roleEnum);
+      if (user.roleEnum === "ADMIN") {
+        const res = await getShops(currentPage, size);
+        setShops(res.data.data.content);
+        setTotalPages(res.data.data.totalPages);
+        setPage(currentPage);
+      }
+      if (user.roleEnum === "OWNER") {
+        const res = await getShopsByOwnerId(user.id);
+        setShops(res.data.data);
+        console.log(shops);
+        // setTotalPages(res.data.data.totalPages);
+        // setPage(currentPage);
+      }
     } catch (error) {
       console.error("Lỗi lấy danh sách cửa hàng:", error);
     }
@@ -64,6 +89,7 @@ export default function Shops() {
                   <th className="px-6 py-3">Email</th>
                   <th className="px-6 py-3">Số điện thoại</th>
                   <th className="px-6 py-3">Địa chỉ</th>
+                  <th className="px-6 py-3">Chủ tiệm</th>
                   <th className="px-6 py-3">Slogan</th>
                   <th className="px-6 py-3">Trạng thái</th>
                   <th className="px-6 py-3 text-center">Hành động</th>
@@ -79,6 +105,19 @@ export default function Shops() {
                     <td className="px-6 py-4">{shop.email}</td>
                     <td className="px-6 py-4">{shop.phoneNumber}</td>
                     <td className="px-6 py-4">{shop.address}</td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center space-x-3">
+                        <img
+                          className="w-12 h-12 rounded-full object-cover border border-gray-500"
+                          src={shop.owner?.img}
+                          alt={shop.owner?.username || "avatar"}
+                        />
+                        <p className="font-medium text-white">
+                          {shop.owner?.username || "Không rõ"}
+                        </p>
+                      </div>
+                    </td>
+
                     <td className="px-6 py-4 italic">{shop.slogan}</td>
                     <td className="px-6 py-4">
                       <span
@@ -88,7 +127,11 @@ export default function Shops() {
                             : "bg-red-500/20 text-red-300"
                         }`}
                       >
-                        {!shop.deleted ? "Hoạt động" : "Đã khoá"}
+                        {!shop.deleted ? (
+                          <FaCheckCircle className="text-lg" />
+                        ) : (
+                          <FaTimesCircle className="text-lg" />
+                        )}
                       </span>
                     </td>
                     <td className="px-6 py-4 flex justify-center gap-4">

@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { getUsers, deleteUser, restoreUser } from "../../services/userServices";
-import { FaTrashAlt, FaEdit, FaPlus, FaLock, FaLockOpen } from "react-icons/fa";
+import {
+  FaTrashAlt,
+  FaEdit,
+  FaPlus,
+  FaLock,
+  FaLockOpen,
+  FaCheckCircle,
+  FaTimesCircle,
+} from "react-icons/fa";
 import AddUser from "./AddUser";
 import EditUser from "./EditUser";
 
@@ -66,6 +74,8 @@ export default function Users() {
                 <tr>
                   <th className="px-6 py-3">Tên</th>
                   <th className="px-6 py-3">Email</th>
+                  <th className="px-6 py-3">SDT</th>
+                  <th className="px-6 py-3">Hình</th>
                   <th className="px-6 py-3">Vai trò</th>
                   <th className="px-6 py-3">Trạng thái</th>
                   <th className="px-6 py-3 text-center">Hành động</th>
@@ -79,16 +89,24 @@ export default function Users() {
                   >
                     <td className="px-6 py-4 font-medium">{user.username}</td>
                     <td className="px-6 py-4">{user.email}</td>
+                    <td className="px-6 py-4">{user.phoneNumber}</td>
+                    <td className="px-6 py-4">
+                      <img src={user.img} className="w-10 h-10"></img>
+                    </td>
                     <td className="px-6 py-4 capitalize">{user.roleEnum}</td>
                     <td className="px-6 py-4">
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          user.deleted === false
+                          !user.deleted
                             ? "bg-green-500/20 text-green-300"
                             : "bg-red-500/20 text-red-300"
                         }`}
                       >
-                        {user.deleted === false ? "Hoạt động" : "Đã khoá"}
+                        {!user.deleted ? (
+                          <FaCheckCircle className="text-lg" />
+                        ) : (
+                          <FaTimesCircle className="text-lg" />
+                        )}
                       </span>
                     </td>
                     <td className="px-6 py-4 flex justify-center gap-4">

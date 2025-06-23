@@ -18,6 +18,7 @@ export const routes = {
     { path: "/owner/dashboard", element: <OwnerDashboard /> },
     { path: "/owner/users", element: <Users /> },
     { path: "/owner/services", element: <Services /> },
+    { path: "/owner/shops", element: <Shops /> },
   ],
   Barber: [{ path: "/barber/dashboard", element: <Dashboard /> }],
   Customer: [{ path: "/customer/dashboard", element: <CustomerDashboard /> }],

@@ -1,5 +1,7 @@
-import { useState } from "react";
-import { createShop } from "../../services/shopServices"; // cần tạo hàm này
+import { useEffect, useState } from "react";
+import { createShop } from "../../services/shopServices";
+import { getAllUsers } from "../../services/userServices";
+import Select from "react-select";
 
 export default function AddShop({ onAdd, onClose }) {
   const [formData, setFormData] = useState({
@@ -9,15 +11,38 @@ export default function AddShop({ onAdd, onClose }) {
     address: "",
     slogan: "",
     description: "",
+    ownerId: "",
   });
 
+  const [users, setUsers] = useState([]);
   const [img, setImg] = useState(null);
+
+  const fetchAllUsers = async () => {
+    const response = await getAllUsers();
+
+    const options = response.data.data.map((user) => ({
+      value: user.id,
+      label: user.username,
+    }));
+    setUsers(options);
+  };
+
+  useEffect(() => {
+    fetchAllUsers();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+    }));
+  };
+
+  const handleSelectChange = (selectedOption) => {
+    setFormData((prev) => ({
+      ...prev,
+      ownerId: selectedOption?.value || "",
     }));
   };
 
@@ -59,6 +84,14 @@ export default function AddShop({ onAdd, onClose }) {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        <Select
+          options={users}
+          onChange={handleSelectChange}
+          className="text-black"
+          placeholder="-- Chọn chủ sở hữu --"
+          isClearable
+        />
+
         <input
           type="text"
           name="name"
