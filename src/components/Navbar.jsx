@@ -12,7 +12,7 @@ const NAV_ITEMS = {
     { label: "Tiệm của tôi", path: "/owner/shop" },
     { label: "Quản lí tiệm", path: "/owner/shops" },
     { label: "Lịch hẹn", path: "/owner/schedule" },
-    { label: "Giá dịch vụ", path: "/owner/pricing" },
+    { label: "Giá dịch vụ", path: "/owner/services" },
   ],
   BARBER: [
     { label: "Lịch của tôi", path: "/barber/schedule" },

@@ -36,7 +36,7 @@ export default function AddUser({ onAdd, onClose }) {
       const formDataToSend = new FormData();
 
       if (img) {
-        formDataToSend.append("img", formData.img);
+        formDataToSend.append("img", img);
       }
 
       // Tạo object user (loại bỏ file)

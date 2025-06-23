@@ -6,8 +6,10 @@ export default function AddService({ onClose }) {
     name: "",
     description: "",
     price: "",
-    status: "active", // hoặc "inactive"
+    duration: "",
   });
+
+  const [img, setImg] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -17,12 +19,33 @@ export default function AddService({ onClose }) {
     }));
   };
 
+  // const handleSelectChange = (selectedOption) => {
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     ownerId: selectedOption?.value || "",
+  //   }));
+  // };
+
+  const handleFileChange = (e) => {
+    setImg(e.target.files[0]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await createService(formData);
+      const data = new FormData();
+      data.append(
+        "service",
+        new Blob([JSON.stringify(formData)], { type: "application/json" })
+      );
+
+      if (img) {
+        data.append("img", img);
+      }
+
+      await createService(data);
       alert("Tạo dịch vụ thành công!");
-      onClose(); // Đóng modal và reload
+      onClose();
     } catch (error) {
       console.error("Lỗi khi tạo dịch vụ:", error);
       alert("Tạo dịch vụ thất bại!");
@@ -59,6 +82,17 @@ export default function AddService({ onClose }) {
         </div>
 
         <div>
+          <label className="block mb-1 text-sm">Hình ảnh</label>
+          <input
+            type="file"
+            name="img"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="w-full p-2 rounded bg-gray-800 border border-gray-600 text-white"
+          />
+        </div>
+
+        <div>
           <label className="block mb-1 text-sm">Giá (VNĐ)</label>
           <input
             type="number"
@@ -71,16 +105,15 @@ export default function AddService({ onClose }) {
         </div>
 
         <div>
-          <label className="block mb-1 text-sm">Trạng thái</label>
-          <select
-            name="status"
-            value={formData.status}
+          <label className="block mb-1 text-sm">Thời lượng (phút)</label>
+          <input
+            type="number"
+            name="duration"
+            required
+            value={formData.duration}
             onChange={handleChange}
             className="w-full p-2 rounded bg-gray-800 border border-gray-600 text-white"
-          >
-            <option value="active">Hoạt động</option>
-            <option value="inactive">Ngưng hoạt động</option>
-          </select>
+          />
         </div>
 
         <div className="flex justify-end gap-4">
