@@ -17,4 +17,4 @@ export const updateService = (id, data) =>
 export const deleteService = (id) =>
   instance.delete(`/owner/services/delete/${id}`);
 export const restoreService = (id) =>
-  instance.delete(`/owner/services/restore/${id}`);
+  instance.put(`/owner/services/restore/${id}`);

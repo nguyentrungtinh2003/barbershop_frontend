@@ -1,6 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { getServices, deleteService } from "../../services/serviceServices";
-import { FaTrashAlt, FaEdit, FaPlus } from "react-icons/fa";
+import {
+  getServices,
+  deleteService,
+  restoreService,
+} from "../../services/serviceServices";
+import {
+  FaTrashAlt,
+  FaEdit,
+  FaPlus,
+  FaLock,
+  FaLockOpen,
+  FaCheckCircle,
+  FaTimesCircle,
+} from "react-icons/fa";
 import AddService from "./AddService";
 import EditService from "./EditService";
 
@@ -73,8 +85,10 @@ export default function Services() {
                 <tr>
                   <th className="px-6 py-3">Tên dịch vụ</th>
                   <th className="px-6 py-3">Mô tả</th>
+                  <th className="px-6 py-3">Hình</th>
                   <th className="px-6 py-3">Giá</th>
                   <th className="px-6 py-3">Thời lượng</th>
+                  <th className="px-6 py-3">Trạng thái</th>
                   <th className="px-6 py-3 text-center">Hành động</th>
                 </tr>
               </thead>
@@ -86,26 +100,60 @@ export default function Services() {
                   >
                     <td className="px-6 py-4 font-medium">{service.name}</td>
                     <td className="px-6 py-4">{service.description}</td>
+                    <td className="px-6 py-4">
+                      <img src={service.img} className="w-10 h-10"></img>
+                    </td>
                     <td className="px-6 py-4">{service.price} VNĐ</td>
-                    <td className="px-6 py-4">{service.duration}</td>
+                    <td className="px-6 py-4">{service.duration} Phút</td>
+                    <td className="px-6 py-4">
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                          !service.deleted
+                            ? "bg-green-500/20 text-green-300"
+                            : "bg-red-500/20 text-red-300"
+                        }`}
+                      >
+                        {!service.deleted ? (
+                          <FaCheckCircle className="text-lg" />
+                        ) : (
+                          <FaTimesCircle className="text-lg" />
+                        )}
+                      </span>
+                    </td>
                     <td className="px-6 py-4 flex justify-center gap-4">
                       <button
                         onClick={() => {
                           setSelectedService(service);
                           setShowEditModal(true);
                         }}
-                        className="text-yellow-300 hover:text-yellow-500 transition"
+                        className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded transition"
                         title="Chỉnh sửa"
                       >
                         <FaEdit />
                       </button>
-                      <button
-                        onClick={() => handleDelete(service.id)}
-                        className="text-red-400 hover:text-red-600 transition"
-                        title="Xoá"
-                      >
-                        <FaTrashAlt />
-                      </button>
+                      {service.deleted === false ? (
+                        <button
+                          onClick={async () => {
+                            await deleteService(service.id);
+                            fetchServices();
+                          }}
+                          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition"
+                          title="Khoá"
+                        >
+                          <FaLock />
+                        </button>
+                      ) : (
+                        <button
+                          onClick={async () => {
+                            await restoreService(service.id);
+                            fetchServices();
+                          }}
+                          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition"
+                          title="Mở khoá"
+                        >
+                          <FaLockOpen />
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}

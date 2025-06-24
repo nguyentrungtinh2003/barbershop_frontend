@@ -1,14 +1,42 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FiEdit, FiEye, FiTrash2 } from "react-icons/fi";
+import { getShopsById, getAllShops } from "../../services/shopServices";
+import { createAppointment } from "../../services/appointmentService";
+import Select from "react-select";
 
 export default function CustomerDashboard() {
   const [formData, setFormData] = useState({
-    date: "",
-    time: "",
-    service: "",
-    shop: "",
-    barber: "",
+    appointmentStatus: "", // Ví dụ: "PENDING", "COMPLETED", v.v.
+    price: "", // Có thể để trống hoặc 0
+    customer: {
+      id: "", // Thường chỉ cần user ID (hoặc name nếu
+    },
+    barber: {
+      id: "",
+    },
+    services: [], // Mảng các service id hoặc object
+    payments: {
+      id: "", // Nếu bạn chỉ gửi id
+    },
   });
+
+  const [shops, setShops] = useState([]); // Mỗi shop có id, name
+  const [barbers, setBarbers] = useState([]); // Tất cả barbers có shopId
+  const [services, setServices] = useState([]); // Tất cả services có shopId
+
+  const [currentShop, setCurrentShop] = useState(null); // Shop đang được chọn
+
+  const filteredBarbers = currentShop ? currentShop.barbers : {};
+  const filteredServices = currentShop ? currentShop.services : [];
+
+  const fetchShops = async () => {
+    const res = await getAllShops();
+    setShops(res.data.data);
+  };
+
+  useEffect(() => {
+    fetchShops();
+  }, []);
 
   const [user] = useState(() => {
     return JSON.parse(localStorage.getItem("user")) || { name: "Khách hàng" };
@@ -32,161 +60,190 @@ export default function CustomerDashboard() {
   ]);
 
   const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("Đặt lịch thành công!");
-    setHistory((prev) => [formData, ...prev]);
-    setFormData({ date: "", time: "", service: "", shop: "", barber: "" });
+
+    try {
+      await createAppointment(formData);
+      alert("Đặt lịch thành công!");
+    } catch (error) {
+      console.error("Lỗi đặt lịch:", error);
+    }
   };
 
   return (
-    <div className="bg-gray-900 min-h-screen p-6 text-white">
-      <h1 className="text-3xl font-bold text-center mb-8">
-        Xin chào, <span className="text-yellow-400">{user.username}</span>
-      </h1>
+    <div className="p-6 mx-auto bg-gradient-to-br from-black via-gray-900 to-gray-800 min-h-screen text-white font-vietnam">
+      <div className="bg-gray-900 rounded-2xl shadow-xl p-8 max-w-xl mx-auto">
+        <h2 className="text-2xl font-bold text-yellow-400 mb-6 text-center uppercase tracking-wide">
+          Đặt lịch cắt tóc
+        </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Booking Form */}
-        <div className="bg-gray-800 rounded-xl shadow-lg p-6">
-          <h2 className="text-xl font-semibold text-yellow-400 mb-4">
-            Đặt lịch cắt tóc
-          </h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {[
-              { label: "Ngày", name: "date", type: "date" },
-              { label: "Giờ", name: "time", type: "time" },
-              {
-                label: "Tiệm",
-                name: "shop",
-                type: "text",
-                placeholder: "Tên tiệm",
-              },
-              {
-                label: "Barber",
-                name: "barber",
-                type: "text",
-                placeholder: "Tên thợ cắt",
-              },
-            ].map(({ label, name, type, placeholder }) => (
-              <div key={name}>
-                <label className="block mb-1 font-medium">{label}</label>
-                <input
-                  type={type}
-                  name={name}
-                  value={formData[name]}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 rounded-md bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-400"
-                  placeholder={placeholder}
-                  required
-                />
-              </div>
-            ))}
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Trạng thái ẩn */}
+          <input
+            type="hidden"
+            name="appointmentStatus"
+            value={formData.appointmentStatus}
+          />
 
-            <div>
-              <label className="block mb-1 font-medium">Dịch vụ</label>
-              <select
-                name="service"
-                value={formData.service}
-                onChange={handleChange}
-                className="w-full px-3 py-2 rounded-md bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-yellow-400"
-                required
-              >
-                <option value="">-- Chọn dịch vụ --</option>
-                <option value="Cắt tóc">Cắt tóc</option>
-                <option value="Cạo râu">Cạo râu</option>
-                <option value="Gội đầu">Gội đầu</option>
-              </select>
-            </div>
+          {/* Shop */}
+          <div>
+            <label className="block mb-2 text-sm font-semibold text-yellow-300">
+              Chọn Shop
+            </label>
+            <Select
+              name="shop"
+              value={currentShop}
+              onChange={(selectedShop) => {
+                setCurrentShop(selectedShop);
+                setFormData((prev) => ({
+                  ...prev,
+                  barber: { id: "" },
+                  services: [],
+                  price: 0,
+                }));
+              }}
+              options={shops}
+              getOptionLabel={(option) => option.name}
+              getOptionValue={(option) => option.id}
+              className="text-black"
+              placeholder="Chọn shop..."
+            />
+          </div>
 
-            <button
-              type="submit"
-              className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-md transition"
-            >
-              Đặt lịch ngay
-            </button>
-          </form>
-        </div>
+          {/* Barber */}
+          <div>
+            <label className="block mb-2 text-sm font-semibold text-yellow-300">
+              Chọn Barber
+            </label>
+            <Select
+              name="barber"
+              value={filteredBarbers.id === formData.id || null}
+              onChange={(selected) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  barber: { id: selected.id },
+                }))
+              }
+              options={filteredBarbers}
+              getOptionLabel={(option) => option.username}
+              getOptionValue={(option) => option.id}
+              className="text-black"
+              placeholder={
+                currentShop ? "Chọn barber..." : "Hãy chọn shop trước"
+              }
+              isDisabled={!currentShop}
+            />
+          </div>
 
-        {/* History Table */}
-        <div className="bg-gray-800 rounded-xl shadow-lg p-6">
-          <h2 className="text-xl font-semibold text-yellow-400 mb-4">
-            Lịch sử cắt tóc
-          </h2>
-          {history.length === 0 ? (
-            <p className="text-gray-400">Chưa có lịch sử đặt lịch.</p>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full text-sm border border-gray-700">
-                <thead className="bg-gray-700 text-yellow-300">
-                  <tr>
-                    {[
-                      "Ngày",
-                      "Giờ",
-                      "Dịch vụ",
-                      "Tiệm",
-                      "Barber",
-                      "Hành động",
-                    ].map((head) => (
-                      <th key={head} className="p-2 border border-gray-700">
-                        {head}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {history.map((item, idx) => (
-                    <tr
-                      key={idx}
-                      className="hover:bg-gray-700 transition-colors duration-200"
-                    >
-                      <td className="p-2 border border-gray-700">
-                        {item.date}
-                      </td>
-                      <td className="p-2 border border-gray-700">
-                        {item.time}
-                      </td>
-                      <td className="p-2 border border-gray-700">
-                        {item.service}
-                      </td>
-                      <td className="p-2 border border-gray-700">
-                        {item.shop}
-                      </td>
-                      <td className="p-2 border border-gray-700">
-                        {item.barber}
-                      </td>
-                      <td className="p-2 border border-gray-700 flex gap-2 justify-center">
-                        <button
-                          onClick={() => handleView(item.id)}
-                          className="text-blue-400 hover:text-blue-300"
-                          title="Xem chi tiết"
-                        >
-                          <FiEye size={16} />
-                        </button>
-                        <button
-                          onClick={() => handleEdit(item.id)}
-                          className="text-green-400 hover:text-green-300"
-                          title="Chỉnh sửa"
-                        >
-                          <FiEdit size={16} />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(item.id)}
-                          className="text-red-400 hover:text-red-300"
-                          title="Xoá"
-                        >
-                          <FiTrash2 size={16} />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
+          {/* Dịch vụ */}
+          <div>
+            <label className="block mb-2 text-sm font-semibold text-yellow-300">
+              Chọn Dịch vụ
+            </label>
+            <Select
+              isMulti
+              name="services"
+              value={filteredServices.filter((service) =>
+                formData.services.includes(service.id)
+              )}
+              onChange={(selected) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  services: selected ? selected.map((s) => s.id) : [],
+                  price: selected
+                    ? selected.reduce((total, s) => total + s.price, 0)
+                    : 0,
+                }))
+              }
+              options={filteredServices}
+              getOptionLabel={(option) => option.name}
+              getOptionValue={(option) => option.id}
+              className="text-black"
+              placeholder={
+                currentShop ? "Chọn dịch vụ..." : "Hãy chọn shop trước"
+              }
+              isDisabled={!currentShop}
+            />
+          </div>
+
+          {/* Khung giờ */}
+          <div>
+            <label className="block mb-2 text-sm font-semibold text-yellow-300">
+              Chọn khung giờ bắt đầu
+            </label>
+            <Select
+              name="timeSlot"
+              value={formData.timeSlot}
+              onChange={(selectedSlot) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  timeSlot: selectedSlot,
+                }))
+              }
+              options={null}
+              getOptionLabel={(option) => option.startTime}
+              getOptionValue={(option) => option.id}
+              className="text-black"
+              placeholder={
+                currentShop ? "Chọn khung giờ..." : "Chọn shop trước đã"
+              }
+              isDisabled={!currentShop || formData.services.length === 0}
+            />
+            {formData.timeSlot && (
+              <p className="text-sm text-yellow-300 mt-1">
+                Tổng thời gian:{" "}
+                {formData.services.length > 0 ? totalDuration : 0} phút
+              </p>
+            )}
+          </div>
+
+          {/* Tổng tiền */}
+          <div>
+            <label className="block mb-2 text-sm font-semibold text-yellow-300">
+              Tổng giá (VNĐ)
+            </label>
+            <input
+              type="number"
+              name="price"
+              value={formData.price}
+              readOnly
+              className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-600 text-yellow-100 font-semibold placeholder-gray-400 focus:ring-2 focus:ring-yellow-400"
+              placeholder="Tổng giá dịch vụ"
+            />
+          </div>
+
+          {/* Phương thức thanh toán */}
+          {/* <div>
+      <label className="block mb-2 text-sm font-semibold text-yellow-300">Phương thức thanh toán</label>
+      <select
+        name="payments"
+        value={formData.payments?.id || ""}
+        onChange={handlePaymentChange}
+        className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-600 text-yellow-100 focus:ring-2 focus:ring-yellow-400"
+        required
+      >
+        <option value="">-- Chọn phương thức --</option>
+        {payments.map((pay) => (
+          <option key={pay.id} value={pay.id}>
+            {pay.method}
+          </option>
+        ))}
+      </select>
+    </div> */}
+
+          {/* Nút Submit */}
+          <button
+            type="submit"
+            className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 rounded-md transition duration-200 shadow-md"
+          >
+            Đặt lịch ngay
+          </button>
+        </form>
       </div>
     </div>
   );

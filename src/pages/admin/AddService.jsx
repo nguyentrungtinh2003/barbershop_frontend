@@ -1,15 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createService } from "../../services/serviceServices";
+import { getAllShops } from "../../services/shopServices";
+import Select from "react-select";
 
 export default function AddService({ onClose }) {
+  const [shops, setShops] = useState([]);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     price: "",
     duration: "",
+    shopId: "",
   });
 
   const [img, setImg] = useState(null);
+
+  const fetchShops = async () => {
+    const res = await getAllShops();
+    setShops(res.data.data);
+  };
+
+  useEffect(() => {
+    fetchShops();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -101,6 +114,25 @@ export default function AddService({ onClose }) {
             value={formData.price}
             onChange={handleChange}
             className="w-full p-2 rounded bg-gray-800 border border-gray-600 text-white"
+          />
+        </div>
+        <div>
+          <label className="block mb-1 text-sm">Shop</label>
+          <Select
+            isMulti
+            name="services"
+            value={formData.shopId}
+            onChange={(selected) =>
+              setFormData((prev) => ({
+                ...prev,
+                shopId: selected || "",
+              }))
+            }
+            options={shops}
+            getOptionLabel={(option) => option.name}
+            getOptionValue={(option) => option.id}
+            className="text-black"
+            placeholder="Chọn Shop"
           />
         </div>
 
