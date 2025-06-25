@@ -6,7 +6,7 @@ import Select from "react-select";
 
 export default function CustomerDashboard() {
   const [formData, setFormData] = useState({
-    appointmentStatus: "", // Ví dụ: "PENDING", "COMPLETED", v.v.
+    appointmentStatus: "DONE", // Ví dụ: "PENDING", "COMPLETED", v.v.
     price: "", // Có thể để trống hoặc 0
     customer: {
       id: "", // Thường chỉ cần user ID (hoặc name nếu
@@ -15,9 +15,13 @@ export default function CustomerDashboard() {
       id: "",
     },
     services: [], // Mảng các service id hoặc object
-    payments: {
-      id: "", // Nếu bạn chỉ gửi id
+    // payments: {
+    //   id: "", // Nếu bạn chỉ gửi id
+    // },
+    shop: {
+      id: "",
     },
+    timeSlot: "",
   });
 
   const [shops, setShops] = useState([]); // Mỗi shop có id, name
@@ -26,7 +30,7 @@ export default function CustomerDashboard() {
 
   const [currentShop, setCurrentShop] = useState(null); // Shop đang được chọn
 
-  const filteredBarbers = currentShop ? currentShop.barbers : {};
+  const filteredBarbers = currentShop ? currentShop.barbers : [];
   const filteredServices = currentShop ? currentShop.services : [];
 
   const fetchShops = async () => {
@@ -42,28 +46,33 @@ export default function CustomerDashboard() {
     return JSON.parse(localStorage.getItem("user")) || { name: "Khách hàng" };
   });
 
-  const [history, setHistory] = useState([
-    {
-      date: "2025-06-15",
-      time: "14:00",
-      service: "Cắt tóc",
-      shop: "BarberShop Quận 1",
-      barber: "Anh Tuấn",
-    },
-    {
-      date: "2025-06-01",
-      time: "10:30",
-      service: "Gội đầu",
-      shop: "BarberShop Thủ Đức",
-      barber: "Chị Hoa",
-    },
-  ]);
+  const customerId = user.id;
+
+  const timeSlots = [
+    { id: 1, startTime: "07:00" },
+    { id: 2, startTime: "08:00" },
+    { id: 3, startTime: "09:00" },
+    { id: 4, startTime: "10:00" },
+    { id: 5, startTime: "11:00" },
+    { id: 6, startTime: "12:00" },
+    { id: 7, startTime: "13:00" },
+    { id: 8, startTime: "14:00" },
+    { id: 9, startTime: "15:00" },
+    { id: 10, startTime: "16:00" },
+    { id: 11, startTime: "17:00" },
+    { id: 12, startTime: "18:00" },
+    { id: 13, startTime: "19:00" },
+    { id: 14, startTime: "20:00" },
+    { id: 15, startTime: "21:00" },
+    // ...
+  ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  console.log(formData);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -76,13 +85,16 @@ export default function CustomerDashboard() {
   };
 
   return (
-    <div className="p-6 mx-auto bg-gradient-to-br from-black via-gray-900 to-gray-800 min-h-screen text-white font-vietnam">
-      <div className="bg-gray-900 rounded-2xl shadow-xl p-8 max-w-xl mx-auto">
+    <div className="p-2 mx-auto bg-gradient-to-br from-black via-gray-900 to-gray-800 min-h-screen text-white font-vietnam">
+      <div className="bg-gray-900 rounded-2xl shadow-xl p-2 max-w-xl mx-auto">
         <h2 className="text-2xl font-bold text-yellow-400 mb-6 text-center uppercase tracking-wide">
           Đặt lịch cắt tóc
         </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-5 bg-black p-6 rounded-lg shadow-lg border border-yellow-500"
+        >
           {/* Trạng thái ẩn */}
           <input
             type="hidden"
@@ -92,7 +104,7 @@ export default function CustomerDashboard() {
 
           {/* Shop */}
           <div>
-            <label className="block mb-2 text-sm font-semibold text-yellow-300">
+            <label className="block mb-2 text-sm font-semibold text-yellow-400">
               Chọn Shop
             </label>
             <Select
@@ -105,6 +117,8 @@ export default function CustomerDashboard() {
                   barber: { id: "" },
                   services: [],
                   price: 0,
+                  shop: { id: selectedShop.id },
+                  customer: { id: customerId },
                 }));
               }}
               options={shops}
@@ -117,12 +131,16 @@ export default function CustomerDashboard() {
 
           {/* Barber */}
           <div>
-            <label className="block mb-2 text-sm font-semibold text-yellow-300">
+            <label className="block mb-2 text-sm font-semibold text-yellow-400">
               Chọn Barber
             </label>
             <Select
               name="barber"
-              value={filteredBarbers.id === formData.id || null}
+              value={
+                filteredBarbers.filter(
+                  (barber) => barber.id === formData.barber.id
+                ) || null
+              }
               onChange={(selected) =>
                 setFormData((prev) => ({
                   ...prev,
@@ -142,19 +160,19 @@ export default function CustomerDashboard() {
 
           {/* Dịch vụ */}
           <div>
-            <label className="block mb-2 text-sm font-semibold text-yellow-300">
+            <label className="block mb-2 text-sm font-semibold text-yellow-400">
               Chọn Dịch vụ
             </label>
             <Select
               isMulti
               name="services"
               value={filteredServices.filter((service) =>
-                formData.services.includes(service.id)
+                formData.services.some((ser) => ser.id === service.id)
               )}
               onChange={(selected) =>
                 setFormData((prev) => ({
                   ...prev,
-                  services: selected ? selected.map((s) => s.id) : [],
+                  services: selected ? selected.map((s) => ({ id: s.id })) : [],
                   price: selected
                     ? selected.reduce((total, s) => total + s.price, 0)
                     : 0,
@@ -171,21 +189,39 @@ export default function CustomerDashboard() {
             />
           </div>
 
+          {/* Ngày */}
+          <div>
+            <label className="block mb-2 text-sm font-semibold text-yellow-400">
+              Chọn ngày
+            </label>
+            <input
+              type="date"
+              min={new Date().toISOString().split("T")[0]}
+              className="w-full px-4 py-2 rounded-md bg-white border border-gray-700 text-black"
+              value={formData.date}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, date: e.target.value }))
+              }
+            />
+          </div>
+
           {/* Khung giờ */}
           <div>
-            <label className="block mb-2 text-sm font-semibold text-yellow-300">
+            <label className="block mb-2 text-sm font-semibold text-yellow-400">
               Chọn khung giờ bắt đầu
             </label>
             <Select
               name="timeSlot"
-              value={formData.timeSlot}
+              value={timeSlots.filter(
+                (time) => time.startTime === formData.timeSlot
+              )}
               onChange={(selectedSlot) =>
                 setFormData((prev) => ({
                   ...prev,
-                  timeSlot: selectedSlot,
+                  timeSlot: selectedSlot.startTime,
                 }))
               }
-              options={null}
+              options={timeSlots}
               getOptionLabel={(option) => option.startTime}
               getOptionValue={(option) => option.id}
               className="text-black"
@@ -194,17 +230,16 @@ export default function CustomerDashboard() {
               }
               isDisabled={!currentShop || formData.services.length === 0}
             />
-            {formData.timeSlot && (
+            {/* {formData.timeSlot && (
               <p className="text-sm text-yellow-300 mt-1">
-                Tổng thời gian:{" "}
-                {formData.services.length > 0 ? totalDuration : 0} phút
+                Tổng thời gian: {totalDuration} phút
               </p>
-            )}
+            )} */}
           </div>
 
-          {/* Tổng tiền */}
+          {/* Tổng giá */}
           <div>
-            <label className="block mb-2 text-sm font-semibold text-yellow-300">
+            <label className="block mb-2 text-sm font-semibold text-yellow-400">
               Tổng giá (VNĐ)
             </label>
             <input
@@ -212,34 +247,15 @@ export default function CustomerDashboard() {
               name="price"
               value={formData.price}
               readOnly
-              className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-600 text-yellow-100 font-semibold placeholder-gray-400 focus:ring-2 focus:ring-yellow-400"
+              className="w-full px-4 py-2 rounded-md bg-gray-900 border border-gray-700 text-yellow-200 font-semibold placeholder-gray-400"
               placeholder="Tổng giá dịch vụ"
             />
           </div>
 
-          {/* Phương thức thanh toán */}
-          {/* <div>
-      <label className="block mb-2 text-sm font-semibold text-yellow-300">Phương thức thanh toán</label>
-      <select
-        name="payments"
-        value={formData.payments?.id || ""}
-        onChange={handlePaymentChange}
-        className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-600 text-yellow-100 focus:ring-2 focus:ring-yellow-400"
-        required
-      >
-        <option value="">-- Chọn phương thức --</option>
-        {payments.map((pay) => (
-          <option key={pay.id} value={pay.id}>
-            {pay.method}
-          </option>
-        ))}
-      </select>
-    </div> */}
-
-          {/* Nút Submit */}
+          {/* Nút submit */}
           <button
             type="submit"
-            className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 rounded-md transition duration-200 shadow-md"
+            className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 rounded-md transition duration-200 shadow-lg"
           >
             Đặt lịch ngay
           </button>
