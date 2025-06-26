@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { FiEdit, FiEye, FiTrash2 } from "react-icons/fi";
 import { getShopsById, getAllShops } from "../../services/shopServices";
-import { createAppointment } from "../../services/appointmentService";
+import {
+  createAppointment,
+  getTimeSlot,
+} from "../../services/appointmentService";
 import Select from "react-select";
 
 export default function CustomerDashboard() {
@@ -27,6 +30,7 @@ export default function CustomerDashboard() {
   const [shops, setShops] = useState([]); // Mỗi shop có id, name
   const [barbers, setBarbers] = useState([]); // Tất cả barbers có shopId
   const [services, setServices] = useState([]); // Tất cả services có shopId
+  const [timeSlot, setTimeSlot] = useState([]);
 
   const [currentShop, setCurrentShop] = useState(null); // Shop đang được chọn
 
@@ -37,6 +41,22 @@ export default function CustomerDashboard() {
     const res = await getAllShops();
     setShops(res.data.data);
   };
+
+  const fetchTimeSlot = async () => {
+    if (formData.shop?.id && formData.barber?.id && formData.date) {
+      const res = await getTimeSlot(
+        formData.shop.id,
+        formData.barber.id,
+        formData.date
+      );
+      console.log("fetch time", res.data.data);
+      setTimeSlot(res.data.data);
+    }
+  };
+
+  useEffect(() => {
+    fetchTimeSlot();
+  }, [formData.shop?.id, formData.barber?.id, formData.date]);
 
   useEffect(() => {
     fetchShops();
@@ -66,6 +86,15 @@ export default function CustomerDashboard() {
     { id: 15, startTime: "21:00" },
     // ...
   ];
+
+  const cleanedBookedTimes = timeSlot.map((t) => t.trim());
+
+  const availableTimeSlot = timeSlots.filter(
+    (slot) => !cleanedBookedTimes.includes(slot.startTime?.trim())
+  );
+
+  console.log("backend time ", timeSlot);
+  console.log("valai time ", availableTimeSlot);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -196,7 +225,7 @@ export default function CustomerDashboard() {
             </label>
             <input
               type="date"
-              min={new Date().toISOString().split("T")[0]}
+              // min={new Date().toISOString().split("T")[0]}
               className="w-full px-4 py-2 rounded-md bg-white border border-gray-700 text-black"
               value={formData.date}
               onChange={(e) =>
@@ -212,7 +241,7 @@ export default function CustomerDashboard() {
             </label>
             <Select
               name="timeSlot"
-              value={timeSlots.filter(
+              value={availableTimeSlot.filter(
                 (time) => time.startTime === formData.timeSlot
               )}
               onChange={(selectedSlot) =>
@@ -221,7 +250,7 @@ export default function CustomerDashboard() {
                   timeSlot: selectedSlot.startTime,
                 }))
               }
-              options={timeSlots}
+              options={availableTimeSlot}
               getOptionLabel={(option) => option.startTime}
               getOptionValue={(option) => option.id}
               className="text-black"
