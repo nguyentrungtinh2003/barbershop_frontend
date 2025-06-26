@@ -4,6 +4,7 @@ import { getShopsById, getAllShops } from "../../services/shopServices";
 import {
   createAppointment,
   getTimeSlot,
+  getAppointmentByCustomerId,
 } from "../../services/appointmentService";
 import Select from "react-select";
 
@@ -33,6 +34,7 @@ export default function CustomerDashboard() {
   const [timeSlot, setTimeSlot] = useState([]);
 
   const [currentShop, setCurrentShop] = useState(null); // Shop đang được chọn
+  const [appointments, setAppointments] = useState([]);
 
   const filteredBarbers = currentShop ? currentShop.barbers : [];
   const filteredServices = currentShop ? currentShop.services : [];
@@ -40,6 +42,11 @@ export default function CustomerDashboard() {
   const fetchShops = async () => {
     const res = await getAllShops();
     setShops(res.data.data);
+  };
+
+  const fetchHistoryAppointment = async () => {
+    const res = await getAppointmentByCustomerId(customerId);
+    setAppointments(res.data.data);
   };
 
   const fetchTimeSlot = async () => {
@@ -60,6 +67,7 @@ export default function CustomerDashboard() {
 
   useEffect(() => {
     fetchShops();
+    fetchHistoryAppointment();
   }, []);
 
   const [user] = useState(() => {
@@ -102,29 +110,37 @@ export default function CustomerDashboard() {
   };
 
   console.log(formData);
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
+    // VALIDATE TRƯỚC
+    if (
+      !formData.shop?.id ||
+      !formData.barber?.id ||
+      formData.services.length === 0 ||
+      !formData.date ||
+      !formData.timeSlot
+    ) {
+      alert("Vui lòng điền đầy đủ thông tin trước khi đặt lịch!");
+      return;
+    }
 
     try {
       await createAppointment(formData);
       alert("Đặt lịch thành công!");
     } catch (error) {
       console.error("Lỗi đặt lịch:", error);
+      alert("Có lỗi xảy ra khi đặt lịch. Vui lòng thử lại.");
     }
   };
 
   return (
-    <div className="p-2 mx-auto bg-gradient-to-br from-black via-gray-900 to-gray-800 min-h-screen text-white font-vietnam">
-      <div className="bg-gray-900 rounded-2xl shadow-xl p-2 max-w-xl mx-auto">
-        <h2 className="text-2xl font-bold text-yellow-400 mb-6 text-center uppercase tracking-wide">
+    <div className="p-4 mx-auto bg-gradient-to-br from-black via-gray-900 to-gray-800 min-h-screen text-white font-vietnam">
+      <div className="bg-gray-900 rounded-2xl shadow-2xl p-6 max-w-4xl mx-auto">
+        {/* <h2 className="text-3xl font-bold text-yellow-400 mb-8 text-center uppercase tracking-widest">
           Đặt lịch cắt tóc
-        </h2>
+        </h2> */}
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-5 bg-black p-6 rounded-lg shadow-lg border border-yellow-500"
-        >
-          {/* Trạng thái ẩn */}
+        <form className="space-y-6 bg-black p-6 rounded-xl shadow-lg border border-yellow-500">
+          {/* Hidden appointment status */}
           <input
             type="hidden"
             name="appointmentStatus"
@@ -166,7 +182,7 @@ export default function CustomerDashboard() {
             <Select
               name="barber"
               value={
-                filteredBarbers.filter(
+                filteredBarbers.find(
                   (barber) => barber.id === formData.barber.id
                 ) || null
               }
@@ -187,7 +203,7 @@ export default function CustomerDashboard() {
             />
           </div>
 
-          {/* Dịch vụ */}
+          {/* Services */}
           <div>
             <label className="block mb-2 text-sm font-semibold text-yellow-400">
               Chọn Dịch vụ
@@ -225,8 +241,7 @@ export default function CustomerDashboard() {
             </label>
             <input
               type="date"
-              // min={new Date().toISOString().split("T")[0]}
-              className="w-full px-4 py-2 rounded-md bg-white border border-gray-700 text-black"
+              className="w-full px-4 py-2 rounded-lg bg-white border border-gray-700 text-black"
               value={formData.date}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, date: e.target.value }))
@@ -239,31 +254,35 @@ export default function CustomerDashboard() {
             <label className="block mb-2 text-sm font-semibold text-yellow-400">
               Chọn khung giờ bắt đầu
             </label>
-            <Select
-              name="timeSlot"
-              value={availableTimeSlot.filter(
-                (time) => time.startTime === formData.timeSlot
-              )}
-              onChange={(selectedSlot) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  timeSlot: selectedSlot.startTime,
-                }))
-              }
-              options={availableTimeSlot}
-              getOptionLabel={(option) => option.startTime}
-              getOptionValue={(option) => option.id}
-              className="text-black"
-              placeholder={
-                currentShop ? "Chọn khung giờ..." : "Chọn shop trước đã"
-              }
-              isDisabled={!currentShop || formData.services.length === 0}
-            />
-            {/* {formData.timeSlot && (
-              <p className="text-sm text-yellow-300 mt-1">
-                Tổng thời gian: {totalDuration} phút
-              </p>
-            )} */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              {availableTimeSlot.map((slot) => {
+                const isSelected = formData.timeSlot === slot.startTime;
+                return (
+                  <button
+                    key={slot.id}
+                    type="button"
+                    onClick={() =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        timeSlot: slot.startTime,
+                      }))
+                    }
+                    className={`w-full text-center py-2 rounded-xl font-semibold transition duration-200 border shadow-sm
+                  ${
+                    !currentShop || formData.services.length === 0
+                      ? "opacity-50 cursor-not-allowed"
+                      : isSelected
+                      ? "bg-yellow-400 text-black border-yellow-500 ring-2 ring-yellow-300"
+                      : "bg-white text-black border-gray-300 hover:bg-yellow-100"
+                  }
+                `}
+                    disabled={!currentShop || formData.services.length === 0}
+                  >
+                    {slot.startTime}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {/* Tổng giá */}
@@ -276,19 +295,79 @@ export default function CustomerDashboard() {
               name="price"
               value={formData.price}
               readOnly
-              className="w-full px-4 py-2 rounded-md bg-gray-900 border border-gray-700 text-yellow-200 font-semibold placeholder-gray-400"
+              className="w-full px-4 py-2 rounded-md bg-gray-900 border border-gray-700 text-yellow-200 font-semibold"
               placeholder="Tổng giá dịch vụ"
             />
           </div>
 
-          {/* Nút submit */}
+          {/* Submit button */}
           <button
-            type="submit"
-            className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 rounded-md transition duration-200 shadow-lg"
+            type="button"
+            onClick={() => handleSubmit()}
+            className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-3 rounded-xl transition duration-200 shadow-lg text-lg"
           >
             Đặt lịch ngay
           </button>
         </form>
+        {/* Lich su book */}
+        {/* Lịch sử đặt lịch */}
+        <div className="mt-12 bg-gray-900 rounded-xl p-6 shadow-md border border-yellow-500">
+          <h3 className="text-xl font-bold text-yellow-400 mb-4 text-center uppercase">
+            Lịch sử đặt lịch của bạn
+          </h3>
+
+          {appointments.length === 0 ? (
+            <p className="text-gray-300 text-center">Chưa có lịch hẹn nào.</p>
+          ) : (
+            <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+              {appointments.map((appt) => (
+                <div
+                  key={appt.id}
+                  className="bg-black border border-gray-700 rounded-lg p-4 shadow-sm hover:shadow-lg transition"
+                >
+                  <p>
+                    <span className="text-yellow-400 font-semibold">
+                      Dịch vụ:
+                    </span>{" "}
+                    {appt.services.map((s) => s.name).join(", ")}
+                  </p>
+                  <p>
+                    <span className="text-yellow-400 font-semibold">
+                      Barber:
+                    </span>{" "}
+                    {appt.barber.username}
+                  </p>
+                  <p>
+                    <span className="text-yellow-400 font-semibold">Shop:</span>{" "}
+                    {appt.shop.name}
+                  </p>
+                  <p>
+                    <span className="text-yellow-400 font-semibold">Ngày:</span>{" "}
+                    {appt.date}
+                  </p>
+                  <p>
+                    <span className="text-yellow-400 font-semibold">
+                      Giờ bắt đầu:
+                    </span>{" "}
+                    {appt.startTime}
+                  </p>
+                  <p>
+                    <span className="text-yellow-400 font-semibold">
+                      Tổng giá:
+                    </span>{" "}
+                    {appt.price.toLocaleString()} VNĐ
+                  </p>
+                  <p>
+                    <span className="text-yellow-400 font-semibold">
+                      Trạng thái:
+                    </span>{" "}
+                    {appt.appointmentStatus}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

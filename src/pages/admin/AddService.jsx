@@ -58,7 +58,7 @@ export default function AddService({ onClose }) {
 
       await createService(data);
       alert("Tạo dịch vụ thành công!");
-      onClose();
+      console.log("form data", formData);
     } catch (error) {
       console.error("Lỗi khi tạo dịch vụ:", error);
       alert("Tạo dịch vụ thất bại!");
@@ -119,13 +119,12 @@ export default function AddService({ onClose }) {
         <div>
           <label className="block mb-1 text-sm">Shop</label>
           <Select
-            isMulti
-            name="services"
-            value={formData.shopId}
+            name="shop"
+            value={shops.filter((shop) => shop.id == formData.shopId)}
             onChange={(selected) =>
               setFormData((prev) => ({
                 ...prev,
-                shopId: selected || "",
+                shopId: selected.id || "",
               }))
             }
             options={shops}
