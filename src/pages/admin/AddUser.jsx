@@ -140,10 +140,9 @@ export default function AddUser({ onAdd, onClose }) {
           onChange={handleChange}
           className="w-full px-3 py-2 rounded bg-gray-800"
         >
-          <option value="ADMIN">Admin</option>
-          <option value="OWNER">Owner</option>
-          <option value="BARBER">Barber</option>
-          <option value="USER">User</option>
+          <option value="OWNER">Chủ tiệm</option>
+          <option value="BARBER">Thợ cắt</option>
+          <option value="CUSTOMER">Khách hàng</option>
         </select>
 
         <textarea

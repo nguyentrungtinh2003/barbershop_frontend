@@ -6,8 +6,14 @@ export const createAppointment = (data) =>
 export const getAppointmentByCustomerId = (customerId) =>
   instance.get(`/appointments/customer/${customerId}`);
 
+export const getAppointmentByBarberId = (barberId) =>
+  instance.get(`/appointments/barber/${barberId}`);
+
 export const getAppointmentByShopId = (shopId) =>
   instance.get(`/appointments/shop/${shopId}`);
+
+export const markAsPaid = (id) =>
+  instance.put(`/appointments/mark-paid/${id}`, {});
 export const getTimeSlot = (shopId, barberId, date) =>
   instance.get("/appointments/time-slot", {
     params: {

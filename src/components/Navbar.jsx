@@ -10,10 +10,10 @@ const NAV_ITEMS = {
   ],
   OWNER: [
     { label: "Quản lí tiệm", path: "/owner/shops" },
-    { label: "Giá dịch vụ", path: "/owner/services" },
+    { label: "Dịch vụ", path: "/owner/services" },
   ],
   BARBER: [
-    { label: "Lịch của tôi", path: "/barber/schedule" },
+    { label: "Lịch của tôi", path: "/barber/dashboard" },
     { label: "Hồ sơ", path: "/barber/profile" },
   ],
   CUSTOMER: [
