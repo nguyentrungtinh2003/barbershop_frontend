@@ -9,9 +9,7 @@ const NAV_ITEMS = {
     { label: "Shop", path: "/admin/shops" },
   ],
   OWNER: [
-    { label: "Tiệm của tôi", path: "/owner/shop" },
     { label: "Quản lí tiệm", path: "/owner/shops" },
-    { label: "Lịch hẹn", path: "/owner/schedule" },
     { label: "Giá dịch vụ", path: "/owner/services" },
   ],
   BARBER: [

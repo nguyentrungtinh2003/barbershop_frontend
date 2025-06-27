@@ -13,6 +13,8 @@ import {
   FaLockOpen,
   FaTimesCircle,
   FaCheckCircle,
+  FaEye,
+  FaRegCalendarCheck,
 } from "react-icons/fa";
 import AddShop from "./AddShop";
 import EditShop from "./EditShop";
@@ -135,6 +137,22 @@ export default function Shops() {
                       </span>
                     </td>
                     <td className="px-6 py-4 flex justify-center gap-4">
+                      <a href={`/owner/appointment/shop/${shop.id}`}>
+                        <button
+                          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition"
+                          title="Xem lịch hẹn"
+                        >
+                          <FaRegCalendarCheck />
+                        </button>
+                      </a>
+                      <a href={`/owner/barber/shop/${shop.id}`}>
+                        <button
+                          className="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded transition"
+                          title="Xem thông tin"
+                        >
+                          <FaEye />
+                        </button>
+                      </a>
                       <button
                         onClick={() => {
                           setSelectedShop(shop);
