@@ -8,6 +8,7 @@ import CustomerDashboard from "../pages/customer/Dashboard";
 import HomePage from "../pages/HomePage";
 import Shops from "../pages/admin/Shops";
 import Appointment from "../pages/admin/Appointment";
+import Profile from "../pages/admin/Profile";
 
 export const routes = {
   Public: [{ path: "/", element: <HomePage /> }],
@@ -15,6 +16,7 @@ export const routes = {
     { path: "/admin/dashboard", element: <AdminDashboard /> },
     { path: "/admin/users", element: <Users /> },
     { path: "/admin/shops", element: <Shops /> },
+    { path: "/admin/profile", element: <Profile /> },
   ],
   Owner: [
     { path: "/owner/dashboard", element: <OwnerDashboard /> },
@@ -22,7 +24,14 @@ export const routes = {
     { path: "/owner/appointment/shop/:id", element: <Appointment /> },
     { path: "/owner/services", element: <Services /> },
     { path: "/owner/shops", element: <Shops /> },
+    { path: "/owner/profile", element: <Profile /> },
   ],
-  Barber: [{ path: "/barber/dashboard", element: <Dashboard /> }],
-  Customer: [{ path: "/customer/dashboard", element: <CustomerDashboard /> }],
+  Barber: [
+    { path: "/barber/dashboard", element: <Dashboard /> },
+    { path: "/barber/profile", element: <Profile /> },
+  ],
+  Customer: [
+    { path: "/customer/dashboard", element: <CustomerDashboard /> },
+    { path: "/customer/profile", element: <Profile /> },
+  ],
 };
