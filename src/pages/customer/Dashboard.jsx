@@ -7,6 +7,7 @@ import {
   getAppointmentByCustomerId,
 } from "../../services/appointmentService";
 import Select from "react-select";
+import FeedbackForm from "../admin/FeedbackForm";
 
 export default function CustomerDashboard() {
   const [formData, setFormData] = useState({
@@ -38,6 +39,16 @@ export default function CustomerDashboard() {
 
   const filteredBarbers = currentShop ? currentShop.barbers : [];
   const filteredServices = currentShop ? currentShop.services : [];
+
+  // modal send feedback
+  const [showModal, setShowModal] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
+
+  const openFeedbackForm = (appt) => {
+    setSelectedAppointment(appt);
+    setShowModal(true);
+  };
+  //
 
   const fetchShops = async () => {
     const res = await getAllShops();
@@ -363,8 +374,30 @@ export default function CustomerDashboard() {
                     </span>{" "}
                     {appt.appointmentStatus}
                   </p>
+                  <p>
+                    <span className="text-yellow-400 font-semibold">
+                      Trạng thái:
+                    </span>{" "}
+                    {appt.paid == true ? (
+                      <button
+                        className="bg-yellow-400 text-black px-3 py-1 rounded hover:bg-yellow-500 transition"
+                        onClick={() => openFeedbackForm(appt)}
+                      >
+                        Gửi Feedback
+                      </button>
+                    ) : (
+                      <span className="text-gray-400">Chưa thanh toán</span>
+                    )}
+                  </p>
                 </div>
               ))}
+              {selectedAppointment && (
+                <FeedbackForm
+                  show={showModal}
+                  onHide={() => setShowModal(false)}
+                  appointment={selectedAppointment}
+                />
+              )}
             </div>
           )}
         </div>

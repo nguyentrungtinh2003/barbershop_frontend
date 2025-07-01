@@ -9,6 +9,7 @@ import HomePage from "../pages/HomePage";
 import Shops from "../pages/admin/Shops";
 import Appointment from "../pages/admin/Appointment";
 import Profile from "../pages/admin/Profile";
+import FeedbackForm from "../pages/admin/FeedbackForm";
 
 export const routes = {
   Public: [{ path: "/", element: <HomePage /> }],
@@ -33,5 +34,6 @@ export const routes = {
   Customer: [
     { path: "/customer/dashboard", element: <CustomerDashboard /> },
     { path: "/customer/profile", element: <Profile /> },
+    { path: "/customer/feedback", element: <FeedbackForm /> },
   ],
 };
