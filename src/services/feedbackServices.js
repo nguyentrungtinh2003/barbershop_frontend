@@ -9,3 +9,9 @@ export const createFeedback = (data) =>
 
 export const getFeedbackByCustomerId = (customerId) =>
   instance.get(`/feedbacks/customer/${customerId}`);
+
+export const getFeedbackByBarberId = (barberId) =>
+  instance.get(`/feedbacks/barber/${barberId}`);
+
+export const getFeedbackByShopId = (shopId) =>
+  instance.get(`/feedbacks/shop/${shopId}`);

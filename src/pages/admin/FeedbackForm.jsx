@@ -40,7 +40,6 @@ export default function FeedbackForm({ show, onHide, appointment }) {
       onHide();
     } catch (err) {
       console.error(err);
-      alert("Gửi feedback thất bại!");
     }
   };
 

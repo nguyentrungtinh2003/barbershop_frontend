@@ -6,8 +6,10 @@ import {
   getTimeSlot,
   getAppointmentByCustomerId,
 } from "../../services/appointmentService";
+import { getFeedbackByCustomerId } from "../../services/feedbackServices";
 import Select from "react-select";
 import FeedbackForm from "../admin/FeedbackForm";
+import websocketConfig from "../../utils/websocketConfig";
 
 export default function CustomerDashboard() {
   const [formData, setFormData] = useState({
@@ -33,6 +35,7 @@ export default function CustomerDashboard() {
   const [barbers, setBarbers] = useState([]); // Tất cả barbers có shopId
   const [services, setServices] = useState([]); // Tất cả services có shopId
   const [timeSlot, setTimeSlot] = useState([]);
+  const [feedbacks, setFeedbacks] = useState([]);
 
   const [currentShop, setCurrentShop] = useState(null); // Shop đang được chọn
   const [appointments, setAppointments] = useState([]);
@@ -53,6 +56,11 @@ export default function CustomerDashboard() {
   const fetchShops = async () => {
     const res = await getAllShops();
     setShops(res.data.data);
+  };
+
+  const fetchFeedbackCustomer = async () => {
+    const res = await getFeedbackByCustomerId(customerId);
+    setFeedbacks(res.data.data);
   };
 
   const fetchHistoryAppointment = async () => {
@@ -79,6 +87,7 @@ export default function CustomerDashboard() {
   useEffect(() => {
     fetchShops();
     fetchHistoryAppointment();
+    fetchFeedbackCustomer();
   }, []);
 
   const [user] = useState(() => {
@@ -400,6 +409,45 @@ export default function CustomerDashboard() {
               )}
             </div>
           )}
+        </div>
+        {/* Lịch sử feedback */}
+        <div className="mt-12 bg-gray-900 rounded-xl p-6 shadow-md border border-yellow-500">
+          <h3 className="text-xl font-bold text-yellow-400 mb-4 text-center uppercase">
+            Lịch sử Feedback
+          </h3>
+          <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+            {feedbacks.map((fb) => (
+              <div
+                key={fb.id}
+                className="bg-black border border-gray-700 rounded-lg p-4 shadow-sm hover:shadow-lg transition"
+              >
+                <p>
+                  <span className="text-yellow-400 font-semibold">Shop:</span>{" "}
+                  {fb.shopName}
+                </p>
+                <p>
+                  <span className="text-yellow-400 font-semibold">Barber:</span>{" "}
+                  {fb.barberName}
+                </p>
+                <p>
+                  <span className="text-yellow-400 font-semibold">Rating:</span>{" "}
+                  {fb.rating} ⭐
+                </p>
+                <p>
+                  <span className="text-yellow-400 font-semibold">
+                    Comment:
+                  </span>{" "}
+                  {fb.comment}
+                </p>
+                <p>
+                  <span className="text-yellow-400 font-semibold">
+                    Ngày gửi:
+                  </span>{" "}
+                  {new Date(fb.createdAt).toLocaleString()}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

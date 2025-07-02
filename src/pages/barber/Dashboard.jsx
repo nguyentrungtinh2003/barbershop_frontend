@@ -9,11 +9,15 @@ import {
 } from "react-icons/fa";
 import { GiScissors } from "react-icons/gi";
 import { getAppointmentByBarberId } from "../../services/appointmentService";
+import { getFeedbackByBarberId } from "../../services/feedbackServices";
+import websocketConfig from "../../utils/websocketConfig";
 
 export default function BarberDashboard() {
   const [appointments, setAppointments] = useState([]);
   const barber = JSON.parse(localStorage.getItem("user"));
   const barberId = barber.id;
+
+  const [feedbacks, setFeedbacks] = useState([]);
 
   const [selectedDate, setSelectedDate] = useState(() => {
     const today = new Date();
@@ -40,8 +44,29 @@ export default function BarberDashboard() {
     }
   };
 
+  const fetchFeedbackBarber = async () => {
+    const res = await getFeedbackByBarberId(barberId);
+    setFeedbacks(res.data.data);
+  };
+
+  useEffect(() => {
+    websocketConfig.onConnect = () => {
+      console.log("Websocket connected");
+      websocketConfig.subscribe(`/topic/feedback/${barberId}`, (message) => {
+        const newFeedback = JSON.parse(message.body);
+        setFeedbacks((prev) => [...prev, newFeedback]);
+      });
+    };
+    websocketConfig.activate();
+
+    return () => {
+      websocketConfig.deactivate();
+    };
+  }, []);
+
   useEffect(() => {
     fetchAppointments();
+    fetchFeedbackBarber();
   }, [selectedDate]);
 
   return (
@@ -154,6 +179,45 @@ export default function BarberDashboard() {
             ))}
           </div>
         )}
+      </div>
+      {/* Lịch sử feedback */}
+      <div className="mt-12 bg-gray-900 rounded-xl p-6 shadow-md border border-yellow-500">
+        <h3 className="text-xl font-bold text-yellow-400 mb-4 text-center uppercase">
+          Lịch sử Feedback
+        </h3>
+        <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+          {feedbacks.map((fb) => (
+            <div
+              key={fb.id}
+              className="bg-black border border-gray-700 rounded-lg p-4 shadow-sm hover:shadow-lg transition"
+            >
+              <p>
+                <span className="text-yellow-400 font-semibold">Shop:</span>{" "}
+                {fb.shopName}
+              </p>
+              <p>
+                <span className="text-yellow-400 font-semibold">Barber:</span>{" "}
+                {fb.barberName}
+              </p>
+              <p>
+                <span className="text-yellow-400 font-semibold">Customer:</span>{" "}
+                {fb.customerName}
+              </p>
+              <p>
+                <span className="text-yellow-400 font-semibold">Rating:</span>{" "}
+                {fb.rating} ⭐
+              </p>
+              <p>
+                <span className="text-yellow-400 font-semibold">Comment:</span>{" "}
+                {fb.comment}
+              </p>
+              <p>
+                <span className="text-yellow-400 font-semibold">Ngày gửi:</span>{" "}
+                {new Date(fb.createdAt).toLocaleString()}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
