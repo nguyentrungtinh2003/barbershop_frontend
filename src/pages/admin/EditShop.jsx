@@ -4,7 +4,15 @@ import { getAllUsers } from "../../services/userServices";
 import Select from "react-select";
 
 export default function EditShop({ shop, onClose }) {
-  const [formData, setFormData] = useState(shop);
+  const [formData, setFormData] = useState({
+    name: shop.name,
+    email: shop.email,
+    phoneNumber: shop.phoneNumber,
+    address: shop.address,
+    slogan: shop.slogan,
+    description: shop.description,
+    ownerId: shop.owner.id,
+  });
   const [img, setImg] = useState(null);
   const [imgPre, setImgPre] = useState(shop.img);
   const [users, setUsers] = useState([]);

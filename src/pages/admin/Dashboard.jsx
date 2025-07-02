@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaUsers,
   FaTools,
@@ -7,16 +7,48 @@ import {
   FaComments,
 } from "react-icons/fa";
 
+import { getAllUsers } from "../../services/userServices";
+import { getAllShops } from "../../services/shopServices";
+
 export default function AdminDashboard() {
+  const fakeUsers = ["Nguyễn Văn A", "Trần Thị B", "Phạm Văn C"];
+  const fakeServices = ["Cắt tóc", "Gội đầu", "Nhuộm"];
+  const fakePayments = ["VNPay - 200k", "PayPal - 500k"];
+  const fakeAppointments = ["10:00 - Nguyễn Văn A", "11:30 - Trần Thị B"];
+  const fakeFeedbacks = ["Dịch vụ rất tốt", "Thợ cắt tóc thân thiện"];
+
+  const [users, setUsers] = useState([]);
+  const [shops, setShops] = useState([]);
+
+  const fetchAllUsers = async () => {
+    const res = await getAllUsers();
+    setUsers(res.data.data);
+  };
+
+  const fetchAllShops = async () => {
+    const res = await getAllShops();
+    setShops(res.data.data);
+  };
+
+  useEffect(() => {
+    fetchAllUsers();
+    fetchAllShops();
+  }, []);
+
   const stats = [
     {
       label: "Người dùng",
-      value: 150,
+      value: users.length,
       icon: <FaUsers className="text-2xl text-blue-400" />,
     },
     {
+      label: "Tiệm",
+      value: shops.length,
+      icon: <FaTools className="text-2xl text-green-400" />,
+    },
+    {
       label: "Dịch vụ",
-      value: 25,
+      value: shops.length,
       icon: <FaTools className="text-2xl text-green-400" />,
     },
     {
@@ -35,12 +67,6 @@ export default function AdminDashboard() {
       icon: <FaComments className="text-2xl text-red-400" />,
     },
   ];
-
-  const fakeUsers = ["Nguyễn Văn A", "Trần Thị B", "Phạm Văn C"];
-  const fakeServices = ["Cắt tóc", "Gội đầu", "Nhuộm"];
-  const fakePayments = ["VNPay - 200k", "PayPal - 500k"];
-  const fakeAppointments = ["10:00 - Nguyễn Văn A", "11:30 - Trần Thị B"];
-  const fakeFeedbacks = ["Dịch vụ rất tốt", "Thợ cắt tóc thân thiện"];
 
   return (
     <div className="p-6 bg-gray-900 min-h-screen text-white">
@@ -70,10 +96,14 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <Section
           title="Người dùng mới"
-          data={fakeUsers}
+          data={users.slice(0, 5).map((user) => user.username)}
           button="Quản lý người dùng"
         />
-        <Section title="Dịch vụ" data={fakeServices} button="Quản lý dịch vụ" />
+        <Section
+          title="Tiệm"
+          data={shops.slice(0, 5).map((shop) => shop.name)}
+          button="Quản lý dịch vụ"
+        />
         <Section
           title="Thanh toán gần đây"
           data={fakePayments}

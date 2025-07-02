@@ -8,6 +8,9 @@ export const createService = (data) =>
   });
 export const getServices = (page, size) =>
   instance.get(`/owner/services/page?page=${page}&size=${size}`);
+
+export const getAllServices = () =>
+  instance.get(`/owner/services/page?page=${page}&size=${size}`);
 export const updateService = (id, data) =>
   instance.put(`/owner/services/update/${id}`, data, {
     headers: {
