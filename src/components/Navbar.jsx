@@ -72,7 +72,7 @@ export default function Navbar() {
         {user ? (
           <div className="hidden md:flex items-center gap-4">
             <img
-              src={user.img}
+              src={user.img || "/user.jpg"}
               alt="Avatar"
               className="w-9 h-9 rounded-full border-2 border-yellow-400 shadow"
             />

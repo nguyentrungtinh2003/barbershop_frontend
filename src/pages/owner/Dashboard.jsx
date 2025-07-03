@@ -7,25 +7,36 @@ import {
   FaComments,
 } from "react-icons/fa";
 import { getAllUsers } from "../../services/userServices";
-import { getAllShops } from "../../services/shopServices";
+import { getAllShops, getShopsByOwnerId } from "../../services/shopServices";
+import { getFeedbackByShopId } from "../../services/feedbackServices";
 
 export default function OwnerDashboard() {
   const [users, setUsers] = useState([]);
   const [shops, setShops] = useState([]);
+  const [services, setServices] = useState([]);
+  const [feedbacks, setFeedbacks] = useState([]);
 
-  const fetchAllUsers = async () => {
-    const res = await getAllUsers();
-    setUsers(res.data.data);
-  };
-
-  const fetchAllShops = async () => {
-    const res = await getAllShops();
+  const fetchShopsByOwnerId = async () => {
+    const res = await getShopsByOwnerId(ownerId);
+    const shops = res.data.data;
     setShops(res.data.data);
+    const userList = shops.flatMap((shop) => shop.barbers);
+    setUsers(userList);
+    const serviceList = shops.flatMap((shop) => shop.services);
+    setServices(serviceList);
+    const feedbacks = await Promise.all(
+      shops.map(async (shop) => {
+        const feedbackFlat = await getFeedbackByShopId(shop.id);
+        return feedbackFlat.data.data;
+      })
+    );
+
+    const feedbackJoin = feedbacks.flat();
+    setFeedbacks(feedbackJoin);
   };
 
   useEffect(() => {
-    fetchAllUsers();
-    fetchAllShops();
+    fetchShopsByOwnerId();
   }, []);
 
   const [user] = useState(() => {
@@ -33,10 +44,11 @@ export default function OwnerDashboard() {
   });
 
   const role = user.roleEnum;
+  const ownerId = user.id;
 
   const stats = [
     {
-      label: "Người dùng",
+      label: "Barber",
       value: users.length,
       icon: <FaUsers className="text-3xl text-yellow-400" />,
     },
@@ -47,7 +59,7 @@ export default function OwnerDashboard() {
     },
     {
       label: "Dịch vụ",
-      value: shops.length,
+      value: services.length,
       icon: <FaTools className="text-3xl text-pink-400" />,
     },
     {
@@ -60,27 +72,27 @@ export default function OwnerDashboard() {
     //   value: 120,
     //   icon: <FaCalendarAlt className="text-3xl text-purple-400" />,
     // },
-    // {
-    //   label: "Phản hồi",
-    //   value: 45,
-    //   icon: <FaComments className="text-3xl text-red-400" />,
-    // },
+    {
+      label: "Phản hồi",
+      value: feedbacks.length,
+      icon: <FaComments className="text-3xl text-red-400" />,
+    },
   ];
 
   const cards = [
     {
-      label: "Người dùng mới",
+      label: "Barber",
       value: users.slice(0, 5).map((user) => user.username),
       button: role == "ADMIN" ? "/admin/users" : "/owner/shops",
     },
     {
-      label: "Tiệm nổi bật",
+      label: "Tiệm của tôi",
       value: shops.slice(0, 5).map((shop) => shop.name),
       button: role == "ADMIN" ? "/admin/shops" : "/owner/shops",
     },
     {
       label: "Phản hồi gần đây",
-      value: ["Dịch vụ rất tốt", "Thợ cắt tóc thân thiện"],
+      value: feedbacks.map((feedback) => feedback.comment),
       button: "Xem tất cả phản hồi",
     },
 

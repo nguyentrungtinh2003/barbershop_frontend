@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getUsers, deleteUser, restoreUser } from "../../services/userServices";
 import { getShopsById } from "../../services/shopServices";
+import { getFeedbackByShopId } from "../../services/feedbackServices";
 import {
   FaTrashAlt,
   FaEdit,
@@ -9,6 +10,7 @@ import {
   FaLockOpen,
   FaCheckCircle,
   FaTimesCircle,
+  FaStar,
 } from "react-icons/fa";
 import AddUser from "./AddUser";
 import EditUser from "./EditUser";
@@ -19,6 +21,7 @@ import { useParams } from "react-router-dom";
 export default function OwnerUser() {
   const [users, setUsers] = useState([]);
   const [shop, setShop] = useState({});
+  const [feedbacks, setFeedbacks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showAddModalUser, setShowAddModalUser] = useState(false);
   const [showEditModalUser, setShowEditModalUser] = useState(false);
@@ -32,22 +35,29 @@ export default function OwnerUser() {
     setLoading(true);
     try {
       const res = await getShopsById(parseInt(id));
-      setShop(res.data.data);
+      const shop = res.data.data;
+      setShop(shop);
       setUsers(res.data.data.barbers);
+
+      const feedbacks = await getFeedbackByShopId(shop.id);
+
+      setFeedbacks(feedbacks?.data?.data);
     } catch (error) {
       console.error("Lỗi khi lấy shop:", error);
     }
     setLoading(false);
   };
 
-  const fetchUsers = async () => {
-    // Tái lấy danh sách user từ shop
-    fetchShop();
-  };
+  // const fetchUsers = async () => {
+  //   // Tái lấy danh sách user từ shop
+  //   fetchShop();
+  // };
 
   useEffect(() => {
     fetchShop();
   }, []);
+
+  console.log(feedbacks);
 
   const handleDelete = async (id) => {
     if (window.confirm("Bạn có chắc chắn muốn xoá dịch vụ này?")) {
@@ -79,15 +89,43 @@ export default function OwnerUser() {
 
         {/* Thông tin shop */}
         <div className="md:col-span-2 space-y-2">
-          {/* <h1 className="text-3xl font-bold text-yellow-400 mb-2">
-            Thông tin Shop
-          </h1> */}
-          <p className="text-xl font-semibold">{shop.name}</p>
+          {/* Hình ảnh shop */}
+
+          <img
+            src={shop.shopImg}
+            alt={shop.name}
+            className="w-full max-h-64 object-cover rounded-xl mb-3"
+          />
+
+          {/* Tên shop */}
+          <p className="text-2xl font-bold text-yellow-400">{shop.name}</p>
+
+          {/* Slogan */}
           {shop.slogan && (
             <p className="text-sm italic text-yellow-300">"{shop.slogan}"</p>
           )}
+
+          {/* Mô tả */}
           <p className="text-sm text-gray-300">{shop.description}</p>
-          <div className="">
+
+          {/* Thông tin chủ shop */}
+          {shop?.owner?.username && (
+            <div className="flex items-center gap-3 mt-2">
+              {shop.ownerImg && (
+                <img
+                  src={shop.owner.img || "/user.jpg"}
+                  alt={shop?.owner?.username}
+                  className="w-10 h-10 rounded-full object-cover border"
+                />
+              )}
+              <span className="text-sm text-white">
+                Chủ shop: {shop?.owner?.username}
+              </span>
+            </div>
+          )}
+
+          {/* Địa chỉ, email, sđt */}
+          <div className="space-y-1 mt-2">
             <p>
               <span className="font-semibold text-white">Địa chỉ:</span>{" "}
               {shop.address}
@@ -103,7 +141,7 @@ export default function OwnerUser() {
           </div>
         </div>
       </div>
-
+      <p className="m-2 text-xl font-semibold">Quản lí Barber</p>
       {/* NÚT THÊM */}
       <div className="mb-4 flex justify-end">
         <button
@@ -144,7 +182,10 @@ export default function OwnerUser() {
                   <td className="px-6 py-4">{user.email}</td>
                   <td className="px-6 py-4">{user.phoneNumber}</td>
                   <td className="px-6 py-4">
-                    <img src={user.img} className="w-10 h-10 rounded-full" />
+                    <img
+                      src={user.img || "/user.jpg"}
+                      className="w-10 h-10 rounded-full"
+                    />
                   </td>
                   <td className="px-6 py-4 capitalize">{user.roleEnum}</td>
                   <td className="px-6 py-4">
@@ -210,7 +251,7 @@ export default function OwnerUser() {
           </table>
         </div>
       )}
-
+      <p className="m-2 text-xl font-semibold">Quản lí Dịch vụ</p>
       {/* NÚT THÊM SERVICE*/}
       <div className="mb-4 flex justify-end">
         <button
@@ -305,6 +346,115 @@ export default function OwnerUser() {
                       </button>
                     )}
                   </td>
+                </tr>
+              ))}
+              {users.length === 0 && (
+                <tr>
+                  <td colSpan="7" className="text-center py-4 text-gray-400">
+                    Không có người dùng nào.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
+      <p className="m-2 text-xl font-semibold">Danh sách đánh giá</p>
+      {/* BẢNG FEEDBACK */}
+      {loading ? (
+        <div className="text-center text-gray-300">Đang tải...</div>
+      ) : (
+        <div className="overflow-x-auto rounded-xl shadow-md border border-gray-700">
+          <table className="w-full text-sm text-left text-white bg-gray-800">
+            <thead className="text-xs uppercase bg-yellow-400 text-black">
+              <tr>
+                <th className="px-6 py-3">Tên khách hàng</th>
+                <th className="px-6 py-3">Nội dung</th>
+                <th className="px-6 py-3">Đánh giá</th>
+                <th className="px-6 py-3">Hình</th>
+                <th className="px-6 py-3">Barber</th>
+                <th className="px-6 py-3">Shop</th>
+                <th className="px-6 py-3">Ngày</th>
+                {/* <th className="px-6 py-3 text-center">Hành động</th> */}
+              </tr>
+            </thead>
+            <tbody>
+              {feedbacks?.map((feedback, index) => (
+                <tr
+                  key={feedback.id}
+                  className={`border-b border-gray-700 ${
+                    index % 2 === 0 ? "bg-gray-900" : "bg-gray-800"
+                  } hover:bg-gray-700 transition`}
+                >
+                  <td className="px-6 py-4 font-medium">
+                    {feedback.customerName}
+                  </td>
+                  <td className="px-6 py-4">{feedback.comment}</td>
+                  <td className="px-6 py-4 text-yellow-500 flex items-center gap-1">
+                    {feedback.rating} <FaStar />
+                  </td>
+
+                  <td className="px-6 py-4">
+                    <img
+                      src={feedback.img}
+                      className="w-10 h-10 rounded-full"
+                    />
+                  </td>
+                  <td className="px-6 py-4 capitalize">
+                    {feedback.barberName}
+                  </td>
+                  <td className="px-6 py-4 capitalize">{feedback.shopName}</td>
+                  <td className="px-6 py-4 capitalize">{feedback.createAt}</td>
+                  {/* <td className="px-6 py-4">
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        !feedback.deleted
+                          ? "bg-green-500/20 text-green-300"
+                          : "bg-red-500/20 text-red-300"
+                      }`}
+                    >
+                      {!service.deleted ? (
+                        <FaCheckCircle className="text-lg" />
+                      ) : (
+                        <FaTimesCircle className="text-lg" />
+                      )}
+                    </span>
+                  </td> */}
+                  {/* <td className="px-6 py-4 flex justify-center gap-2">
+                    <button
+                      onClick={() => {
+                        setSelectedService(service);
+                        setShowEditModalService(true);
+                      }}
+                      className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded"
+                      title="Chỉnh sửa"
+                    >
+                      <FaEdit />
+                    </button>
+                    {service.deleted === false ? (
+                      <button
+                        onClick={async () => {
+                          await handleDelete(service.id);
+                          fetchUsers();
+                        }}
+                        className="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded"
+                        title="Khoá"
+                      >
+                        <FaLock />
+                      </button>
+                    ) : (
+                      <button
+                        onClick={async () => {
+                          await restoreService(service.id);
+                          fetchUsers();
+                        }}
+                        className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded"
+                        title="Mở khoá"
+                      >
+                        <FaLockOpen />
+                      </button>
+                    )}
+                  </td> */}
                 </tr>
               ))}
               {users.length === 0 && (
