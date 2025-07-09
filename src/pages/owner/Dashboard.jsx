@@ -9,12 +9,14 @@ import {
 import { getAllUsers } from "../../services/userServices";
 import { getAllShops, getShopsByOwnerId } from "../../services/shopServices";
 import { getFeedbackByShopId } from "../../services/feedbackServices";
+import { getAppointmentByShopIdAndIsPaid } from "../../services/appointmentService";
 
 export default function OwnerDashboard() {
   const [users, setUsers] = useState([]);
   const [shops, setShops] = useState([]);
   const [services, setServices] = useState([]);
   const [feedbacks, setFeedbacks] = useState([]);
+  const [payments, setPayments] = useState([]);
 
   const fetchShopsByOwnerId = async () => {
     const res = await getShopsByOwnerId(ownerId);
@@ -33,6 +35,16 @@ export default function OwnerDashboard() {
 
     const feedbackJoin = feedbacks.flat();
     setFeedbacks(feedbackJoin);
+
+    const paymentIsPaid = await Promise.all(
+      shops.map(async (shop) => {
+        const feedbackFlat = await getAppointmentByShopIdAndIsPaid(shop.id);
+        return feedbackFlat.data.data;
+      })
+    );
+
+    const paymentJoin = paymentIsPaid.flat();
+    setPayments(paymentJoin);
   };
 
   useEffect(() => {
@@ -64,7 +76,7 @@ export default function OwnerDashboard() {
     },
     {
       label: "Thanh toán",
-      value: 340,
+      value: payments.length,
       icon: <FaMoneyCheckAlt className="text-3xl text-teal-400" />,
     },
     // {
@@ -132,17 +144,16 @@ export default function OwnerDashboard() {
           </div>
         ))}
       </div>
-
       {/* Chi tiết */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {visibleCards.map((item, index) => (
+        {/* {visibleCards.map((item, index) => (
           <Section
             key={index}
             title={item.label}
             data={item.value}
             button={item.button}
           />
-        ))}
+        ))} */}
       </div>
     </div>
   );

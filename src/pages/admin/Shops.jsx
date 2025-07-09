@@ -15,6 +15,7 @@ import {
   FaCheckCircle,
   FaEye,
   FaRegCalendarCheck,
+  FaCoins,
 } from "react-icons/fa";
 import AddShop from "./AddShop";
 import EditShop from "./EditShop";
@@ -151,6 +152,14 @@ export default function Shops() {
                           title="Xem thông tin"
                         >
                           <FaEye />
+                        </button>
+                      </a>
+                      <a href={`/owner/payments/shop/${shop.id}`}>
+                        <button
+                          className="bg-cyan-700 hover:bg-cyan-800 text-white px-4 py-2 rounded transition"
+                          title="Xem doanh thu"
+                        >
+                          <FaCoins />
                         </button>
                       </a>
                       <button

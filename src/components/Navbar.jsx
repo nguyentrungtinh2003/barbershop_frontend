@@ -2,32 +2,38 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 
-const NAV_ITEMS = {
-  ADMIN: [
-    { label: "Dashboard", path: "/admin/dashboard" },
-    { label: "User", path: "/admin/users" },
-    { label: "Shop", path: "/admin/shops" },
-  ],
-  OWNER: [
-    { label: "Dashboard", path: "/owner/dashboard" },
-    { label: "Quản lí tiệm", path: "/owner/shops" },
-  ],
-  BARBER: [
-    { label: "Lịch của tôi", path: "/barber/dashboard" },
-    { label: "Hồ sơ", path: "/barber/profile" },
-  ],
-  CUSTOMER: [
-    { label: "Lịch sử đặt lịch", path: "/customer/dashboard" },
-    { label: "Hồ sơ", path: "/customer/users" },
-  ],
-};
-
 export default function Navbar() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
   const user = JSON.parse(localStorage.getItem("user")) || null;
   const role = user?.roleEnum;
+  const userId = user?.id;
+
+  // Khai báo NAV_ITEMS sau khi đã có userId
+  const NAV_ITEMS = {
+    ADMIN: [
+      { label: "Dashboard", path: "/admin/dashboard" },
+      { label: "User", path: "/admin/users" },
+      { label: "Shop", path: "/admin/shops" },
+      { label: "Profile", path: `/admin/profile/${userId}` },
+    ],
+    OWNER: [
+      { label: "Dashboard", path: "/owner/dashboard" },
+      { label: "Quản lí tiệm", path: "/owner/shops" },
+      { label: "Profile", path: `/owner/profile/${userId}` },
+    ],
+    BARBER: [
+      { label: "Lịch của tôi", path: "/barber/dashboard" },
+      { label: "Hồ sơ", path: "/barber/profile" },
+      { label: "Profile", path: `/barber/profile/${userId}` },
+    ],
+    CUSTOMER: [
+      { label: "Lịch sử đặt lịch", path: "/customer/dashboard" },
+      { label: "Profile", path: `/customer/profile/${userId}` },
+    ],
+  };
+
   const menuItems = NAV_ITEMS[role] || [];
 
   const handleLogout = () => {
@@ -115,7 +121,7 @@ export default function Navbar() {
           {user ? (
             <div className="flex items-center gap-3 mt-4">
               <img
-                src={user.img}
+                src={user.img || "/user.jpg"}
                 alt="Avatar"
                 className="w-9 h-9 rounded-full border-2 border-yellow-400"
               />

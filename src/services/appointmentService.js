@@ -12,6 +12,9 @@ export const getAppointmentByBarberId = (barberId) =>
 export const getAppointmentByShopId = (shopId) =>
   instance.get(`/appointments/shop/${shopId}`);
 
+export const getAppointmentByShopIdAndIsPaid = (shopId) =>
+  instance.get(`/appointments/shop/${shopId}/payments`);
+
 export const markAsPaid = (id) =>
   instance.put(`/appointments/mark-paid/${id}`, {});
 export const getTimeSlot = (shopId, barberId, date) =>

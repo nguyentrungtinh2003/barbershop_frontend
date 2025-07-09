@@ -10,6 +10,7 @@ import Shops from "../pages/admin/Shops";
 import Appointment from "../pages/admin/Appointment";
 import Profile from "../pages/admin/Profile";
 import FeedbackForm from "../pages/admin/FeedbackForm";
+import Payments from "../pages/admin/Payments";
 
 export const routes = {
   Public: [{ path: "/", element: <HomePage /> }],
@@ -17,7 +18,8 @@ export const routes = {
     { path: "/admin/dashboard", element: <AdminDashboard /> },
     { path: "/admin/users", element: <Users /> },
     { path: "/admin/shops", element: <Shops /> },
-    { path: "/admin/profile", element: <Profile /> },
+    { path: "/admin/profile/:id", element: <Profile /> },
+    { path: "/admin/payments/shop/:id", element: <Payments /> },
   ],
   Owner: [
     { path: "/owner/dashboard", element: <OwnerDashboard /> },
@@ -25,15 +27,16 @@ export const routes = {
     { path: "/owner/appointment/shop/:id", element: <Appointment /> },
     { path: "/owner/services", element: <Services /> },
     { path: "/owner/shops", element: <Shops /> },
-    { path: "/owner/profile", element: <Profile /> },
+    { path: "/owner/profile/:id", element: <Profile /> },
+    { path: "/owner/payments/shop/:id", element: <Payments /> },
   ],
   Barber: [
     { path: "/barber/dashboard", element: <Dashboard /> },
-    { path: "/barber/profile", element: <Profile /> },
+    { path: "/barber/profile/:id", element: <Profile /> },
   ],
   Customer: [
     { path: "/customer/dashboard", element: <CustomerDashboard /> },
-    { path: "/customer/profile", element: <Profile /> },
+    { path: "/customer/profile/:id", element: <Profile /> },
     { path: "/customer/feedback", element: <FeedbackForm /> },
   ],
 };
