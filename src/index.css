@@ -1,1 +1,6 @@
 @import "tailwindcss";
+/* Tuỳ chỉnh nút lịch trong input[type="date"] */
+.custom-datepicker::-webkit-calendar-picker-indicator {
+  filter: invert(1); /* chuyển màu đen -> trắng */
+  cursor: pointer;
+}

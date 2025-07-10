@@ -6,6 +6,11 @@ export const getUsers = (page, size) =>
 
 export const getUserById = (id) => instance.get(`/users/${id}`);
 
+export const searchUser = (keyword, page, size) =>
+  instance.get(
+    `/owner/users/search?keyword=${keyword}&page=${page}&size=${size}`
+  );
+
 export const register = (formData) =>
   instance.post("/register", formData, {
     headers: {

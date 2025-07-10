@@ -4,6 +4,7 @@ import {
   deleteShop,
   restoreShop,
   getShopsByOwnerId,
+  searchShop,
 } from "../../services/shopServices";
 import {
   FaTrashAlt,
@@ -16,6 +17,7 @@ import {
   FaEye,
   FaRegCalendarCheck,
   FaCoins,
+  FaSearch,
 } from "react-icons/fa";
 import AddShop from "./AddShop";
 import EditShop from "./EditShop";
@@ -25,6 +27,7 @@ export default function Shops() {
   const [page, setPage] = useState(0);
   const size = 6;
   const [totalPages, setTotalPages] = useState(0);
+  const [keyword, setKeyword] = useState("");
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -56,6 +59,17 @@ export default function Shops() {
     setLoading(false);
   };
 
+  const handleSearch = async () => {
+    const res = await searchShop(keyword, 0, 6);
+    setShops(res.data.data.content);
+    setTotalPages(res.data.data.totalPages);
+    setPage(currentPage);
+
+    if (!keyword) {
+      fetchShops();
+    }
+  };
+
   useEffect(() => {
     fetchShops();
   }, []);
@@ -78,6 +92,23 @@ export default function Shops() {
         >
           <FaPlus />
           Thêm cửa hàng
+        </button>
+      </div>
+
+      <div className="mb-6 flex flex-col md:flex-row items-center gap-4">
+        <input
+          type="text"
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+          placeholder="Tìm kiếm shop..."
+          className="px-4 py-2 w-full md:w-1/3 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow"
+        />
+        <button
+          onClick={handleSearch}
+          className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-4 py-2 rounded-xl shadow"
+        >
+          <FaSearch />
+          {keyword ? `Tìm ${keyword}` : "Tìm ..."}
         </button>
       </div>
 

@@ -67,7 +67,7 @@ export default function Payments() {
   }, []);
 
   return (
-    <div className="bg-black text-white p-6 rounded-2xl shadow-xl border border-yellow-400">
+    <div className="p-6 mx-auto bg-gradient-to-br from-black via-gray-900 to-gray-800 min-h-screen text-white font-vietnam">
       <h2 className="text-2xl font-bold text-yellow-400 mb-4">
         Biểu đồ doanh thu hàng tháng
       </h2>

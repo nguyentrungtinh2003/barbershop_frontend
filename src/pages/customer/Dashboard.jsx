@@ -189,8 +189,62 @@ export default function CustomerDashboard() {
               options={shops}
               getOptionLabel={(option) => option.name}
               getOptionValue={(option) => option.id}
-              className="text-black"
+              className="bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow"
               placeholder="Chọn shop..."
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  backgroundColor: "#1f2937", // bg-gray-800
+                  borderColor: "#4b5563", // border-gray-600
+                  color: "white",
+                  borderRadius: "0.75rem",
+                  boxShadow: "none",
+                  "&:hover": {
+                    borderColor: "#facc15", // hover: yellow-400
+                  },
+                }),
+                option: (base, state) => ({
+                  ...base,
+                  backgroundColor: state.isSelected
+                    ? "#facc15"
+                    : state.isFocused
+                    ? "#374151"
+                    : "#1f2937",
+                  color: state.isSelected ? "black" : "white",
+                }),
+                multiValue: (base) => ({
+                  ...base,
+                  backgroundColor: "#facc15",
+                  color: "black",
+                  borderRadius: "0.5rem",
+                }),
+                multiValueLabel: (base) => ({
+                  ...base,
+                  color: "black",
+                }),
+                multiValueRemove: (base) => ({
+                  ...base,
+                  color: "black",
+                  ":hover": {
+                    backgroundColor: "#f59e0b",
+                    color: "white",
+                  },
+                }),
+                placeholder: (base) => ({
+                  ...base,
+                  color: "#9ca3af", // text-gray-400
+                }),
+                singleValue: (base) => ({
+                  ...base,
+                  color: "white",
+                }),
+                menu: (base) => ({
+                  ...base,
+                  backgroundColor: "#1f2937", // dropdown bg
+                  borderRadius: "0.75rem",
+                  overflow: "hidden",
+                }),
+              }}
             />
           </div>
 
@@ -215,10 +269,64 @@ export default function CustomerDashboard() {
               options={filteredBarbers}
               getOptionLabel={(option) => option.username}
               getOptionValue={(option) => option.id}
-              className="text-black"
+              className="bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow"
               placeholder={
                 currentShop ? "Chọn barber..." : "Hãy chọn shop trước"
               }
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  backgroundColor: "#1f2937", // bg-gray-800
+                  borderColor: "#4b5563", // border-gray-600
+                  color: "white",
+                  borderRadius: "0.75rem",
+                  boxShadow: "none",
+                  "&:hover": {
+                    borderColor: "#facc15", // hover: yellow-400
+                  },
+                }),
+                option: (base, state) => ({
+                  ...base,
+                  backgroundColor: state.isSelected
+                    ? "#facc15"
+                    : state.isFocused
+                    ? "#374151"
+                    : "#1f2937",
+                  color: state.isSelected ? "black" : "white",
+                }),
+                multiValue: (base) => ({
+                  ...base,
+                  backgroundColor: "#facc15",
+                  color: "black",
+                  borderRadius: "0.5rem",
+                }),
+                multiValueLabel: (base) => ({
+                  ...base,
+                  color: "black",
+                }),
+                multiValueRemove: (base) => ({
+                  ...base,
+                  color: "black",
+                  ":hover": {
+                    backgroundColor: "#f59e0b",
+                    color: "white",
+                  },
+                }),
+                placeholder: (base) => ({
+                  ...base,
+                  color: "#9ca3af", // text-gray-400
+                }),
+                singleValue: (base) => ({
+                  ...base,
+                  color: "white",
+                }),
+                menu: (base) => ({
+                  ...base,
+                  backgroundColor: "#1f2937", // dropdown bg
+                  borderRadius: "0.75rem",
+                  overflow: "hidden",
+                }),
+              }}
               isDisabled={!currentShop}
             />
           </div>
@@ -246,57 +354,113 @@ export default function CustomerDashboard() {
               options={filteredServices}
               getOptionLabel={(option) => option.name}
               getOptionValue={(option) => option.id}
-              className="text-black"
+              className="bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow"
               placeholder={
                 currentShop ? "Chọn dịch vụ..." : "Hãy chọn shop trước"
               }
               isDisabled={!currentShop}
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  backgroundColor: "#1f2937", // bg-gray-800
+                  borderColor: "#4b5563", // border-gray-600
+                  color: "white",
+                  borderRadius: "0.75rem",
+                  boxShadow: "none",
+                  "&:hover": {
+                    borderColor: "#facc15", // hover: yellow-400
+                  },
+                }),
+                option: (base, state) => ({
+                  ...base,
+                  backgroundColor: state.isSelected
+                    ? "#facc15"
+                    : state.isFocused
+                    ? "#374151"
+                    : "#1f2937",
+                  color: state.isSelected ? "black" : "white",
+                }),
+                multiValue: (base) => ({
+                  ...base,
+                  backgroundColor: "#facc15",
+                  color: "black",
+                  borderRadius: "0.5rem",
+                }),
+                multiValueLabel: (base) => ({
+                  ...base,
+                  color: "black",
+                }),
+                multiValueRemove: (base) => ({
+                  ...base,
+                  color: "black",
+                  ":hover": {
+                    backgroundColor: "#f59e0b",
+                    color: "white",
+                  },
+                }),
+                placeholder: (base) => ({
+                  ...base,
+                  color: "#9ca3af", // text-gray-400
+                }),
+                singleValue: (base) => ({
+                  ...base,
+                  color: "white",
+                }),
+                menu: (base) => ({
+                  ...base,
+                  backgroundColor: "#1f2937", // dropdown bg
+                  borderRadius: "0.75rem",
+                  overflow: "hidden",
+                }),
+              }}
             />
           </div>
-
-          {/* Ngày */}
-          <div>
+          <div className="mb-6">
             <label className="block mb-2 text-sm font-semibold text-yellow-400">
               Chọn ngày
             </label>
             <input
               type="date"
-              className="w-full px-4 py-2 rounded-lg bg-white border border-gray-700 text-black"
               value={formData.date}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, date: e.target.value }))
               }
+              className="w-full px-4 py-2 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow custom-datepicker"
             />
           </div>
 
           {/* Khung giờ */}
-          <div>
+          <div className="mb-6">
             <label className="block mb-2 text-sm font-semibold text-yellow-400">
               Chọn khung giờ bắt đầu
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
               {availableTimeSlot.map((slot) => {
                 const isSelected = formData.timeSlot === slot.startTime;
+                const isDisabled =
+                  !currentShop || formData.services.length === 0;
+
                 return (
                   <button
                     key={slot.id}
                     type="button"
                     onClick={() =>
+                      !isDisabled &&
                       setFormData((prev) => ({
                         ...prev,
                         timeSlot: slot.startTime,
                       }))
                     }
                     className={`w-full text-center py-2 rounded-xl font-semibold transition duration-200 border shadow-sm
-                  ${
-                    !currentShop || formData.services.length === 0
-                      ? "opacity-50 cursor-not-allowed"
-                      : isSelected
-                      ? "bg-yellow-400 text-black border-yellow-500 ring-2 ring-yellow-300"
-                      : "bg-white text-black border-gray-300 hover:bg-yellow-100"
-                  }
-                `}
-                    disabled={!currentShop || formData.services.length === 0}
+            ${
+              isDisabled
+                ? "bg-gray-800 text-gray-500 border-gray-600 cursor-not-allowed opacity-50"
+                : isSelected
+                ? "bg-yellow-400 text-black border-yellow-500 ring-2 ring-yellow-300"
+                : "bg-gray-100 text-black border-gray-300 hover:bg-yellow-100"
+            }
+          `}
+                    disabled={isDisabled}
                   >
                     {slot.startTime}
                   </button>

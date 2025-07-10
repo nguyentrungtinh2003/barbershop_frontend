@@ -8,9 +8,11 @@ import {
   FaLockOpen,
   FaCheckCircle,
   FaTimesCircle,
+  FaSearch,
 } from "react-icons/fa";
 import AddUser from "./AddUser";
 import EditUser from "./EditUser";
+import { searchUser } from "../../services/userServices";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
@@ -18,6 +20,7 @@ export default function Users() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [keyword, setKeyword] = useState("");
 
   // Phân trang
   const [page, setPage] = useState(0);
@@ -35,6 +38,18 @@ export default function Users() {
       console.error("Lỗi lấy danh sách người dùng:", error);
     }
     setLoading(false);
+  };
+
+  const handleSearch = async () => {
+    const res = await searchUser(keyword, 0, 6);
+    setUsers(res.data.data.content);
+    setUsers(res.data.data.content);
+    setTotalPages(res.data.data.totalPages);
+    setPage(currentPage);
+
+    if (!keyword) {
+      fetchUsers();
+    }
   };
 
   useEffect(() => {
@@ -61,6 +76,23 @@ export default function Users() {
         >
           <FaPlus />
           Thêm người dùng
+        </button>
+      </div>
+
+      <div className="mb-6 flex flex-col md:flex-row items-center gap-4">
+        <input
+          type="text"
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+          placeholder="Tìm kiếm người dùng..."
+          className="px-4 py-2 w-full md:w-1/3 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow"
+        />
+        <button
+          onClick={handleSearch}
+          className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-4 py-2 rounded-xl shadow"
+        >
+          <FaSearch />
+          {keyword ? `Tìm ${keyword}` : "Tìm ..."}
         </button>
       </div>
 
