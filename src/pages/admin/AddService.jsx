@@ -18,6 +18,7 @@ export default function AddService({ onClose }) {
   const fetchShops = async () => {
     const res = await getAllShops();
     setShops(res.data.data);
+    console.log(res.data.data);
   };
 
   useEffect(() => {
@@ -61,7 +62,6 @@ export default function AddService({ onClose }) {
       console.log("form data", formData);
     } catch (error) {
       console.error("Lỗi khi tạo dịch vụ:", error);
-      alert("Tạo dịch vụ thất bại!");
     }
   };
 
@@ -120,7 +120,7 @@ export default function AddService({ onClose }) {
           <label className="block mb-1 text-sm">Shop</label>
           <Select
             name="shop"
-            value={shops.filter((shop) => shop.id == formData.shopId)}
+            // value={shops.filter((shop) => shop.id == formData.shopId)}
             onChange={(selected) =>
               setFormData((prev) => ({
                 ...prev,

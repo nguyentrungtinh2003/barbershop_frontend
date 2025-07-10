@@ -41,11 +41,12 @@ export default function Shops() {
         setShops(res.data.data.content);
         setTotalPages(res.data.data.totalPages);
         setPage(currentPage);
+        console.log(res.data.data.content);
       }
       if (user.roleEnum === "OWNER") {
         const res = await getShopsByOwnerId(user.id);
         setShops(res.data.data);
-        console.log(shops);
+        console.log(res.data.data);
         // setTotalPages(res.data.data.totalPages);
         // setPage(currentPage);
       }
