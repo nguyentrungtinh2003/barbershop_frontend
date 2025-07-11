@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FiArrowLeft, FiMail } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { forgot } from "../../services/authService";
+import { toast } from "react-toastify";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -11,8 +12,10 @@ export default function ForgotPassword() {
     e.preventDefault();
 
     await forgot({ email });
-
-    navigate("/reset-password");
+    toast.success("Vào email để lấy mã OTP");
+    setTimeout(() => {
+      navigate("/reset-password");
+    }, 3000);
   };
 
   return (

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FiLock, FiMail, FiShield } from "react-icons/fi";
 import { reset } from "../../services/authService";
+import { toast } from "react-toastify";
 
 export default function ResetPassword() {
   const [password, setPassword] = useState("");
@@ -11,7 +12,7 @@ export default function ResetPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      alert("Mật khẩu không khớp!");
+      toast.warning("2 mật khẩu không khớp");
       return;
     }
     await reset({ email, otp, password });

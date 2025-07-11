@@ -4,6 +4,7 @@ import {
   createFeedback,
   getFeedbackByCustomerId,
 } from "../../services/feedbackServices";
+import { toast } from "react-toastify";
 
 export default function FeedbackForm({ show, onHide, appointment }) {
   const [rating, setRating] = useState(5);
@@ -36,8 +37,10 @@ export default function FeedbackForm({ show, onHide, appointment }) {
       await createFeedback(formData);
       const res = await getFeedbackByCustomerId(formData.customerId);
       console.log("Feedback send", res.data.data);
-      alert("Gửi feedback thành công!");
-      onHide();
+      toast.success("Gửi phản hồi thành công");
+      setTimeout(() => {
+        onHide();
+      }, 3000);
     } catch (err) {
       console.error(err);
     }

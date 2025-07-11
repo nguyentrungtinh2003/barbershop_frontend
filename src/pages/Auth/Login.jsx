@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { login } from "../../services/authService";
 import { FiPhone, FiLock, FiUser } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -15,15 +16,19 @@ export default function Login() {
       const user = await login(username, password); // login() phải trả về user object có `roleEnum`
 
       if (user && user.roleEnum) {
-        navigate(`/${user.roleEnum.toLowerCase()}/dashboard`, {
-          replace: true,
-        });
+        setTimeout(() => {
+          navigate(`/${user.roleEnum.toLowerCase()}/dashboard`, {
+            replace: true,
+          });
+        }, 3000);
+        localStorage.setItem("user", JSON.stringify(user));
+        toast.success("Đăng nhập thành công");
       } else {
-        alert("Không tìm thấy quyền người dùng!");
+        toast.warning("Bạn không có quyền truy cập");
       }
     } catch (error) {
       console.error("Login thất bại:", error);
-      alert("Đăng nhập thất bại!");
+      toast.error("Đăng nhập thất bại");
     }
   };
 

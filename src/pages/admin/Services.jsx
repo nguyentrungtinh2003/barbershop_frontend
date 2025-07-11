@@ -15,6 +15,7 @@ import {
 } from "react-icons/fa";
 import AddService from "./AddService";
 import EditService from "./EditService";
+import Swal from "sweetalert2";
 
 export default function Services() {
   const [services, setServices] = useState([]);
@@ -134,8 +135,22 @@ export default function Services() {
                       {service.deleted === false ? (
                         <button
                           onClick={async () => {
-                            await deleteService(service.id);
-                            fetchServices();
+                            const result = await Swal.fire({
+                              title: "Bạn có chắc muốn khoá ?",
+                              text: "",
+                              icon: "warning",
+                              showCancelButton: true,
+                              confirmButtonText: "Khoá",
+                              cancelButtonText: "Huỷ",
+                              confirmButtonColor: "#d33",
+                              cancelButtonColor: "#aaa",
+                            });
+
+                            if (result.isConfirmed) {
+                              await deleteService(service.id);
+                              fetchServices();
+                              Swal.fire("Đã khoá", "", "success");
+                            }
                           }}
                           className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition"
                           title="Khoá"
@@ -145,8 +160,22 @@ export default function Services() {
                       ) : (
                         <button
                           onClick={async () => {
-                            await restoreService(service.id);
-                            fetchServices();
+                            const result = await Swal.fire({
+                              title: "Bạn có chắc muốn mở khoá ?",
+                              text: "",
+                              icon: "warning",
+                              showCancelButton: true,
+                              confirmButtonText: "Mở khoá",
+                              cancelButtonText: "Huỷ",
+                              confirmButtonColor: "#3085d6",
+                              cancelButtonColor: "#aaa",
+                            });
+
+                            if (result.isConfirmed) {
+                              await restoreService(service.id);
+                              fetchServices();
+                              Swal.fire("Đã mở khoá", "", "success");
+                            }
                           }}
                           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition"
                           title="Mở khoá"

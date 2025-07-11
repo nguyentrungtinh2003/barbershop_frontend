@@ -17,6 +17,8 @@ import EditUser from "./EditUser";
 import AddService from "./AddService";
 import EditService from "./EditService";
 import { useParams } from "react-router-dom";
+import Swal from "sweetalert2";
+import { deleteService, restoreService } from "../../services/serviceServices";
 
 export default function OwnerUser() {
   const [users, setUsers] = useState([]);
@@ -58,13 +60,6 @@ export default function OwnerUser() {
   }, []);
 
   console.log(feedbacks);
-
-  const handleDelete = async (id) => {
-    if (window.confirm("Bạn có chắc chắn muốn xoá dịch vụ này?")) {
-      await deleteService(id);
-      fetchServices();
-    }
-  };
 
   return (
     <div className="p-6 mx-auto bg-gradient-to-br from-black via-gray-900 to-gray-800 min-h-screen text-white font-vietnam">
@@ -217,8 +212,22 @@ export default function OwnerUser() {
                     {user.deleted === false ? (
                       <button
                         onClick={async () => {
-                          await deleteUser(user.id);
-                          fetchUsers();
+                          const result = await Swal.fire({
+                            title: "Bạn có chắc muốn khoá ?",
+                            text: "",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonText: "Khoá",
+                            cancelButtonText: "Huỷ",
+                            confirmButtonColor: "#d33",
+                            cancelButtonColor: "#aaa",
+                          });
+
+                          if (result.isConfirmed) {
+                            await deleteUser(user.id);
+                            fetchShop();
+                            Swal.fire("Đã khoá", "", "success");
+                          }
                         }}
                         className="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded"
                         title="Khoá"
@@ -228,8 +237,22 @@ export default function OwnerUser() {
                     ) : (
                       <button
                         onClick={async () => {
-                          await restoreUser(user.id);
-                          fetchUsers();
+                          const result = await Swal.fire({
+                            title: "Bạn có chắc muốn mở khoá ?",
+                            text: "",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonText: "Khoá",
+                            cancelButtonText: "Huỷ",
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#aaa",
+                          });
+
+                          if (result.isConfirmed) {
+                            await restoreUser(user.id);
+                            fetchShop();
+                            Swal.fire("Đã mở khoá", "", "success");
+                          }
                         }}
                         className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded"
                         title="Mở khoá"
@@ -325,8 +348,22 @@ export default function OwnerUser() {
                     {service.deleted === false ? (
                       <button
                         onClick={async () => {
-                          await handleDelete(service.id);
-                          fetchUsers();
+                          const result = await Swal.fire({
+                            title: "Bạn có chắc muốn khoá ?",
+                            text: "",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonText: "Khoá",
+                            cancelButtonText: "Huỷ",
+                            confirmButtonColor: "#d33",
+                            cancelButtonColor: "#aaa",
+                          });
+
+                          if (result.isConfirmed) {
+                            await deleteService(service.id);
+                            fetchShop();
+                            Swal.fire("Đã khoá", "", "success");
+                          }
                         }}
                         className="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded"
                         title="Khoá"
@@ -336,8 +373,22 @@ export default function OwnerUser() {
                     ) : (
                       <button
                         onClick={async () => {
-                          await restoreService(service.id);
-                          fetchUsers();
+                          const result = await Swal.fire({
+                            title: "Bạn có chắc muốn mở khoá ?",
+                            text: "",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonText: "Mở khoá",
+                            cancelButtonText: "Huỷ",
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#aaa",
+                          });
+
+                          if (result.isConfirmed) {
+                            await restoreService(service.id);
+                            fetchShop();
+                            Swal.fire("Đã mở khoá", "", "success");
+                          }
                         }}
                         className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded"
                         title="Mở khoá"
@@ -404,7 +455,10 @@ export default function OwnerUser() {
                     {feedback.barberName}
                   </td>
                   <td className="px-6 py-4 capitalize">{feedback.shopName}</td>
-                  <td className="px-6 py-4 capitalize">{feedback.createAt}</td>
+                  <td className="px-6 py-4 capitalize">
+                    {feedback?.createdAt &&
+                      `${feedback.createdAt[2]}-${feedback.createdAt[1]}-${feedback.createdAt[0]}`}
+                  </td>
                   {/* <td className="px-6 py-4">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-semibold ${
@@ -516,7 +570,7 @@ export default function OwnerUser() {
         <div className="fixed inset-0 bg-[rgba(0,0,0,0.7)] flex justify-center items-center z-50">
           <div className="bg-black border border-yellow-400 p-6 rounded-lg w-full max-w-xl text-white shadow-xl">
             <EditService
-              user={selectedService}
+              service={selectedService}
               onClose={() => {
                 setShowEditModalService(false);
                 setSelectedService(null);

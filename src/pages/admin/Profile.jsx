@@ -1,16 +1,22 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { getUserById } from "../../services/userServices";
 import { useParams } from "react-router-dom";
+import EditUser from "./EditUser";
+import { toast } from "react-toastify";
 
 export default function Profile() {
   const { id } = useParams();
   const [user, setUser] = useState({});
+  const [showEditModal, setShowEditModal] = useState(false);
 
   const fetchUserInfo = async () => {
     const res = await getUserById(id);
     setUser(res.data.data);
     if (!res.data.data) {
-      alert("Bạn không có quyền truy cập vào !");
+      toast.warning("Bạn không có quyền xem thông tin người khác");
+    }
+    if (res.data.data) {
+      toast.success("Không chia sẽ thông tin cho bất kì ai");
     }
   };
 
@@ -60,11 +66,29 @@ export default function Profile() {
         </div>
 
         <div className="mt-8 text-center">
-          <button className="bg-yellow-500 text-black font-bold px-6 py-2 rounded-xl shadow hover:bg-yellow-400 transition duration-300">
+          <button
+            onClick={() => setShowEditModal(true)}
+            className="bg-yellow-500 text-black font-bold px-6 py-2 rounded-xl shadow hover:bg-yellow-400 transition duration-300"
+          >
             ✏️ Chỉnh sửa hồ sơ
           </button>
         </div>
       </div>
+
+      {/* Modal Sửa */}
+      {showEditModal && user && (
+        <div className="fixed inset-0 bg-[rgba(0,0,0,0.7)] flex justify-center items-center z-50">
+          <div className="bg-black border border-yellow-400 p-6 rounded-lg w-full max-w-xl text-white shadow-xl">
+            <EditUser
+              user={user}
+              onClose={() => {
+                setShowEditModal(false);
+                fetchUserInfo();
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

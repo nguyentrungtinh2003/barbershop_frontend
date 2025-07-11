@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FiLock, FiUser, FiPhone, FiMail, FiImage } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { register } from "../../services/userServices";
+import { toast } from "react-toastify";
 
 export default function Register() {
   const [phone, setPhone] = useState("");
@@ -31,9 +32,9 @@ export default function Register() {
 
     const response = await register(formData);
     if (response?.status === 200) {
-      alert("Đăng ký thành công!");
+      toast.success("Đăng ký thành công");
     } else {
-      alert("Đăng ký thất bại!");
+      toast.error("Đăng ký thất bại");
     }
   };
 

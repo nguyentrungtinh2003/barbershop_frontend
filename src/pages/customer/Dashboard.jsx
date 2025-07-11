@@ -10,6 +10,7 @@ import { getFeedbackByCustomerId } from "../../services/feedbackServices";
 import Select from "react-select";
 import FeedbackForm from "../admin/FeedbackForm";
 import websocketConfig from "../../utils/websocketConfig";
+import { toast } from "react-toastify";
 
 export default function CustomerDashboard() {
   const [formData, setFormData] = useState({
@@ -56,6 +57,7 @@ export default function CustomerDashboard() {
   const fetchShops = async () => {
     const res = await getAllShops();
     setShops(res.data.data);
+    toast.success(`Xin chào bạn ${customerName}`);
   };
 
   const fetchFeedbackCustomer = async () => {
@@ -95,6 +97,7 @@ export default function CustomerDashboard() {
   });
 
   const customerId = user.id;
+  const customerName = user.username;
 
   const timeSlots = [
     { id: 1, startTime: "07:00" },
@@ -139,16 +142,15 @@ export default function CustomerDashboard() {
       !formData.date ||
       !formData.timeSlot
     ) {
-      alert("Vui lòng điền đầy đủ thông tin trước khi đặt lịch!");
+      toast.warning("Vui lòng điền đầy đủ thông tin trước khi đặt lịch");
       return;
     }
 
     try {
       await createAppointment(formData);
-      alert("Đặt lịch thành công!");
+      toast.success("Đặt lịch thành công");
     } catch (error) {
       console.error("Lỗi đặt lịch:", error);
-      alert("Có lỗi xảy ra khi đặt lịch. Vui lòng thử lại.");
     }
   };
 

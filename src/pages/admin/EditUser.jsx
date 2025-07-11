@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import { updateUser } from "../../services/userServices";
+import { toast } from "react-toastify";
 
 export default function EditUser({ user, onClose }) {
   const [formData, setFormData] = useState(user);
   const [img, setImg] = useState(null);
   const [imgPre, setImgPre] = useState(user.img);
+
+  const userLogin = JSON.parse(localStorage.getItem("user"));
+  const role = userLogin.roleEnum;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,10 +43,12 @@ export default function EditUser({ user, onClose }) {
       }
 
       await updateUser(user.id, data);
-      alert("Cập nhật thành công!");
-      onClose();
+      toast.success("Cập nhật thành công");
+      setTimeout(() => {
+        onClose();
+      }, 3000);
     } catch (error) {
-      console.error("Lỗi cập nhật:", error);
+      toast.error("Cập nhật thất bại");
     }
   };
 
@@ -111,7 +117,62 @@ export default function EditUser({ user, onClose }) {
             name="roleEnum"
             value={formData.roleEnum || "USER"}
             onChange={handleChange}
-            className="px-4 py-2 rounded-lg bg-gray-700 focus:outline-none"
+            className="bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow"
+            disabled={role !== "ADMIN"}
+            styles={{
+              control: (base) => ({
+                ...base,
+                backgroundColor: "#1f2937", // bg-gray-800
+                borderColor: "#4b5563", // border-gray-600
+                color: "white",
+                borderRadius: "0.75rem",
+                boxShadow: "none",
+                "&:hover": {
+                  borderColor: "#facc15", // hover: yellow-400
+                },
+              }),
+              option: (base, state) => ({
+                ...base,
+                backgroundColor: state.isSelected
+                  ? "#facc15"
+                  : state.isFocused
+                  ? "#374151"
+                  : "#1f2937",
+                color: state.isSelected ? "black" : "white",
+              }),
+              multiValue: (base) => ({
+                ...base,
+                backgroundColor: "#facc15",
+                color: "black",
+                borderRadius: "0.5rem",
+              }),
+              multiValueLabel: (base) => ({
+                ...base,
+                color: "black",
+              }),
+              multiValueRemove: (base) => ({
+                ...base,
+                color: "black",
+                ":hover": {
+                  backgroundColor: "#f59e0b",
+                  color: "white",
+                },
+              }),
+              placeholder: (base) => ({
+                ...base,
+                color: "#9ca3af", // text-gray-400
+              }),
+              singleValue: (base) => ({
+                ...base,
+                color: "white",
+              }),
+              menu: (base) => ({
+                ...base,
+                backgroundColor: "#1f2937", // dropdown bg
+                borderRadius: "0.75rem",
+                overflow: "hidden",
+              }),
+            }}
           >
             <option value="ADMIN">Admin</option>
             <option value="OWNER">Owner</option>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { updateShop } from "../../services/shopServices";
 import { getAllUsers } from "../../services/userServices";
 import Select from "react-select";
-
+import { toast } from "react-toastify";
 export default function EditShop({ shop, onClose }) {
   const [formData, setFormData] = useState({
     name: shop.name,
@@ -75,10 +75,12 @@ export default function EditShop({ shop, onClose }) {
       }
 
       await updateShop(shop.id, data);
-      alert("Cập nhật cửa hàng thành công!");
-      onClose();
+      toast.success("Cập nhật thành công");
+      setTimeout(() => {
+        onClose();
+      }, 3000);
     } catch (error) {
-      console.error("Lỗi cập nhật cửa hàng:", error);
+      toast.error("Cập nhật thất bại");
     }
   };
 
@@ -113,12 +115,66 @@ export default function EditShop({ shop, onClose }) {
               options={users}
               onChange={handleSelectOwnerChange}
               value={
-                users.find((option) => formData.owner?.id === option.value) ||
+                users.find((option) => formData.ownerId === option.value) ||
                 null
               }
-              className="text-black"
+              className="bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow"
               placeholder="-- Chọn chủ sở hữu --"
               isClearable
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  backgroundColor: "#1f2937", // bg-gray-800
+                  borderColor: "#4b5563", // border-gray-600
+                  color: "white",
+                  borderRadius: "0.75rem",
+                  boxShadow: "none",
+                  "&:hover": {
+                    borderColor: "#facc15", // hover: yellow-400
+                  },
+                }),
+                option: (base, state) => ({
+                  ...base,
+                  backgroundColor: state.isSelected
+                    ? "#facc15"
+                    : state.isFocused
+                    ? "#374151"
+                    : "#1f2937",
+                  color: state.isSelected ? "black" : "white",
+                }),
+                multiValue: (base) => ({
+                  ...base,
+                  backgroundColor: "#facc15",
+                  color: "black",
+                  borderRadius: "0.5rem",
+                }),
+                multiValueLabel: (base) => ({
+                  ...base,
+                  color: "black",
+                }),
+                multiValueRemove: (base) => ({
+                  ...base,
+                  color: "black",
+                  ":hover": {
+                    backgroundColor: "#f59e0b",
+                    color: "white",
+                  },
+                }),
+                placeholder: (base) => ({
+                  ...base,
+                  color: "#9ca3af", // text-gray-400
+                }),
+                singleValue: (base) => ({
+                  ...base,
+                  color: "white",
+                }),
+                menu: (base) => ({
+                  ...base,
+                  backgroundColor: "#1f2937", // dropdown bg
+                  borderRadius: "0.75rem",
+                  overflow: "hidden",
+                }),
+              }}
             />
           </div>
 
@@ -139,9 +195,63 @@ export default function EditShop({ shop, onClose }) {
               //     )
               //   )
               // }
-              className="text-black"
+              className="bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow"
               placeholder="-- Chọn barber --"
               isClearable
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  backgroundColor: "#1f2937", // bg-gray-800
+                  borderColor: "#4b5563", // border-gray-600
+                  color: "white",
+                  borderRadius: "0.75rem",
+                  boxShadow: "none",
+                  "&:hover": {
+                    borderColor: "#facc15", // hover: yellow-400
+                  },
+                }),
+                option: (base, state) => ({
+                  ...base,
+                  backgroundColor: state.isSelected
+                    ? "#facc15"
+                    : state.isFocused
+                    ? "#374151"
+                    : "#1f2937",
+                  color: state.isSelected ? "black" : "white",
+                }),
+                multiValue: (base) => ({
+                  ...base,
+                  backgroundColor: "#facc15",
+                  color: "black",
+                  borderRadius: "0.5rem",
+                }),
+                multiValueLabel: (base) => ({
+                  ...base,
+                  color: "black",
+                }),
+                multiValueRemove: (base) => ({
+                  ...base,
+                  color: "black",
+                  ":hover": {
+                    backgroundColor: "#f59e0b",
+                    color: "white",
+                  },
+                }),
+                placeholder: (base) => ({
+                  ...base,
+                  color: "#9ca3af", // text-gray-400
+                }),
+                singleValue: (base) => ({
+                  ...base,
+                  color: "white",
+                }),
+                menu: (base) => ({
+                  ...base,
+                  backgroundColor: "#1f2937", // dropdown bg
+                  borderRadius: "0.75rem",
+                  overflow: "hidden",
+                }),
+              }}
             />
           </div>
 

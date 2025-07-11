@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -38,7 +39,10 @@ export default function Navbar() {
 
   const handleLogout = () => {
     localStorage.clear();
-    navigate("/");
+    toast.success("Đăng xuất thành công");
+    setTimeout(() => {
+      navigate("/");
+    }, 3000);
   };
 
   return (

@@ -14,6 +14,7 @@ import {
 } from "react-icons/fa";
 // Thay vì từ "react-icons/fa", dùng từ Game Icons:
 import { GiScissors } from "react-icons/gi";
+import { toast } from "react-toastify";
 
 export default function Appointment() {
   const { id } = useParams(); // id của shop
@@ -50,10 +51,12 @@ export default function Appointment() {
   const handleMarkAsPaid = async (id) => {
     try {
       await markAsPaid(id);
-      alert("Đã thanh toán ");
-      fetchAppointments();
+      toast.success("Đã xác nhận thanh toán");
+      setTimeout(() => {
+        fetchAppointments();
+      }, 3000);
     } catch (e) {
-      alert("Lôi thanh toán ");
+      toast.error("Xác nhận thanh toán thất bại");
     }
   };
 

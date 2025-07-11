@@ -1,6 +1,6 @@
 import { useState } from "react";
-import axios from "axios";
 import { register } from "../../services/userServices";
+import { toast } from "react-toastify";
 
 export default function AddUser({ onAdd, onClose }) {
   const [formData, setFormData] = useState({
@@ -50,10 +50,13 @@ export default function AddUser({ onAdd, onClose }) {
 
       const res = await register(formDataToSend);
 
-      alert("Thêm người dùng thành công!");
+      toast.success("Thêm thành công");
       onAdd && onAdd(); // gọi callback nếu có
-      onClose(); // đóng form
+      setTimeout(() => {
+        onClose();
+      }, 3000);
     } catch (error) {
+      toast.error("Thêm thất bại");
       console.error("Lỗi thêm người dùng:", error);
     }
   };
@@ -138,8 +141,63 @@ export default function AddUser({ onAdd, onClose }) {
           name="roleEnum"
           value={formData.roleEnum}
           onChange={handleChange}
-          className="w-full px-3 py-2 rounded bg-gray-800"
+          className="bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow"
         >
+          styles=
+          {{
+            control: (base) => ({
+              ...base,
+              backgroundColor: "#1f2937", // bg-gray-800
+              borderColor: "#4b5563", // border-gray-600
+              color: "white",
+              borderRadius: "0.75rem",
+              boxShadow: "none",
+              "&:hover": {
+                borderColor: "#facc15", // hover: yellow-400
+              },
+            }),
+            option: (base, state) => ({
+              ...base,
+              backgroundColor: state.isSelected
+                ? "#facc15"
+                : state.isFocused
+                ? "#374151"
+                : "#1f2937",
+              color: state.isSelected ? "black" : "white",
+            }),
+            multiValue: (base) => ({
+              ...base,
+              backgroundColor: "#facc15",
+              color: "black",
+              borderRadius: "0.5rem",
+            }),
+            multiValueLabel: (base) => ({
+              ...base,
+              color: "black",
+            }),
+            multiValueRemove: (base) => ({
+              ...base,
+              color: "black",
+              ":hover": {
+                backgroundColor: "#f59e0b",
+                color: "white",
+              },
+            }),
+            placeholder: (base) => ({
+              ...base,
+              color: "#9ca3af", // text-gray-400
+            }),
+            singleValue: (base) => ({
+              ...base,
+              color: "white",
+            }),
+            menu: (base) => ({
+              ...base,
+              backgroundColor: "#1f2937", // dropdown bg
+              borderRadius: "0.75rem",
+              overflow: "hidden",
+            }),
+          }}
           <option value="OWNER">Chủ tiệm</option>
           <option value="BARBER">Thợ cắt</option>
           <option value="CUSTOMER">Khách hàng</option>

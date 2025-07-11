@@ -10,6 +10,7 @@ import { getAllUsers } from "../../services/userServices";
 import { getAllShops, getShopsByOwnerId } from "../../services/shopServices";
 import { getFeedbackByShopId } from "../../services/feedbackServices";
 import { getAppointmentByShopIdAndIsPaid } from "../../services/appointmentService";
+import { toast } from "react-toastify";
 
 export default function OwnerDashboard() {
   const [users, setUsers] = useState([]);
@@ -19,6 +20,7 @@ export default function OwnerDashboard() {
   const [payments, setPayments] = useState([]);
 
   const fetchShopsByOwnerId = async () => {
+    toast.success(`Xin chào bạn ${ownerName}`);
     const res = await getShopsByOwnerId(ownerId);
     const shops = res.data.data;
     setShops(res.data.data);
@@ -57,6 +59,7 @@ export default function OwnerDashboard() {
 
   const role = user.roleEnum;
   const ownerId = user.id;
+  const ownerName = user.username;
 
   const stats = [
     {

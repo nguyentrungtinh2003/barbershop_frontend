@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { createService } from "../../services/serviceServices";
 import { getAllShops } from "../../services/shopServices";
 import Select from "react-select";
+import { toast } from "react-toastify";
 
 export default function AddService({ onClose }) {
   const [shops, setShops] = useState([]);
@@ -58,9 +59,10 @@ export default function AddService({ onClose }) {
       }
 
       await createService(data);
-      alert("Tạo dịch vụ thành công!");
+      toast.success("Thêm thành công");
       console.log("form data", formData);
     } catch (error) {
+      toast.error("Thêm thất bại");
       console.error("Lỗi khi tạo dịch vụ:", error);
     }
   };
@@ -130,8 +132,62 @@ export default function AddService({ onClose }) {
             options={shops}
             getOptionLabel={(option) => option.name}
             getOptionValue={(option) => option.id}
-            className="text-black"
+            className="bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow"
             placeholder="Chọn Shop"
+            styles={{
+              control: (base) => ({
+                ...base,
+                backgroundColor: "#1f2937", // bg-gray-800
+                borderColor: "#4b5563", // border-gray-600
+                color: "white",
+                borderRadius: "0.75rem",
+                boxShadow: "none",
+                "&:hover": {
+                  borderColor: "#facc15", // hover: yellow-400
+                },
+              }),
+              option: (base, state) => ({
+                ...base,
+                backgroundColor: state.isSelected
+                  ? "#facc15"
+                  : state.isFocused
+                  ? "#374151"
+                  : "#1f2937",
+                color: state.isSelected ? "black" : "white",
+              }),
+              multiValue: (base) => ({
+                ...base,
+                backgroundColor: "#facc15",
+                color: "black",
+                borderRadius: "0.5rem",
+              }),
+              multiValueLabel: (base) => ({
+                ...base,
+                color: "black",
+              }),
+              multiValueRemove: (base) => ({
+                ...base,
+                color: "black",
+                ":hover": {
+                  backgroundColor: "#f59e0b",
+                  color: "white",
+                },
+              }),
+              placeholder: (base) => ({
+                ...base,
+                color: "#9ca3af", // text-gray-400
+              }),
+              singleValue: (base) => ({
+                ...base,
+                color: "white",
+              }),
+              menu: (base) => ({
+                ...base,
+                backgroundColor: "#1f2937", // dropdown bg
+                borderRadius: "0.75rem",
+                overflow: "hidden",
+              }),
+            }}
           />
         </div>
 

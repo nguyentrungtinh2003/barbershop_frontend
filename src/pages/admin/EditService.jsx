@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { updateService } from "../../services/serviceServices";
 import { getAllShops } from "../../services/shopServices";
 import Select from "react-select";
+import { toast } from "react-toastify";
 
 export default function EditService({ service, onClose }) {
   const [formData, setFormData] = useState(service);
   const [img, setImg] = useState(null);
-  const [imgPre, setImgPre] = useState(service.img);
+  const [imgPre, setImgPre] = useState(service?.img || "");
 
   const [shops, setShops] = useState([]);
 
@@ -51,17 +52,19 @@ export default function EditService({ service, onClose }) {
       }
 
       await updateService(service.id, data);
-      alert("Cập nhật thành công!");
-      onClose();
+      toast.success("Cập nhật thành công!");
+      setTimeout(() => {
+        onClose();
+      }, 3000);
     } catch (error) {
-      console.error("Lỗi cập nhật:", error);
+      toast.error("Cập nhật thất bại");
     }
   };
 
   if (!formData) return <div className="p-4">Đang tải dịch vụ...</div>;
 
   return (
-    <div className="p-4">
+    <div className="m-2 h-full">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold text-yellow-400">Chỉnh sửa dịch vụ</h2>
         <button
@@ -110,7 +113,7 @@ export default function EditService({ service, onClose }) {
             <img
               src={img ? URL.createObjectURL(img) : imgPre}
               alt="Ảnh đại diện"
-              className="w-32 h-32 object-cover rounded-full border-2 border-yellow-400"
+              className="w-20 h-20 object-cover rounded-full border-2 border-yellow-400"
             />
           </div>
         </div>
@@ -152,8 +155,62 @@ export default function EditService({ service, onClose }) {
             options={shops}
             getOptionLabel={(option) => option.name}
             getOptionValue={(option) => option.id}
-            className="text-black"
+            className="bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow"
             placeholder="Chọn Shop"
+            styles={{
+              control: (base) => ({
+                ...base,
+                backgroundColor: "#1f2937", // bg-gray-800
+                borderColor: "#4b5563", // border-gray-600
+                color: "white",
+                borderRadius: "0.75rem",
+                boxShadow: "none",
+                "&:hover": {
+                  borderColor: "#facc15", // hover: yellow-400
+                },
+              }),
+              option: (base, state) => ({
+                ...base,
+                backgroundColor: state.isSelected
+                  ? "#facc15"
+                  : state.isFocused
+                  ? "#374151"
+                  : "#1f2937",
+                color: state.isSelected ? "black" : "white",
+              }),
+              multiValue: (base) => ({
+                ...base,
+                backgroundColor: "#facc15",
+                color: "black",
+                borderRadius: "0.5rem",
+              }),
+              multiValueLabel: (base) => ({
+                ...base,
+                color: "black",
+              }),
+              multiValueRemove: (base) => ({
+                ...base,
+                color: "black",
+                ":hover": {
+                  backgroundColor: "#f59e0b",
+                  color: "white",
+                },
+              }),
+              placeholder: (base) => ({
+                ...base,
+                color: "#9ca3af", // text-gray-400
+              }),
+              singleValue: (base) => ({
+                ...base,
+                color: "white",
+              }),
+              menu: (base) => ({
+                ...base,
+                backgroundColor: "#1f2937", // dropdown bg
+                borderRadius: "0.75rem",
+                overflow: "hidden",
+              }),
+            }}
           />
         </div>
 

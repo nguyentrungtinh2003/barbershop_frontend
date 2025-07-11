@@ -21,6 +21,7 @@ import {
 } from "react-icons/fa";
 import AddShop from "./AddShop";
 import EditShop from "./EditShop";
+import Swal from "sweetalert2";
 export default function Shops() {
   const [shops, setShops] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -207,8 +208,22 @@ export default function Shops() {
                       {!shop.deleted ? (
                         <button
                           onClick={async () => {
-                            await deleteShop(shop.id);
-                            fetchShops();
+                            const result = await Swal.fire({
+                              title: "Bạn có chắc muốn khoá ?",
+                              text: "",
+                              icon: "warning",
+                              showCancelButton: true,
+                              confirmButtonText: "Khoá",
+                              cancelButtonText: "Huỷ",
+                              confirmButtonColor: "#d33",
+                              cancelButtonColor: "#aaa",
+                            });
+
+                            if (result.isConfirmed) {
+                              await deleteShop(shop.id);
+                              fetchShops();
+                              Swal.fire("Đã khoá", "", "success");
+                            }
                           }}
                           className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition"
                           title="Khoá"
@@ -218,8 +233,22 @@ export default function Shops() {
                       ) : (
                         <button
                           onClick={async () => {
-                            await restoreShop(shop.id);
-                            fetchShops();
+                            const result = await Swal.fire({
+                              title: "Bạn có chắc muốn mở khoá ?",
+                              text: "",
+                              icon: "warning",
+                              showCancelButton: true,
+                              confirmButtonText: "Mở khoá",
+                              cancelButtonText: "Huỷ",
+                              confirmButtonColor: "#3085d6",
+                              cancelButtonColor: "#aaa",
+                            });
+
+                            if (result.isConfirmed) {
+                              await restoreShop(shop.id);
+                              fetchShops();
+                              Swal.fire("Đã mở khoá", "", "success");
+                            }
                           }}
                           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition"
                           title="Mở khoá"

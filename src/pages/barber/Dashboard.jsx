@@ -11,7 +11,7 @@ import { GiScissors } from "react-icons/gi";
 import { getAppointmentByBarberId } from "../../services/appointmentService";
 import { getFeedbackByBarberId } from "../../services/feedbackServices";
 import websocketConfig from "../../utils/websocketConfig";
-
+import { toast } from "react-toastify";
 export default function BarberDashboard() {
   const [appointments, setAppointments] = useState([]);
   const barber = JSON.parse(localStorage.getItem("user"));
@@ -26,6 +26,7 @@ export default function BarberDashboard() {
 
   const fetchAppointments = async () => {
     try {
+      toast.success(`Xin chào bạn ${barber.username}`);
       const res = await getAppointmentByBarberId(parseInt(barberId));
       const rawAppointment = res.data.data;
 

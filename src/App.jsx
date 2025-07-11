@@ -4,6 +4,10 @@ import PrivateRoute from "./routes/PrivateRoute";
 import MainLayout from "./layouts/MainLayout";
 import AuthLayout from "./layouts/AuthLayout";
 
+// Toast message
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 // Import các trang Auth
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
@@ -16,15 +20,51 @@ import HomePage from "./pages/HomePage"; // 🔁 Bạn cần tạo file này
 function App() {
   return (
     <BrowserRouter>
+      <ToastContainer position="top-right" autoClose={3000} />
       <Routes>
         {/* ✅ Public homepage - KHÔNG dùng PrivateRoute */}
-        <Route path="/" element={<MainLayout><HomePage /></MainLayout>} />
+        <Route
+          path="/"
+          element={
+            <MainLayout>
+              <HomePage />
+            </MainLayout>
+          }
+        />
 
         {/* ✅ Auth routes */}
-        <Route path="/login" element={<AuthLayout><Login /></AuthLayout>} />
-        <Route path="/register" element={<AuthLayout><Register /></AuthLayout>} />
-        <Route path="/forgot-password" element={<AuthLayout><ForgotPassword /></AuthLayout>} />
-        <Route path="/reset-password" element={<AuthLayout><ResetPassword /></AuthLayout>} />
+        <Route
+          path="/login"
+          element={
+            <AuthLayout>
+              <Login />
+            </AuthLayout>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <AuthLayout>
+              <Register />
+            </AuthLayout>
+          }
+        />
+        <Route
+          path="/forgot-password"
+          element={
+            <AuthLayout>
+              <ForgotPassword />
+            </AuthLayout>
+          }
+        />
+        <Route
+          path="/reset-password"
+          element={
+            <AuthLayout>
+              <ResetPassword />
+            </AuthLayout>
+          }
+        />
 
         {/* ✅ Admin routes */}
         {routes.Admin.map((route, idx) => (

@@ -13,6 +13,7 @@ import {
 import AddUser from "./AddUser";
 import EditUser from "./EditUser";
 import { searchUser } from "../../services/userServices";
+import Swal from "sweetalert2";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
@@ -155,8 +156,22 @@ export default function Users() {
                       {user.deleted === false ? (
                         <button
                           onClick={async () => {
-                            await deleteUser(user.id);
-                            fetchUsers();
+                            const result = await Swal.fire({
+                              title: "Bạn có chắc muốn khoá ?",
+                              text: "",
+                              icon: "warning",
+                              showCancelButton: true,
+                              confirmButtonText: "Khoá",
+                              cancelButtonText: "Huỷ",
+                              confirmButtonColor: "#d33",
+                              cancelButtonColor: "#aaa",
+                            });
+
+                            if (result.isConfirmed) {
+                              await deleteUser(user.id); // Gọi API xoá
+                              fetchUsers(); // Load lại danh sách
+                              Swal.fire("Đã khoá", "", "success");
+                            }
                           }}
                           className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition"
                           title="Khoá"
@@ -166,8 +181,22 @@ export default function Users() {
                       ) : (
                         <button
                           onClick={async () => {
-                            await restoreUser(user.id);
-                            fetchUsers();
+                            const result = await Swal.fire({
+                              title: "Bạn có chắc muốn mở khoá ?",
+                              text: "",
+                              icon: "warning",
+                              showCancelButton: true,
+                              confirmButtonText: "Mở khoá",
+                              cancelButtonText: "Huỷ",
+                              confirmButtonColor: "#3085d6",
+                              cancelButtonColor: "#aaa",
+                            });
+
+                            if (result.isConfirmed) {
+                              await restoreUser(user.id);
+                              fetchUsers();
+                              Swal.fire("Đã mở khoá", "", "success");
+                            }
                           }}
                           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition"
                           title="Mở khoá"

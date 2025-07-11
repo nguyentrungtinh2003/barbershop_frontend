@@ -8,12 +8,13 @@ import {
 } from "react-icons/fa";
 import { getAllUsers } from "../../services/userServices";
 import { getAllShops } from "../../services/shopServices";
-
+import { toast } from "react-toastify";
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [shops, setShops] = useState([]);
 
   const fetchAllUsers = async () => {
+    toast.success(`Xin chào bạn ${user.username}`);
     const res = await getAllUsers();
     setUsers(res.data.data);
   };
