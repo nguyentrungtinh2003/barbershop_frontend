@@ -32,6 +32,10 @@ export default function Login() {
     }
   };
 
+  const loginGoogle = () => {
+    window.location.href = "http://localhost:8081/oauth2/authorization/google";
+  };
+
   return (
     <div className="w-full h-full px-2 flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-gray-800 relative">
       <div className="absolute inset-0 bg-[url('/barbershop-background.jpg')] bg-cover bg-center opacity-20"></div>
@@ -79,12 +83,25 @@ export default function Login() {
           />
         </div>
 
-        {/* Nút đăng nhập */}
+        {/* Nút đăng nhập thường */}
         <button
           type="submit"
-          className="w-full py-3 rounded-xl bg-gradient-to-r from-yellow-500 to-yellow-400 text-black font-bold text-lg shadow-md hover:scale-105 transition"
+          className="w-full py-3 rounded-2xl bg-yellow-500 hover:bg-yellow-600 text-white font-semibold text-lg shadow-lg hover:shadow-xl transition-transform transform hover:scale-105 duration-300"
         >
           Đăng nhập
+        </button>
+
+        {/* Nút đăng nhập với Google */}
+        <button
+          onClick={() => loginGoogle()}
+          className="mt-3 w-full py-3 rounded-2xl bg-white text-gray-700 border border-gray-300 font-semibold text-lg shadow-lg hover:shadow-xl flex items-center justify-center gap-3 hover:scale-105 transition duration-300"
+        >
+          <img
+            src="https://www.svgrepo.com/show/475656/google-color.svg"
+            alt="Google"
+            className="w-6 h-6"
+          />
+          Đăng nhập với Google
         </button>
 
         {/* Điều hướng */}

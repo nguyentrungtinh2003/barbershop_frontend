@@ -11,6 +11,7 @@ import Appointment from "../pages/admin/Appointment";
 import Profile from "../pages/admin/Profile";
 import FeedbackForm from "../pages/admin/FeedbackForm";
 import Payments from "../pages/admin/Payments";
+import OAuth2RedirectHandler from "../pages/Auth/OAuth2RedirectHandler";
 
 export const routes = {
   Public: [{ path: "/", element: <HomePage /> }],
@@ -38,5 +39,6 @@ export const routes = {
     { path: "/customer/dashboard", element: <CustomerDashboard /> },
     { path: "/customer/profile/:id", element: <Profile /> },
     { path: "/customer/feedback", element: <FeedbackForm /> },
+    { path: "/oauth2/redirect", element: <OAuth2RedirectHandler /> },
   ],
 };
