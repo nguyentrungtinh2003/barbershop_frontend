@@ -12,6 +12,7 @@ export async function login(username, password) {
   if (res.data.statusCode === 200) {
     const user = res.data.data;
     localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("userId", JSON.stringify(user.id));
     localStorage.setItem("token", res.data.token);
 
     return user;

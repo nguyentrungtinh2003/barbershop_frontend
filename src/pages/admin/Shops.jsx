@@ -26,7 +26,7 @@ export default function Shops() {
   const [shops, setShops] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
-  const size = 6;
+  const size = 4;
   const [totalPages, setTotalPages] = useState(0);
   const [keyword, setKeyword] = useState("");
 

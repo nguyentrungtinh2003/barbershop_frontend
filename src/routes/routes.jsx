@@ -12,6 +12,8 @@ import Profile from "../pages/admin/Profile";
 import FeedbackForm from "../pages/admin/FeedbackForm";
 import Payments from "../pages/admin/Payments";
 import OAuth2RedirectHandler from "../pages/Auth/OAuth2RedirectHandler";
+import PaymentSuccessVNPay from "../pages/payment/PaymentSuccessVNPay";
+import Payment from "../pages/payment/Payment";
 
 export const routes = {
   Public: [{ path: "/", element: <HomePage /> }],
@@ -40,5 +42,7 @@ export const routes = {
     { path: "/customer/profile/:id", element: <Profile /> },
     { path: "/customer/feedback", element: <FeedbackForm /> },
     { path: "/oauth2/redirect", element: <OAuth2RedirectHandler /> },
+    { path: "/vnpay-return", element: <PaymentSuccessVNPay /> },
+    { path: "/payment-vnpay", element: <Payment /> },
   ],
 };

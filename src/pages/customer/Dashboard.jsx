@@ -561,7 +561,14 @@ export default function CustomerDashboard() {
                         Gửi Feedback
                       </button>
                     ) : (
-                      <span className="text-gray-400">Chưa thanh toán</span>
+                      <>
+                        <span className="text-gray-400">Chưa thanh toán</span>
+                        <a href="/payment-vnpay">
+                          <button className="ml-2 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
+                            Thanh toán Online
+                          </button>
+                        </a>
+                      </>
                     )}
                   </p>
                 </div>

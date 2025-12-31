@@ -25,7 +25,7 @@ export default function Users() {
 
   // Phân trang
   const [page, setPage] = useState(0);
-  const size = 6;
+  const size = 4;
   const [totalPages, setTotalPages] = useState(0);
 
   const fetchUsers = async (currentPage = page) => {
@@ -109,6 +109,7 @@ export default function Users() {
                   <th className="px-6 py-3">Email</th>
                   <th className="px-6 py-3">SDT</th>
                   <th className="px-6 py-3">Hình</th>
+                  <th className="px-6 py-3">Provider</th>
                   <th className="px-6 py-3">Vai trò</th>
                   <th className="px-6 py-3">Trạng thái</th>
                   <th className="px-6 py-3 text-center">Hành động</th>
@@ -126,6 +127,7 @@ export default function Users() {
                     <td className="px-6 py-4">
                       <img src={user.img} className="w-10 h-10"></img>
                     </td>
+                    <td className="px-6 py-4 capitalize">{user.provider}</td>
                     <td className="px-6 py-4 capitalize">{user.roleEnum}</td>
                     <td className="px-6 py-4">
                       <span

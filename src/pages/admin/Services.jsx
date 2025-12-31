@@ -26,7 +26,7 @@ export default function Services() {
 
   // Phân trang
   const [page, setPage] = useState(0);
-  const size = 6;
+  const size = 4;
   const [totalPages, setTotalPages] = useState(0);
 
   const fetchServices = async (currentPage = page) => {

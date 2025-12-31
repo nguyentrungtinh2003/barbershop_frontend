@@ -21,6 +21,7 @@ export default function Login() {
             replace: true,
           });
         }, 3000);
+
         localStorage.setItem("user", JSON.stringify(user));
         toast.success("Đăng nhập thành công");
       } else {
