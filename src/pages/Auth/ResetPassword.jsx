@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FiLock, FiMail, FiShield } from "react-icons/fi";
-import { reset } from "../../services/authService";
+import { reset } from "../../services/authServices";
 import { toast } from "react-toastify";
 
 export default function ResetPassword() {

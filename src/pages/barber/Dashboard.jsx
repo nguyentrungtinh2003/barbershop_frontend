@@ -8,7 +8,7 @@ import {
   FaStore,
 } from "react-icons/fa";
 import { GiScissors } from "react-icons/gi";
-import { getAppointmentByBarberId } from "../../services/appointmentService";
+import { getAppointmentByBarberId } from "../../services/appointmentServices";
 import { getFeedbackByBarberId } from "../../services/feedbackServices";
 import websocketConfig from "../../utils/websocketConfig";
 import { toast } from "react-toastify";

@@ -30,8 +30,11 @@ export default function Navbar() {
       { label: "Profile", path: `/barber/profile/${userId}` },
     ],
     CUSTOMER: [
-      { label: "Lịch sử đặt lịch", path: "/customer/dashboard" },
+      { label: "Đặt lịch", path: "/customer/dashboard" },
       { label: "Profile", path: `/customer/profile/${userId}` },
+      // { label: "Mua sắm", path: "/customer/shopping" },
+      { label: "Giỏ hàng", path: "/customer/cart" },
+      { label: "Hoá đơn", path: "/customer/order-history" },
     ],
   };
 

@@ -14,6 +14,15 @@ import Payments from "../pages/admin/Payments";
 import OAuth2RedirectHandler from "../pages/Auth/OAuth2RedirectHandler";
 import PaymentSuccessVNPay from "../pages/payment/PaymentSuccessVNPay";
 import Payment from "../pages/payment/Payment";
+import Products from "../pages/admin/Products";
+import Shopping from "../pages/customer/Shopping";
+import Cart from "../pages/customer/Cart";
+import ProductDetails from "../pages/customer/ProductDetails";
+import ShopDetails from "../pages/customer/ShopDetails";
+import HistoryBooking from "../pages/customer/HistoryBooking";
+import TryHairstyle from "../pages/customer/TryHairstyle";
+import OrderHistory from "../pages/customer/OrderHistory";
+import Order from "../pages/customer/Order";
 
 export const routes = {
   Public: [{ path: "/", element: <HomePage /> }],
@@ -44,5 +53,13 @@ export const routes = {
     { path: "/oauth2/redirect", element: <OAuth2RedirectHandler /> },
     { path: "/vnpay-return", element: <PaymentSuccessVNPay /> },
     { path: "/payment-vnpay", element: <Payment /> },
+    { path: "/customer/shopping", element: <Shopping /> },
+    { path: "/customer/cart", element: <Cart /> },
+    { path: "/customer/shopping/product/:id", element: <ProductDetails /> },
+    { path: "/customer/shop/:id", element: <ShopDetails /> },
+    { path: "/customer/history-booking", element: <HistoryBooking /> },
+    { path: "/customer/try-hairstyle", element: <TryHairstyle /> },
+    { path: "/customer/order-history", element: <OrderHistory /> },
+    { path: "/customer/orders", element: <Order /> },
   ],
 };

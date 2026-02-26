@@ -27,7 +27,7 @@ export default function FeedbackForm({ show, onHide, appointment }) {
     const formData = new FormData();
     formData.append(
       "feedback",
-      new Blob([JSON.stringify(feedback)], { type: "application/json" })
+      new Blob([JSON.stringify(feedback)], { type: "application/json" }),
     );
     if (img) {
       formData.append("img", img);
@@ -49,22 +49,28 @@ export default function FeedbackForm({ show, onHide, appointment }) {
   //   if (!show) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white w-full max-w-lg rounded-xl shadow-lg p-6 relative">
-        <button
-          className="absolute top-3 right-3 text-gray-500 hover:text-red-600 text-xl"
-          onClick={onHide}
-        >
-          &times;
-        </button>
-        <h2 className="text-2xl font-bold mb-6 text-yellow-500">
+    <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+      <div className="bg-zinc-900 w-full max-w-lg rounded-2xl shadow-2xl p-6 relative border border-yellow-500">
+        {/* Close */}
+        <a href="/customer/history-booking">
+          <button
+            className="absolute top-3 right-3 text-gray-400 hover:text-yellow-400 text-2xl"
+            onClick={onHide}
+          >
+            x
+          </button>
+        </a>
+
+        {/* Title */}
+        <h2 className="text-2xl font-bold mb-6 text-yellow-400 text-center">
           Gửi Feedback
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Rating */}
           <div>
-            <label className="block text-gray-700 font-semibold mb-1">
-              Đánh giá (1-5 sao)
+            <label className="block text-gray-300 font-semibold mb-1">
+              Đánh giá (1–5 ⭐)
             </label>
             <input
               type="number"
@@ -73,12 +79,14 @@ export default function FeedbackForm({ show, onHide, appointment }) {
               value={rating}
               onChange={(e) => setRating(e.target.value)}
               required
-              className="w-full text-black border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+              className="w-full bg-black text-yellow-400 border border-yellow-500 rounded-lg px-3 py-2
+                     focus:outline-none focus:ring-2 focus:ring-yellow-400"
             />
           </div>
 
+          {/* Comment */}
           <div>
-            <label className="block text-gray-700 font-semibold mb-1">
+            <label className="block text-gray-300 font-semibold mb-1">
               Nhận xét
             </label>
             <textarea
@@ -86,25 +94,33 @@ export default function FeedbackForm({ show, onHide, appointment }) {
               onChange={(e) => setComment(e.target.value)}
               rows={4}
               required
-              className="w-full text-black border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 resize-none"
-            ></textarea>
+              className="w-full bg-black text-yellow-400 border border-yellow-500 rounded-lg px-3 py-2
+                     focus:outline-none focus:ring-2 focus:ring-yellow-400 resize-none"
+            />
           </div>
 
+          {/* Image */}
           <div>
-            <label className="block text-gray-700 font-semibold mb-1">
+            <label className="block text-gray-300 font-semibold mb-1">
               Ảnh (tuỳ chọn)
             </label>
             <input
               type="file"
               accept="image/*"
               onChange={(e) => setImg(e.target.files[0])}
-              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-yellow-400 file:text-black hover:file:bg-yellow-500"
+              className="block w-full text-sm text-gray-400
+                     file:mr-4 file:py-2 file:px-4 file:rounded-lg
+                     file:border file:border-yellow-500
+                     file:bg-black file:text-yellow-400
+                     hover:file:bg-yellow-400 hover:file:text-black"
             />
           </div>
 
+          {/* Submit */}
           <button
             type="submit"
-            className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-4 py-2 rounded-lg w-full transition"
+            className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-bold
+                   px-4 py-2 rounded-lg transition duration-200"
           >
             Gửi Feedback
           </button>

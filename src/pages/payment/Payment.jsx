@@ -1,16 +1,31 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { FaCoins } from "react-icons/fa";
 import { ImSpinner2 } from "react-icons/im";
-import { createPayment } from "../../services/paymentService";
+import { createPayment } from "../../services/paymentServices";
 import { toast } from "react-toastify";
 import { GiConsoleController } from "react-icons/gi";
+import { useSearchParams } from "react-router-dom";
 
 export default function Payment() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [method, setMethod] = useState("VNPay");
+  const [method, setMethod] = useState("VNPAY");
+  const [orderId, setOrderId] = useState(null);
   const [amount, setAmount] = useState(1);
+
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const amt = Number(searchParams.get("amount"));
+    if (amt && amt >= 10000) {
+      setAmount(amt);
+    }
+    const oid = searchParams.get("orderId");
+    if (oid) {
+      setOrderId(oid);
+    }
+  }, [searchParams]);
 
   const submitPayment = async (e) => {
     e.preventDefault();
@@ -23,6 +38,7 @@ export default function Payment() {
       userId,
       amount,
       method,
+      orderId,
     };
 
     try {
@@ -49,7 +65,7 @@ export default function Payment() {
         <div className="flex flex-col items-center text-center mb-6">
           <FaCoins size={60} className="text-yellow-400 mb-3" />
           <h1 className="text-3xl font-bold text-yellow-400 uppercase tracking-widest">
-            Thanh toán cắt tóc
+            Thanh toán
           </h1>
           <p className="text-gray-400 mt-2">
             Thanh toán nhanh chóng – an toàn qua VNPay
@@ -71,10 +87,9 @@ export default function Payment() {
             </label>
             <input
               type="number"
-              min="10000"
-              step="1000"
               value={amount}
               onChange={(e) => setAmount(Number(e.target.value))}
+              min={10000}
               required
               placeholder="Nhập số tiền..."
               className="w-full bg-gray-900 border border-gray-700 text-white rounded-xl p-3 focus:ring-2 focus:ring-yellow-400 focus:outline-none"
@@ -93,7 +108,7 @@ export default function Payment() {
                 onChange={(e) => setMethod(e.target.value)}
                 className="flex-1 bg-gray-900 text-white border border-gray-700 rounded-lg p-3 focus:ring-2 focus:ring-yellow-400"
               >
-                <option value="VNPay">VNPay</option>
+                <option value="VNPAY">VNPay</option>
                 {/* <option value="PayPal">PayPal</option> */}
               </select>
 

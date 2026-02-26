@@ -5,12 +5,13 @@ import {
   createAppointment,
   getTimeSlot,
   getAppointmentByCustomerId,
-} from "../../services/appointmentService";
+} from "../../services/appointmentServices";
 import { getFeedbackByCustomerId } from "../../services/feedbackServices";
 import Select from "react-select";
 import FeedbackForm from "../admin/FeedbackForm";
 import websocketConfig from "../../utils/websocketConfig";
 import { toast } from "react-toastify";
+import { useSearchParams } from "react-router-dom";
 
 export default function CustomerDashboard() {
   const [formData, setFormData] = useState({
@@ -48,6 +49,23 @@ export default function CustomerDashboard() {
   const [showModal, setShowModal] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
 
+  // Lấy shopId từ URL nếu có
+  const [searchParams] = useSearchParams();
+  const shopIdFromParams = searchParams.get("shopId");
+
+  useEffect(() => {
+    if (shopIdFromParams) {
+      const findShop = shops.find((s) => s.id === parseInt(shopIdFromParams));
+      if (findShop) {
+        setCurrentShop(findShop);
+        setFormData((prev) => ({
+          ...prev,
+          shop: { id: findShop.id },
+        }));
+      }
+    }
+  }, [shopIdFromParams, shops]);
+
   const openFeedbackForm = (appt) => {
     setSelectedAppointment(appt);
     setShowModal(true);
@@ -75,7 +93,7 @@ export default function CustomerDashboard() {
       const res = await getTimeSlot(
         formData.shop.id,
         formData.barber.id,
-        formData.date
+        formData.date,
       );
       console.log("fetch time", res.data.data);
       setTimeSlot(res.data.data);
@@ -121,7 +139,7 @@ export default function CustomerDashboard() {
   const cleanedBookedTimes = timeSlot.map((t) => t.trim());
 
   const availableTimeSlot = timeSlots.filter(
-    (slot) => !cleanedBookedTimes.includes(slot.startTime?.trim())
+    (slot) => !cleanedBookedTimes.includes(slot.startTime?.trim()),
   );
 
   console.log("backend time ", timeSlot);
@@ -157,9 +175,16 @@ export default function CustomerDashboard() {
   return (
     <div className="p-4 mx-auto bg-gradient-to-br from-black via-gray-900 to-gray-800 min-h-screen text-white font-vietnam">
       <div className="bg-gray-900 rounded-2xl shadow-2xl p-6 max-w-4xl mx-auto">
-        {/* <h2 className="text-3xl font-bold text-yellow-400 mb-8 text-center uppercase tracking-widest">
+        <h2 className="text-3xl font-bold text-yellow-400 mb-8 text-center uppercase tracking-widest">
           Đặt lịch cắt tóc
-        </h2> */}
+        </h2>
+        {/* <button className="mb-6 bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-xl transition duration-200 shadow-lg">
+          <a href="/customer/shopping">Mua sản phẩm</a>
+        </button>
+
+        <button className="mb-6 bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-xl transition duration-200 shadow-lg">
+          <a href="/customer/cart">Giỏ hàng</a>
+        </button> */}
 
         <form className="space-y-6 bg-black p-6 rounded-xl shadow-lg border border-yellow-500">
           {/* Hidden appointment status */}
@@ -178,7 +203,11 @@ export default function CustomerDashboard() {
               name="shop"
               value={currentShop}
               onChange={(selectedShop) => {
-                setCurrentShop(selectedShop);
+                setCurrentShop(
+                  shopIdFromParams
+                    ? shops.find((s) => s.id === shopIdFromParams)
+                    : selectedShop,
+                );
                 setFormData((prev) => ({
                   ...prev,
                   barber: { id: "" },
@@ -210,8 +239,8 @@ export default function CustomerDashboard() {
                   backgroundColor: state.isSelected
                     ? "#facc15"
                     : state.isFocused
-                    ? "#374151"
-                    : "#1f2937",
+                      ? "#374151"
+                      : "#1f2937",
                   color: state.isSelected ? "black" : "white",
                 }),
                 multiValue: (base) => ({
@@ -259,7 +288,7 @@ export default function CustomerDashboard() {
               name="barber"
               value={
                 filteredBarbers.find(
-                  (barber) => barber.id === formData.barber.id
+                  (barber) => barber.id === formData.barber.id,
                 ) || null
               }
               onChange={(selected) =>
@@ -292,8 +321,8 @@ export default function CustomerDashboard() {
                   backgroundColor: state.isSelected
                     ? "#facc15"
                     : state.isFocused
-                    ? "#374151"
-                    : "#1f2937",
+                      ? "#374151"
+                      : "#1f2937",
                   color: state.isSelected ? "black" : "white",
                 }),
                 multiValue: (base) => ({
@@ -342,7 +371,7 @@ export default function CustomerDashboard() {
               isMulti
               name="services"
               value={filteredServices.filter((service) =>
-                formData.services.some((ser) => ser.id === service.id)
+                formData.services.some((ser) => ser.id === service.id),
               )}
               onChange={(selected) =>
                 setFormData((prev) => ({
@@ -354,7 +383,9 @@ export default function CustomerDashboard() {
                 }))
               }
               options={filteredServices}
-              getOptionLabel={(option) => option.name}
+              getOptionLabel={(option) =>
+                option.name + " - " + option.price + " ₫"
+              }
               getOptionValue={(option) => option.id}
               className="bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow"
               placeholder={
@@ -378,8 +409,8 @@ export default function CustomerDashboard() {
                   backgroundColor: state.isSelected
                     ? "#facc15"
                     : state.isFocused
-                    ? "#374151"
-                    : "#1f2937",
+                      ? "#374151"
+                      : "#1f2937",
                   color: state.isSelected ? "black" : "white",
                 }),
                 multiValue: (base) => ({
@@ -458,8 +489,8 @@ export default function CustomerDashboard() {
               isDisabled
                 ? "bg-gray-800 text-gray-500 border-gray-600 cursor-not-allowed opacity-50"
                 : isSelected
-                ? "bg-yellow-400 text-black border-yellow-500 ring-2 ring-yellow-300"
-                : "bg-gray-100 text-black border-gray-300 hover:bg-yellow-100"
+                  ? "bg-yellow-400 text-black border-yellow-500 ring-2 ring-yellow-300"
+                  : "bg-gray-100 text-black border-gray-300 hover:bg-yellow-100"
             }
           `}
                     disabled={isDisabled}
@@ -497,7 +528,7 @@ export default function CustomerDashboard() {
         </form>
         {/* Lich su book */}
         {/* Lịch sử đặt lịch */}
-        <div className="mt-12 bg-gray-900 rounded-xl p-6 shadow-md border border-yellow-500">
+        {/* <div className="mt-12 bg-gray-900 rounded-xl p-6 shadow-md border border-yellow-500">
           <h3 className="text-xl font-bold text-yellow-400 mb-4 text-center uppercase">
             Lịch sử đặt lịch của bạn
           </h3>
@@ -563,7 +594,7 @@ export default function CustomerDashboard() {
                     ) : (
                       <>
                         <span className="text-gray-400">Chưa thanh toán</span>
-                        <a href="/payment-vnpay">
+                        <a href={`/payment-vnpay?amount=${appt.price}`}>
                           <button className="ml-2 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
                             Thanh toán Online
                           </button>
@@ -582,9 +613,9 @@ export default function CustomerDashboard() {
               )}
             </div>
           )}
-        </div>
+        </div> */}
         {/* Lịch sử feedback */}
-        <div className="mt-12 bg-gray-900 rounded-xl p-6 shadow-md border border-yellow-500">
+        {/* <div className="mt-12 bg-gray-900 rounded-xl p-6 shadow-md border border-yellow-500">
           <h3 className="text-xl font-bold text-yellow-400 mb-4 text-center uppercase">
             Lịch sử Feedback
           </h3>
@@ -621,8 +652,58 @@ export default function CustomerDashboard() {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
+      {/* ===== FLOATING BOOKING BUTTON ===== */}
+      <a
+        href="/customer/try-hairstyle"
+        className="
+    fixed 
+    bottom-20 right-4
+    md:top-20 md:bottom-auto md:right-6
+    z-50
+  "
+      >
+        <button
+          className="
+      bg-yellow-400 text-black
+      font-bold
+      text-sm md:text-lg
+      px-4 py-3 md:px-6 md:py-4
+      rounded-full
+      shadow-2xl
+      hover:bg-yellow-300
+      hover:scale-105
+      transition
+      whitespace-nowrap
+    "
+        >
+          💇‍♂️ Kiểu tóc phù hợp
+        </button>
+      </a>
+
+      {/* ===== FLOATING BOOKING BUTTON ===== */}
+      <a
+        href="/customer/history-booking"
+        className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50"
+      >
+        <button
+          className="
+      bg-yellow-400 text-black
+      font-bold
+      text-sm md:text-lg
+      px-4 py-3 md:px-6 md:py-4
+      rounded-full
+      shadow-2xl
+      hover:bg-yellow-300
+      hover:scale-105
+      transition
+      whitespace-nowrap
+    "
+        >
+          📅 Lịch sử đặt lịch
+        </button>
+      </a>
     </div>
   );
 }

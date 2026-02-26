@@ -1,6 +1,6 @@
 import React, { use, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { login } from "../../services/authService";
+import { login } from "../../services/authServices";
 import { FiPhone, FiLock, FiUser } from "react-icons/fi";
 import { toast } from "react-toastify";
 

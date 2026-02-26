@@ -9,7 +9,7 @@ export const getShopsById = (id) => instance.get(`/shops/${id}`);
 
 export const searchShop = (keyword, page, size) =>
   instance.get(
-    `/owner/shops/search?keyword=${keyword}&page=${page}&size=${size}`
+    `/customer/shops/search?keyword=${keyword}&page=${page}&size=${size}`,
   );
 
 export const getShopsByOwnerId = (ownerId) =>

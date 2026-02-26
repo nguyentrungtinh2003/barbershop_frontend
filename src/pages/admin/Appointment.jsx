@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import {
   getAppointmentByShopId,
   markAsPaid,
-} from "../../services/appointmentService";
+} from "../../services/appointmentServices";
 import {
   FaCalendarAlt,
   FaUser,

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom"; // React Router hook
-import { executePayment } from "../../services/paymentService";
+import { executePayment } from "../../services/paymentServices";
 import { toast } from "react-toastify";
 
 const PaymentSuccessVNPay = () => {

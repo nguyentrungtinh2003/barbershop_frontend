@@ -9,13 +9,14 @@ import {
 import { getAllUsers } from "../../services/userServices";
 import { getAllShops, getShopsByOwnerId } from "../../services/shopServices";
 import { getFeedbackByShopId } from "../../services/feedbackServices";
-import { getAppointmentByShopIdAndIsPaid } from "../../services/appointmentService";
+import { getAppointmentByShopIdAndIsPaid } from "../../services/appointmentServices";
 import { toast } from "react-toastify";
 
 export default function OwnerDashboard() {
   const [users, setUsers] = useState([]);
   const [shops, setShops] = useState([]);
   const [services, setServices] = useState([]);
+  const [products, setProducts] = useState([]);
   const [feedbacks, setFeedbacks] = useState([]);
   const [payments, setPayments] = useState([]);
 

@@ -1,5 +1,5 @@
 import { use, useEffect, useState } from "react";
-import { getUserById } from "../../services/userServices";
+import { getUserInfo } from "../../services/userServices";
 import { useParams } from "react-router-dom";
 import EditUser from "./EditUser";
 import { toast } from "react-toastify";
@@ -10,7 +10,7 @@ export default function Profile() {
   const [showEditModal, setShowEditModal] = useState(false);
 
   const fetchUserInfo = async () => {
-    const res = await getUserById(id);
+    const res = await getUserInfo(id);
     setUser(res.data.data);
     if (!res.data.data) {
       toast.warning("Bạn không có quyền xem thông tin người khác");
@@ -22,7 +22,7 @@ export default function Profile() {
 
   useEffect(() => {
     fetchUserInfo();
-  }, []);
+  }, [id]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white font-sans flex items-center justify-center p-4">
@@ -48,7 +48,7 @@ export default function Profile() {
               📍 Địa chỉ: <span className="text-white">{user?.address}</span>
             </p>
             <p className="text-gray-300 mb-1">
-              🎂 Ngày sinh: <span className="text-white"></span>
+              🎂 Ngày sinh: <span className="text-white">{user?.birthDay}</span>
             </p>
             <p className="text-gray-300 mb-1">
               🧑 Vai trò: <span className="text-white">{user?.roleEnum}</span>
@@ -61,18 +61,18 @@ export default function Profile() {
                 {user?.isDeleted ? "Đã xoá" : "Đang hoạt động"}
               </span>
             </p>
-            <p className="text-gray-300 mt-2 italic">"{user?.description}"</p>
+            <p className="text-gray-300 mt-2 italic">{user?.description}</p>
           </div>
         </div>
 
-        <div className="mt-8 text-center">
+        {/* <div className="mt-8 text-center">
           <button
             onClick={() => setShowEditModal(true)}
             className="bg-yellow-500 text-black font-bold px-6 py-2 rounded-xl shadow hover:bg-yellow-400 transition duration-300"
           >
             ✏️ Chỉnh sửa hồ sơ
           </button>
-        </div>
+        </div> */}
       </div>
 
       {/* Modal Sửa */}

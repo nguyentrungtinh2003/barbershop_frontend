@@ -10,6 +10,7 @@ export default function AddShop({ onAdd, onClose }) {
     email: "",
     phoneNumber: "",
     address: "",
+    addressMap: "",
     slogan: "",
     description: "",
     ownerId: "",
@@ -62,7 +63,7 @@ export default function AddShop({ onAdd, onClose }) {
 
       formDataToSend.append(
         "shop",
-        new Blob([JSON.stringify(formData)], { type: "application/json" })
+        new Blob([JSON.stringify(formData)], { type: "application/json" }),
       );
 
       await createShop(formDataToSend);
@@ -111,8 +112,8 @@ export default function AddShop({ onAdd, onClose }) {
               backgroundColor: state.isSelected
                 ? "#facc15"
                 : state.isFocused
-                ? "#374151"
-                : "#1f2937",
+                  ? "#374151"
+                  : "#1f2937",
               color: state.isSelected ? "black" : "white",
             }),
             multiValue: (base) => ({
@@ -185,6 +186,15 @@ export default function AddShop({ onAdd, onClose }) {
           value={formData.address}
           onChange={handleChange}
           placeholder="Địa chỉ"
+          className="w-full px-3 py-2 rounded bg-gray-800"
+        />
+
+        <input
+          type="text"
+          name="addressMap"
+          value={formData.addressMap}
+          onChange={handleChange}
+          placeholder="Địa chỉ map"
           className="w-full px-3 py-2 rounded bg-gray-800"
         />
 

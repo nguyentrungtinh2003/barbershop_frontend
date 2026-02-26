@@ -9,6 +9,7 @@ export default function EditShop({ shop, onClose }) {
     email: shop.email,
     phoneNumber: shop.phoneNumber,
     address: shop.address,
+    addressMap: shop.addressMap,
     slogan: shop.slogan,
     description: shop.description,
     ownerId: shop.owner.id,
@@ -67,7 +68,7 @@ export default function EditShop({ shop, onClose }) {
       const data = new FormData();
       data.append(
         "shop",
-        new Blob([JSON.stringify(formData)], { type: "application/json" })
+        new Blob([JSON.stringify(formData)], { type: "application/json" }),
       );
 
       if (img) {
@@ -138,8 +139,8 @@ export default function EditShop({ shop, onClose }) {
                   backgroundColor: state.isSelected
                     ? "#facc15"
                     : state.isFocused
-                    ? "#374151"
-                    : "#1f2937",
+                      ? "#374151"
+                      : "#1f2937",
                   color: state.isSelected ? "black" : "white",
                 }),
                 multiValue: (base) => ({
@@ -215,8 +216,8 @@ export default function EditShop({ shop, onClose }) {
                   backgroundColor: state.isSelected
                     ? "#facc15"
                     : state.isFocused
-                    ? "#374151"
-                    : "#1f2937",
+                      ? "#374151"
+                      : "#1f2937",
                   color: state.isSelected ? "black" : "white",
                 }),
                 multiValue: (base) => ({
@@ -288,6 +289,14 @@ export default function EditShop({ shop, onClose }) {
             value={formData.address || ""}
             onChange={handleChange}
             placeholder="Địa chỉ"
+            className="px-4 py-2 rounded-lg bg-gray-700 col-span-2"
+          />
+          <input
+            type="text"
+            name="addressMap"
+            value={formData.addressMap || ""}
+            onChange={handleChange}
+            placeholder="Địa chỉ map"
             className="px-4 py-2 rounded-lg bg-gray-700 col-span-2"
           />
           <input

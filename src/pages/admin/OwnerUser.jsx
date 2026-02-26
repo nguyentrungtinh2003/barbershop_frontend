@@ -16,6 +16,8 @@ import AddUser from "./AddUser";
 import EditUser from "./EditUser";
 import AddService from "./AddService";
 import EditService from "./EditService";
+import AddProduct from "./AddProduct";
+import EditProduct from "./EditProduct";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { deleteService, restoreService } from "../../services/serviceServices";
@@ -23,12 +25,16 @@ import { deleteService, restoreService } from "../../services/serviceServices";
 export default function OwnerUser() {
   const [users, setUsers] = useState([]);
   const [shop, setShop] = useState({});
+  const [products, setProducts] = useState([]);
   const [feedbacks, setFeedbacks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showAddModalUser, setShowAddModalUser] = useState(false);
   const [showEditModalUser, setShowEditModalUser] = useState(false);
   const [showAddModalService, setShowAddModalService] = useState(false);
   const [showEditModalService, setShowEditModalService] = useState(false);
+  const [showAddModalProduct, setShowAddModalProduct] = useState(false);
+  const [showEditModalProduct, setShowEditModalProduct] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedService, setSelectedService] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const { id } = useParams();
@@ -44,6 +50,7 @@ export default function OwnerUser() {
       const feedbacks = await getFeedbackByShopId(shop.id);
 
       setFeedbacks(feedbacks?.data?.data);
+      setProducts(res.data.data.products);
     } catch (error) {
       console.error("Lỗi khi lấy shop:", error);
     }
@@ -267,6 +274,145 @@ export default function OwnerUser() {
                 <tr>
                   <td colSpan="7" className="text-center py-4 text-gray-400">
                     Không có người dùng nào.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      <p className="m-2 text-xl font-semibold">Quản lí Sản phẩm</p>
+      {/* NÚT THÊM */}
+      <div className="mb-4 flex justify-end">
+        <button
+          onClick={() => setShowAddModalProduct(true)}
+          className="bg-yellow-400 text-black font-semibold px-4 py-2 rounded-xl hover:bg-yellow-500 flex items-center gap-2 shadow"
+        >
+          <FaPlus />
+          Thêm Sản phẩm
+        </button>
+      </div>
+
+      {/* BẢNG BARBER */}
+      {loading ? (
+        <div className="text-center text-gray-300">Đang tải...</div>
+      ) : (
+        <div className="overflow-x-auto rounded-xl shadow-md border border-gray-700">
+          <table className="w-full text-sm text-left text-white bg-gray-800">
+            <thead className="text-xs uppercase bg-yellow-400 text-black">
+              <tr>
+                <th className="px-6 py-3">Tên</th>
+                <th className="px-6 py-3">Mô tả</th>
+                <th className="px-6 py-3">Giá</th>
+                <th className="px-6 py-3">Hình</th>
+                <th className="px-6 py-3">Số lượng</th>
+                <th className="px-6 py-3">Trạng thái</th>
+                <th className="px-6 py-3 text-center">Hành động</th>
+              </tr>
+            </thead>
+            <tbody>
+              {products.map((product, index) => (
+                <tr
+                  key={product.id}
+                  className={`border-b border-gray-700 ${
+                    index % 2 === 0 ? "bg-gray-900" : "bg-gray-800"
+                  } hover:bg-gray-700 transition`}
+                >
+                  <td className="px-6 py-4 font-medium">{product.name}</td>
+                  <td className="px-6 py-4">{product.description}</td>
+                  <td className="px-6 py-4">{product.price}</td>
+                  <td className="px-6 py-4">
+                    <img
+                      src={product.img || "/user.jpg"}
+                      className="w-10 h-10 rounded-full"
+                    />
+                  </td>
+                  <td className="px-6 py-4 capitalize">{product.stock}</td>
+                  <td className="px-6 py-4">
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        !product.deleted
+                          ? "bg-green-500/20 text-green-300"
+                          : "bg-red-500/20 text-red-300"
+                      }`}
+                    >
+                      {!product.deleted ? (
+                        <FaCheckCircle className="text-lg" />
+                      ) : (
+                        <FaTimesCircle className="text-lg" />
+                      )}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 flex justify-center gap-2">
+                    <button
+                      onClick={() => {
+                        setSelectedProduct(product);
+                        setShowEditModalProduct(true);
+                      }}
+                      className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded"
+                      title="Chỉnh sửa"
+                    >
+                      <FaEdit />
+                    </button>
+                    {product.deleted === false ? (
+                      <button
+                        onClick={async () => {
+                          const result = await Swal.fire({
+                            title: "Bạn có chắc muốn khoá ?",
+                            text: "",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonText: "Khoá",
+                            cancelButtonText: "Huỷ",
+                            confirmButtonColor: "#d33",
+                            cancelButtonColor: "#aaa",
+                          });
+
+                          if (result.isConfirmed) {
+                            await deleteProduct(product.id);
+                            fetchProducts();
+                            Swal.fire("Đã khoá", "", "success");
+                          }
+                        }}
+                        className="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded"
+                        title="Khoá"
+                      >
+                        <FaLock />
+                      </button>
+                    ) : (
+                      <button
+                        onClick={async () => {
+                          const result = await Swal.fire({
+                            title: "Bạn có chắc muốn mở khoá ?",
+                            text: "",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonText: "Khoá",
+                            cancelButtonText: "Huỷ",
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#aaa",
+                          });
+
+                          if (result.isConfirmed) {
+                            await restoreProduct(product.id);
+                            fetchProducts();
+                            Swal.fire("Đã mở khoá", "", "success");
+                          }
+                        }}
+                        className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded"
+                        title="Mở khoá"
+                      >
+                        <FaLockOpen />
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+              {users.length === 0 && (
+                <tr>
+                  <td colSpan="7" className="text-center py-4 text-gray-400">
+                    Không có sản phẩm nào.
                   </td>
                 </tr>
               )}
@@ -546,6 +692,36 @@ export default function OwnerUser() {
                 setShowEditModalUser(false);
                 setSelectedUser(null);
                 fetchUsers();
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Modal Thêm */}
+      {showAddModalProduct && (
+        <div className="fixed inset-0 bg-[rgba(0,0,0,0.7)] flex justify-center items-center z-50">
+          <div className="bg-black border border-yellow-400 p-6 rounded-lg w-full max-w-xl text-white shadow-xl">
+            <AddProduct
+              onClose={() => {
+                setShowAddModalProduct(false);
+                fetchProducts();
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Modal Sửa */}
+      {showEditModalProduct && selectedProduct && (
+        <div className="fixed inset-0 bg-[rgba(0,0,0,0.7)] flex justify-center items-center z-50">
+          <div className="bg-black border border-yellow-400 p-6 rounded-lg w-full max-w-xl text-white shadow-xl">
+            <EditProduct
+              product={selectedProduct}
+              onClose={() => {
+                setShowEditModalProduct(false);
+                setSelectedProduct(null);
+                fetchProducts();
               }}
             />
           </div>

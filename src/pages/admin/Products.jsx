@@ -1,81 +1,87 @@
 import React, { useEffect, useState } from "react";
-import { getUsers, deleteUser, restoreUser } from "../../services/userServices";
+import {
+  getShops,
+  deleteShop,
+  restoreShop,
+  getShopsByOwnerId,
+  searchShop,
+} from "../../services/shopServices";
 import {
   FaTrashAlt,
   FaEdit,
   FaPlus,
   FaLock,
   FaLockOpen,
-  FaCheckCircle,
   FaTimesCircle,
+  FaCheckCircle,
+  FaEye,
+  FaRegCalendarCheck,
+  FaCoins,
   FaSearch,
 } from "react-icons/fa";
-import AddUser from "./AddUser";
-import EditUser from "./EditUser";
-import { searchUser } from "../../services/userServices";
 import Swal from "sweetalert2";
-
-export default function Users() {
-  const [users, setUsers] = useState([]);
+import AddProduct from "./AddProduct";
+export default function Products() {
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [keyword, setKeyword] = useState("");
-
-  // Phân trang
   const [page, setPage] = useState(0);
   const size = 4;
   const [totalPages, setTotalPages] = useState(0);
+  const [keyword, setKeyword] = useState("");
 
-  const fetchUsers = async (currentPage = page) => {
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedShop, setSelectedShop] = useState(null);
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const fetchProducts = async (currentPage = page) => {
     setLoading(true);
     try {
-      const res = await getUsers(currentPage, size);
-      setUsers(res.data.data.content);
+      const res = await getProducts(currentPage, size);
+      setProducts(res.data.data.content);
       setTotalPages(res.data.data.totalPages);
       setPage(currentPage);
+      console.log(res.data.data.content);
     } catch (error) {
-      console.error("Lỗi lấy danh sách người dùng:", error);
+      console.error("Lỗi lấy danh sách sản phẩm:", error);
     }
     setLoading(false);
   };
 
   const handleSearch = async () => {
-    const res = await searchUser(keyword, 0, 6);
-    setUsers(res.data.data.content);
+    const res = await searchProduct(keyword, 0, 6);
+    setProducts(res.data.data.content);
     setTotalPages(res.data.data.totalPages);
-    setPage(0);
+    setPage(currentPage);
 
     if (!keyword) {
-      fetchUsers();
+      fetchProducts();
     }
   };
 
   useEffect(() => {
-    fetchUsers();
+    fetchProducts();
   }, []);
 
   const handlePrevPage = () => {
-    if (page > 0) fetchUsers(page - 1);
+    if (page > 0) fetchProducts(page - 1);
   };
 
   const handleNextPage = () => {
-    if (page < totalPages - 1) fetchUsers(page + 1);
+    if (page < totalPages - 1) fetchProducts(page + 1);
   };
 
   return (
     <div className="p-6 mx-auto bg-gradient-to-br from-black via-gray-900 to-gray-800 min-h-screen text-white font-vietnam">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-yellow-400">
-          Quản lý người dùng
-        </h1>
+        <h1 className="text-3xl font-bold text-yellow-400">Quản lý sản phẩm</h1>
         <button
           onClick={() => setShowAddModal(true)}
           className="bg-yellow-400 text-black font-semibold px-4 py-2 rounded-xl hover:bg-yellow-500 flex items-center gap-2 shadow"
         >
           <FaPlus />
-          Thêm người dùng
+          Thêm sản phẩm
         </button>
       </div>
 
@@ -84,7 +90,7 @@ export default function Users() {
           type="text"
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
-          placeholder="Tìm kiếm người dùng..."
+          placeholder="Tìm kiếm shop..."
           className="px-4 py-2 w-full md:w-1/3 rounded-xl bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow"
         />
         <button
@@ -105,38 +111,41 @@ export default function Users() {
               <thead className="text-xs uppercase bg-yellow-400 text-black">
                 <tr>
                   <th className="px-6 py-3">Tên</th>
-                  <th className="px-6 py-3">Email</th>
-                  <th className="px-6 py-3">SDT</th>
+                  <th className="px-6 py-3">Mô tả</th>
+                  <th className="px-6 py-3">Giá</th>
                   <th className="px-6 py-3">Hình</th>
-                  <th className="px-6 py-3">Provider</th>
-                  <th className="px-6 py-3">Vai trò</th>
+                  <th className="px-6 py-3">Số lượng</th>
                   <th className="px-6 py-3">Trạng thái</th>
                   <th className="px-6 py-3 text-center">Hành động</th>
                 </tr>
               </thead>
               <tbody>
-                {users.map((user) => (
+                {products.map((product) => (
                   <tr
-                    key={user.id}
+                    key={product.id}
                     className="border-b border-gray-700 hover:bg-gray-800 transition"
                   >
-                    <td className="px-6 py-4 font-medium">{user.username}</td>
-                    <td className="px-6 py-4">{user.email}</td>
-                    <td className="px-6 py-4">{user.phoneNumber}</td>
+                    <td className="px-6 py-4 font-medium">{product.name}</td>
+                    <td className="px-6 py-4">{product.description}</td>
+                    <td className="px-6 py-4">{product.price}</td>
                     <td className="px-6 py-4">
-                      <img src={user.img} className="w-10 h-10"></img>
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-12 h-12 object-cover rounded"
+                      />
                     </td>
-                    <td className="px-6 py-4 capitalize">{user.provider}</td>
-                    <td className="px-6 py-4 capitalize">{user.roleEnum}</td>
+                    <td className="px-6 py-4">{product.quantity}</td>
+
                     <td className="px-6 py-4">
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          !user.deleted
+                          !product.deleted
                             ? "bg-green-500/20 text-green-300"
                             : "bg-red-500/20 text-red-300"
                         }`}
                       >
-                        {!user.deleted ? (
+                        {!product.deleted ? (
                           <FaCheckCircle className="text-lg" />
                         ) : (
                           <FaTimesCircle className="text-lg" />
@@ -144,9 +153,18 @@ export default function Users() {
                       </span>
                     </td>
                     <td className="px-6 py-4 flex justify-center gap-4">
+                      <a href={`/owner/products/${product.id}`}>
+                        <button
+                          className="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded transition"
+                          title="Xem thông tin"
+                        >
+                          <FaEye />
+                        </button>
+                      </a>
+
                       <button
                         onClick={() => {
-                          setSelectedUser(user);
+                          setSelectedShop(product);
                           setShowEditModal(true);
                         }}
                         className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded transition"
@@ -154,7 +172,7 @@ export default function Users() {
                       >
                         <FaEdit />
                       </button>
-                      {user.deleted === false ? (
+                      {!product.deleted ? (
                         <button
                           onClick={async () => {
                             const result = await Swal.fire({
@@ -169,8 +187,8 @@ export default function Users() {
                             });
 
                             if (result.isConfirmed) {
-                              await deleteUser(user.id); // Gọi API xoá
-                              fetchUsers(); // Load lại danh sách
+                              await deleteProduct(product.id);
+                              fetchShops();
                               Swal.fire("Đã khoá", "", "success");
                             }
                           }}
@@ -194,8 +212,8 @@ export default function Users() {
                             });
 
                             if (result.isConfirmed) {
-                              await restoreUser(user.id);
-                              fetchUsers();
+                              await restoreProduct(product.id);
+                              fetchProducts();
                               Swal.fire("Đã mở khoá", "", "success");
                             }
                           }}
@@ -208,10 +226,10 @@ export default function Users() {
                     </td>
                   </tr>
                 ))}
-                {users.length === 0 && (
+                {shops.length === 0 && (
                   <tr>
-                    <td colSpan="5" className="text-center py-4 text-gray-400">
-                      Không có người dùng nào.
+                    <td colSpan="7" className="text-center py-4 text-gray-400">
+                      Không có sản phẩm nào.
                     </td>
                   </tr>
                 )}
@@ -241,15 +259,14 @@ export default function Users() {
           </div>
         </>
       )}
-
       {/* Modal Thêm */}
       {showAddModal && (
         <div className="fixed inset-0 bg-[rgba(0,0,0,0.7)] flex justify-center items-center z-50">
           <div className="bg-black border border-yellow-400 p-6 rounded-lg w-full max-w-xl text-white shadow-xl">
-            <AddUser
+            <AddProduct
               onClose={() => {
                 setShowAddModal(false);
-                fetchUsers();
+                fetchProducts();
               }}
             />
           </div>
@@ -257,15 +274,15 @@ export default function Users() {
       )}
 
       {/* Modal Sửa */}
-      {showEditModal && selectedUser && (
+      {showEditModal && selectedProduct && (
         <div className="fixed inset-0 bg-[rgba(0,0,0,0.7)] flex justify-center items-center z-50">
           <div className="bg-black border border-yellow-400 p-6 rounded-lg w-full max-w-xl text-white shadow-xl">
-            <EditUser
-              user={selectedUser}
+            <EditProduct
+              product={selectedProduct}
               onClose={() => {
                 setShowEditModal(false);
-                setSelectedUser(null);
-                fetchUsers();
+                setSelectedProduct(null);
+                fetchProducts();
               }}
             />
           </div>
