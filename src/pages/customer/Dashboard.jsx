@@ -53,6 +53,19 @@ export default function CustomerDashboard() {
   const [searchParams] = useSearchParams();
   const shopIdFromParams = searchParams.get("shopId");
 
+  const [page, setPage] = useState(0);
+  const [size, setSize] = useState(4);
+  const [totalPages, setTotalPages] = useState(0);
+  const nextPage = () => {
+    if (page < totalPages - 1) {
+      setPage((prev) => prev + 1);
+    }
+  };
+  const prevPage = () => {
+    if (page > 0) {
+      setPage((prev) => prev - 1);
+    }
+  };
   useEffect(() => {
     if (shopIdFromParams) {
       const findShop = shops.find((s) => s.id === parseInt(shopIdFromParams));

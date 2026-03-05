@@ -18,16 +18,22 @@ export default function Navbar() {
       { label: "User", path: "/admin/users" },
       { label: "Shop", path: "/admin/shops" },
       { label: "Profile", path: `/admin/profile/${userId}` },
+      { label: "Giỏ hàng", path: "/customer/cart" },
+      { label: "Hoá đơn", path: "/customer/order-history" },
     ],
     OWNER: [
       { label: "Dashboard", path: "/owner/dashboard" },
       { label: "Quản lí tiệm", path: "/owner/shops" },
       { label: "Profile", path: `/owner/profile/${userId}` },
+      { label: "Giỏ hàng", path: "/customer/cart" },
+      { label: "Hoá đơn", path: "/customer/order-history" },
     ],
     BARBER: [
       { label: "Lịch của tôi", path: "/barber/dashboard" },
       { label: "Hồ sơ", path: "/barber/profile" },
       { label: "Profile", path: `/barber/profile/${userId}` },
+      { label: "Giỏ hàng", path: "/customer/cart" },
+      { label: "Hoá đơn", path: "/customer/order-history" },
     ],
     CUSTOMER: [
       { label: "Đặt lịch", path: "/customer/dashboard" },

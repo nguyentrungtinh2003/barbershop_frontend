@@ -3,9 +3,9 @@ import instance from "../utils/axiosInstance";
 export const getShops = (page, size) =>
   instance.get(`/admin/shops/page?page=${page}&size=${size}`);
 
-export const getAllShops = () => instance.get(`/shops/all`);
+export const getAllShops = () => instance.get(`/customer/shops/all`);
 
-export const getShopsById = (id) => instance.get(`/shops/${id}`);
+export const getShopsById = (id) => instance.get(`/customer/shops/${id}`);
 
 export const searchShop = (keyword, page, size) =>
   instance.get(

@@ -207,7 +207,7 @@ const ShopDetails = () => {
                       {product.price.toLocaleString()} ₫
                     </p>
 
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-white-500">
                       Tồn kho: {product.stock}
                     </p>
                   </div>

@@ -40,7 +40,7 @@ export default function HomePage() {
     try {
       const response = await getAllShops();
       setShops(response.data.data);
-      const serviceResponse = response.data.data.flatMap(
+      const serviceResponse = response?.data.data.flatMap(
         (shop) => shop.services,
       );
       const uniqueServices = Array.from(
@@ -49,6 +49,7 @@ export default function HomePage() {
       setServices(uniqueServices);
 
       setBarbers(response.data.data.flatMap((shop) => shop.barbers));
+      console.log("Shops state:", response.data.data);
     } catch (error) {
       console.error("Error fetching shops:", error);
     }
@@ -160,7 +161,7 @@ export default function HomePage() {
           </h2>
 
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {shops.map((shop) => (
+            {shops?.map((shop) => (
               <div
                 key={shop.id}
                 className="bg-white/10 border border-white/20 rounded-2xl p-5 text-center backdrop-blur-sm shadow-lg hover:scale-105 transition duration-300"

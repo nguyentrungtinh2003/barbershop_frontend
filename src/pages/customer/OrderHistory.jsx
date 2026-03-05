@@ -14,19 +14,35 @@ import {
 export default function OrderHistory() {
   const [loading, setLoading] = useState(true);
   const [orders, setOrders] = useState([]);
+  const [page, setPage] = useState(0);
+  const [size, setSize] = useState(4);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const nextPage = () => {
+    if (page < totalPages - 1) {
+      setPage((prev) => prev + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (page > 0) {
+      setPage((prev) => prev - 1);
+    }
+  };
 
   const user = JSON.parse(localStorage.getItem("user"));
 
   const fetchOrders = async () => {
-    const res = await getOrderByCustomerId(user.id);
-    setOrders(res.data.data.reverse());
-    console.log("Orders:", res.data.data);
+    const res = await getOrderByCustomerId(user.id, page, size);
+    setOrders(res.data.data.content);
+    setTotalPages(res.data.data.totalPages);
+    setSize(res.data.data.size);
   };
 
   useEffect(() => {
     fetchOrders();
     setLoading(false);
-  }, []);
+  }, [page, size]);
   console.log("Orders state:", orders);
   const formatCustomDateTime = (value) => {
     // value kiểu [2025,6,25,12] hoặc tương tự
@@ -40,7 +56,7 @@ export default function OrderHistory() {
         {/* HEADER */}
         <div className="flex items-center gap-3 mb-8">
           <h1 className="text-3xl font-bold text-yellow-400">
-            Lịch sử đơn hàng
+            Lịch sử đơn hàng của bạn
           </h1>
         </div>
 
@@ -99,9 +115,9 @@ export default function OrderHistory() {
                         className={`px-3 py-1 rounded-full text-xs font-semibold
                       ${
                         order.status === "CREATED"
-                          ? "bg-green-500/20 text-green-400"
-                          : order.status === "PENDING"
-                            ? "bg-yellow-500/20 text-yellow-400"
+                          ? "bg-blue-500/20 text-blue-400"
+                          : order.status === "PAID"
+                            ? "bg-green-500/20 text-green-400"
                             : "bg-red-500/20 text-red-400"
                       }`}
                       >
@@ -111,23 +127,26 @@ export default function OrderHistory() {
 
                     {/* CreatedAt */}
                     <td className="px-6 py-4 text-gray-400">
-                      {new Date(order.createdAt).toLocaleString("vi-VN")}
+                      {order.createdAt[2]}/{order.createdAt[1]}/
+                      {order.createdAt[0]}{" "}
                     </td>
 
                     {/* Action */}
                     <td className="px-6 py-4 text-center">
-                      <a
-                        href={`/payment-vnpay?amount=${order.totalAmount}&orderId=${order.id}`}
-                      >
-                        <button
-                          className="bg-red-500 text-white px-4 py-1.5
+                      {order.status !== "PAID" && (
+                        <a
+                          href={`/payment-vnpay?amount=${order.totalAmount}&orderId=${order.id}`}
+                        >
+                          <button
+                            className="bg-red-500 text-white px-4 py-1.5
                                          rounded-full text-sm
                                          hover:bg-red-600 transition shadow
                                          whitespace-nowrap"
-                        >
-                          Thanh toán Online
-                        </button>
-                      </a>
+                          >
+                            Thanh toán Online
+                          </button>
+                        </a>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -141,6 +160,23 @@ export default function OrderHistory() {
                 )}
               </tbody>
             </table>
+            {/* Pagination */}
+            <div className="flex justify-end items-center gap-4 p-4">
+              <button
+                onClick={() => prevPage()}
+                disabled={page === 0}
+                className="px-3 py-1 bg-gray-700 rounded-lg text-sm disabled:opacity-50"
+              >
+                Trước
+              </button>
+              <button
+                onClick={() => nextPage()}
+                disabled={page >= totalPages - 1}
+                className="px-3 py-1 bg-gray-700 rounded-lg text-sm disabled:opacity-50"
+              >
+                Sau
+              </button>
+            </div>
           </div>
         )}
       </div>

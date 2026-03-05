@@ -17,6 +17,22 @@ export default function BarberDashboard() {
   const barber = JSON.parse(localStorage.getItem("user"));
   const barberId = barber.id;
 
+  const [page, setPage] = useState(0);
+  const [size, setSize] = useState(4);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const nextPage = () => {
+    if (page < totalPages - 1) {
+      setPage((prev) => prev + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (page > 0) {
+      setPage((prev) => prev - 1);
+    }
+  };
+
   const [feedbacks, setFeedbacks] = useState([]);
 
   const [selectedDate, setSelectedDate] = useState(() => {
@@ -34,7 +50,7 @@ export default function BarberDashboard() {
         const [year, month, day] = a.startTime;
         const formattedDate = `${year}-${String(month).padStart(
           2,
-          "0"
+          "0",
         )}-${String(day).padStart(2, "0")}`;
         return formattedDate === selectedDate;
       });
@@ -46,8 +62,11 @@ export default function BarberDashboard() {
   };
 
   const fetchFeedbackBarber = async () => {
-    const res = await getFeedbackByBarberId(barberId);
-    setFeedbacks(res.data.data);
+    const res = await getFeedbackByBarberId(barberId, page, size);
+    setFeedbacks(res.data.data.content);
+    setPage(res.data.data.pageable.pageNumber);
+    setSize(res.data.data.pageable.pageSize);
+    setTotalPages(res.data.data.totalPages);
   };
 
   useEffect(() => {
@@ -68,7 +87,7 @@ export default function BarberDashboard() {
   useEffect(() => {
     fetchAppointments();
     fetchFeedbackBarber();
-  }, [selectedDate]);
+  }, [selectedDate, page, size]);
 
   return (
     <div className="p-8 bg-gradient-to-br from-black via-gray-900 to-gray-800 min-h-screen text-white font-vietnam">

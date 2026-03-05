@@ -21,6 +21,7 @@ import EditProduct from "./EditProduct";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { deleteService, restoreService } from "../../services/serviceServices";
+import { getProductsByShopId } from "../../services/productServices";
 
 export default function OwnerUser() {
   const [users, setUsers] = useState([]);
@@ -39,6 +40,22 @@ export default function OwnerUser() {
   const [selectedUser, setSelectedUser] = useState(null);
   const { id } = useParams();
 
+  const [page, setPage] = useState(0);
+  const [size, setSize] = useState(4);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const nextPage = () => {
+    if (page < totalPages - 1) {
+      setPage((prev) => prev + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (page > 0) {
+      setPage((prev) => prev - 1);
+    }
+  };
+
   const fetchShop = async () => {
     setLoading(true);
     try {
@@ -47,10 +64,13 @@ export default function OwnerUser() {
       setShop(shop);
       setUsers(res.data.data.barbers);
 
-      const feedbacks = await getFeedbackByShopId(shop.id);
+      const feedbacks = await getFeedbackByShopId(shop.id, page, size);
+      setTotalPages(feedbacks.data.data.totalPages);
+      setPage(feedbacks.data.data.pageable.pageNumber);
+      setSize(feedbacks.data.data.pageable.pageSize);
 
-      setFeedbacks(feedbacks?.data?.data);
-      setProducts(res.data.data.products);
+      setFeedbacks(feedbacks?.data?.data.content);
+      // setProducts(res.data.data.products);
     } catch (error) {
       console.error("Lỗi khi lấy shop:", error);
     }
@@ -64,7 +84,17 @@ export default function OwnerUser() {
 
   useEffect(() => {
     fetchShop();
-  }, []);
+    fetchProducts();
+  }, [page, size]);
+
+  const fetchProducts = async () => {
+    try {
+      const res = await getProductsByShopId(parseInt(id));
+      setProducts(res.data.data);
+    } catch (error) {
+      console.error("Lỗi khi lấy sản phẩm:", error);
+    }
+  };
 
   console.log(feedbacks);
 
@@ -666,6 +696,26 @@ export default function OwnerUser() {
               )}
             </tbody>
           </table>
+          {/* Phân trang */}
+          <div className="flex justify-end items-center gap-4 mt-4">
+            <button
+              onClick={prevPage}
+              disabled={page === 0}
+              className="px-3 py-1 bg-gray-700 rounded disabled:opacity-50"
+            >
+              Trước
+            </button>
+            <span>
+              Trang {page + 1} / {totalPages}
+            </span>
+            <button
+              onClick={nextPage}
+              disabled={page >= totalPages - 1}
+              className="px-3 py-1 bg-gray-700 rounded disabled:opacity-50"
+            >
+              Sau
+            </button>
+          </div>
         </div>
       )}
       {/* Modal Thêm */}

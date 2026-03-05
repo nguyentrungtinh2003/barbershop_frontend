@@ -59,6 +59,9 @@ export default function Order() {
     try {
       const orderData = {
         customerId: user.id,
+        shopId:
+          cartItems.find((item) => item.id === selectedItems[0])?.product.shop
+            .id || 0,
         cartId: cartId,
         cartItemId: selectedItems,
         paymentMethod: paymentMethod,
@@ -66,7 +69,7 @@ export default function Order() {
       const res = await addOrder(orderData).then((res) => {
         return res;
       });
-      await deleteCart(cartId);
+
       fetchCartItems(cartId);
       const createdOrder = res.data.data;
       console.log("Created order:", createdOrder);

@@ -7,11 +7,11 @@ export const createFeedback = (data) =>
     },
   });
 
-export const getFeedbackByCustomerId = (customerId) =>
-  instance.get(`/feedbacks/customer/${customerId}`);
+export const getFeedbackByCustomerId = (customerId, page, size) =>
+  instance.get(`/feedbacks/customer/${customerId}?page=${page}&size=${size}`);
 
-export const getFeedbackByBarberId = (barberId) =>
-  instance.get(`/feedbacks/barber/${barberId}`);
+export const getFeedbackByBarberId = (barberId, page, size) =>
+  instance.get(`/feedbacks/barber/${barberId}?page=${page}&size=${size}`);
 
-export const getFeedbackByShopId = (shopId) =>
-  instance.get(`/feedbacks/shop/${shopId}`);
+export const getFeedbackByShopId = (shopId, page, size) =>
+  instance.get(`/feedbacks/shop/${shopId}?page=${page}&size=${size}`);
