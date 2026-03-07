@@ -36,7 +36,7 @@ export default function Appointment() {
         const [year, month, day] = a.startTime;
         const formattedDate = `${year}-${String(month).padStart(
           2,
-          "0"
+          "0",
         )}-${String(day).padStart(2, "0")}`;
         return formattedDate === selectedDate;
       });
@@ -119,12 +119,12 @@ export default function Appointment() {
 
               <h2 className="text-xl font-bold text-yellow-300 flex items-center gap-2">
                 <FaUser className="text-base" />
-                {a.customer.username}
+                {a?.customer?.username}
               </h2>
 
               <p className="text-sm text-gray-300 flex items-center gap-2">
                 <FaPhoneAlt className="text-gray-400" />
-                {a.customer.phoneNumber}
+                {a?.customer?.phoneNumber}
               </p>
 
               <p className="text-sm text-gray-300 flex items-center gap-2">

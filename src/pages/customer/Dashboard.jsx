@@ -14,11 +14,13 @@ import { toast } from "react-toastify";
 import { useSearchParams } from "react-router-dom";
 
 export default function CustomerDashboard() {
+  const userId = JSON.parse(localStorage.getItem("user")).id;
+
   const [formData, setFormData] = useState({
     appointmentStatus: "DONE", // Ví dụ: "PENDING", "COMPLETED", v.v.
     price: "", // Có thể để trống hoặc 0
     customer: {
-      id: "", // Thường chỉ cần user ID (hoặc name nếu
+      id: userId, // Thường chỉ cần user ID (hoặc name nếu
     },
     barber: {
       id: "",

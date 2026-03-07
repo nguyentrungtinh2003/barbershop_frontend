@@ -56,6 +56,11 @@ export default function OwnerUser() {
     }
   };
 
+  useEffect(() => {
+    fetchShop();
+    fetchProducts();
+  }, [page, size]);
+
   const fetchShop = async () => {
     setLoading(true);
     try {
@@ -63,6 +68,8 @@ export default function OwnerUser() {
       const shop = res.data.data;
       setShop(shop);
       setUsers(res.data.data.barbers);
+      console.log("Shop data:", shop);
+      console.log("Barbers data:", res.data.data.barbers);
 
       const feedbacks = await getFeedbackByShopId(shop.id, page, size);
       setTotalPages(feedbacks.data.data.totalPages);
@@ -81,11 +88,6 @@ export default function OwnerUser() {
   //   // Tái lấy danh sách user từ shop
   //   fetchShop();
   // };
-
-  useEffect(() => {
-    fetchShop();
-    fetchProducts();
-  }, [page, size]);
 
   const fetchProducts = async () => {
     try {
@@ -219,7 +221,7 @@ export default function OwnerUser() {
                       className="w-10 h-10 rounded-full"
                     />
                   </td>
-                  <td className="px-6 py-4 capitalize">{user.roleEnum}</td>
+                  <td className="px-6 py-4 capitalize">{user?.roleEnum}</td>
                   <td className="px-6 py-4">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-semibold ${
@@ -279,7 +281,7 @@ export default function OwnerUser() {
                             text: "",
                             icon: "warning",
                             showCancelButton: true,
-                            confirmButtonText: "Khoá",
+                            confirmButtonText: "Mở khoá",
                             cancelButtonText: "Huỷ",
                             confirmButtonColor: "#3085d6",
                             cancelButtonColor: "#aaa",

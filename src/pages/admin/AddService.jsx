@@ -51,7 +51,7 @@ export default function AddService({ onClose }) {
       const data = new FormData();
       data.append(
         "service",
-        new Blob([JSON.stringify(formData)], { type: "application/json" })
+        new Blob([JSON.stringify(formData)], { type: "application/json" }),
       );
 
       if (img) {
@@ -59,7 +59,7 @@ export default function AddService({ onClose }) {
       }
 
       await createService(data);
-      toast.success("Thêm thành công");
+      toast.success("Thêm dịch vụ thành công");
       console.log("form data", formData);
     } catch (error) {
       toast.error("Thêm thất bại");
@@ -151,8 +151,8 @@ export default function AddService({ onClose }) {
                 backgroundColor: state.isSelected
                   ? "#facc15"
                   : state.isFocused
-                  ? "#374151"
-                  : "#1f2937",
+                    ? "#374151"
+                    : "#1f2937",
                 color: state.isSelected ? "black" : "white",
               }),
               multiValue: (base) => ({

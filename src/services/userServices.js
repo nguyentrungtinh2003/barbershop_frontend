@@ -4,13 +4,13 @@ export const getAllUsers = () => instance.get(`/owner/users/all`);
 export const getUsers = (page, size) =>
   instance.get(`/admin/users/page?page=${page}&size=${size}`);
 
-export const getUserInfo = () => instance.get(`/users/info`);
+export const getUserInfo = () => instance.get(`/customer/users/info`);
 
 export const getUserById = (id) => instance.get(`/users/${id}`);
 
 export const searchUser = (keyword, page, size) =>
   instance.get(
-    `/owner/users/search?keyword=${keyword}&page=${page}&size=${size}`
+    `/owner/users/search?keyword=${keyword}&page=${page}&size=${size}`,
   );
 
 export const register = (formData) =>

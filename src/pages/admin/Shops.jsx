@@ -87,13 +87,15 @@ export default function Shops() {
     <div className="p-6 mx-auto bg-gradient-to-br from-black via-gray-900 to-gray-800 min-h-screen text-white font-vietnam">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold text-yellow-400">Quản lý cửa hàng</h1>
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="bg-yellow-400 text-black font-semibold px-4 py-2 rounded-xl hover:bg-yellow-500 flex items-center gap-2 shadow"
-        >
-          <FaPlus />
-          Thêm cửa hàng
-        </button>
+        {user.roleEnum === "ADMIN" && (
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="bg-yellow-400 text-black font-semibold px-4 py-2 rounded-xl hover:bg-yellow-500 flex items-center gap-2 shadow"
+          >
+            <FaPlus />
+            Thêm cửa hàng
+          </button>
+        )}
       </div>
 
       <div className="mb-6 flex flex-col md:flex-row items-center gap-4">
@@ -205,57 +207,58 @@ export default function Shops() {
                       >
                         <FaEdit />
                       </button>
-                      {!shop.deleted ? (
-                        <button
-                          onClick={async () => {
-                            const result = await Swal.fire({
-                              title: "Bạn có chắc muốn khoá ?",
-                              text: "",
-                              icon: "warning",
-                              showCancelButton: true,
-                              confirmButtonText: "Khoá",
-                              cancelButtonText: "Huỷ",
-                              confirmButtonColor: "#d33",
-                              cancelButtonColor: "#aaa",
-                            });
+                      {user.roleEnum === "ADMIN" &&
+                        (!shop.deleted ? (
+                          <button
+                            onClick={async () => {
+                              const result = await Swal.fire({
+                                title: "Bạn có chắc muốn khoá ?",
+                                text: "",
+                                icon: "warning",
+                                showCancelButton: true,
+                                confirmButtonText: "Khoá",
+                                cancelButtonText: "Huỷ",
+                                confirmButtonColor: "#d33",
+                                cancelButtonColor: "#aaa",
+                              });
 
-                            if (result.isConfirmed) {
-                              await deleteShop(shop.id);
-                              fetchShops();
-                              Swal.fire("Đã khoá", "", "success");
-                            }
-                          }}
-                          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition"
-                          title="Khoá"
-                        >
-                          <FaLock />
-                        </button>
-                      ) : (
-                        <button
-                          onClick={async () => {
-                            const result = await Swal.fire({
-                              title: "Bạn có chắc muốn mở khoá ?",
-                              text: "",
-                              icon: "warning",
-                              showCancelButton: true,
-                              confirmButtonText: "Mở khoá",
-                              cancelButtonText: "Huỷ",
-                              confirmButtonColor: "#3085d6",
-                              cancelButtonColor: "#aaa",
-                            });
+                              if (result.isConfirmed) {
+                                await deleteShop(shop.id);
+                                fetchShops();
+                                Swal.fire("Đã khoá", "", "success");
+                              }
+                            }}
+                            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition"
+                            title="Khoá"
+                          >
+                            <FaLock />
+                          </button>
+                        ) : (
+                          <button
+                            onClick={async () => {
+                              const result = await Swal.fire({
+                                title: "Bạn có chắc muốn mở khoá ?",
+                                text: "",
+                                icon: "warning",
+                                showCancelButton: true,
+                                confirmButtonText: "Mở khoá",
+                                cancelButtonText: "Huỷ",
+                                confirmButtonColor: "#3085d6",
+                                cancelButtonColor: "#aaa",
+                              });
 
-                            if (result.isConfirmed) {
-                              await restoreShop(shop.id);
-                              fetchShops();
-                              Swal.fire("Đã mở khoá", "", "success");
-                            }
-                          }}
-                          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition"
-                          title="Mở khoá"
-                        >
-                          <FaLockOpen />
-                        </button>
-                      )}
+                              if (result.isConfirmed) {
+                                await restoreShop(shop.id);
+                                fetchShops();
+                                Swal.fire("Đã mở khoá", "", "success");
+                              }
+                            }}
+                            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition"
+                            title="Mở khoá"
+                          >
+                            <FaLockOpen />
+                          </button>
+                        ))}
                     </td>
                   </tr>
                 ))}

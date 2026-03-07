@@ -14,11 +14,11 @@ export default function HistoryBooking() {
   const [loading, setLoading] = useState(true);
 
   const [pageFeed, setPageFeed] = useState(0);
-  const [sizeFeed, setSizeFeed] = useState(4);
+  const [sizeFeed, setSizeFeed] = useState(3);
   const [totalPagesFeed, setTotalPagesFeed] = useState(0);
 
   const [pageBook, setPageBook] = useState(0);
-  const [sizeBook, setSizeBook] = useState(4);
+  const [sizeBook, setSizeBook] = useState(5);
   const [totalPagesBook, setTotalPagesBook] = useState(0);
 
   const nextPageFeed = () => {
@@ -54,16 +54,16 @@ export default function HistoryBooking() {
     const res = await getAppointmentByCustomerId(user.id, pageBook, sizeBook);
     setAppointments(res.data.data.content);
     setTotalPagesBook(res.data.data.totalPages);
-    setPageBook(res.data.data.pageable.pageNumber);
-    setSizeBook(res.data.data.pageable.pageSize);
+    // setPageBook(res.data.data.pageable.pageNumber);
+    // setSizeBook(res.data.data.pageable.pageSize);
   };
 
   const fetchFeedbackCustomer = async () => {
     const res = await getFeedbackByCustomerId(user.id, pageFeed, sizeFeed);
     setFeedbacks(res.data.data.content);
     setTotalPagesFeed(res.data.data.totalPages);
-    setPageFeed(res.data.data.pageable.pageNumber);
-    setSizeFeed(res.data.data.pageable.pageSize);
+    // setPageFeed(res.data.data.pageable.pageNumber);
+    // setSizeFeed(res.data.data.pageable.pageSize);
   };
 
   useEffect(() => {
@@ -206,7 +206,7 @@ export default function HistoryBooking() {
               {/* Pagination */}
               <div className="flex justify-end items-center gap-4 p-4">
                 <button
-                  onClick={() => prevPageBook()}
+                  onClick={prevPageBook}
                   disabled={pageBook === 0}
                   className={`px-4 py-2 rounded-md text-sm font-medium
                               ${pageBook === 0 ? "bg-gray-700 text-gray-400 cursor-not-allowed" : "bg-yellow-400 text-black hover:bg-yellow-500 transition"}`}
@@ -214,7 +214,7 @@ export default function HistoryBooking() {
                   Trang trước
                 </button>
                 <button
-                  onClick={() => nextPageBook()}
+                  onClick={nextPageBook}
                   disabled={pageBook >= totalPagesBook - 1}
                   className={`px-4 py-2 rounded-md text-sm font-medium
 
@@ -223,67 +223,65 @@ export default function HistoryBooking() {
                   Trang sau
                 </button>
               </div>
-
-              {/* ===== FEEDBACK HISTORY ===== */}
-              <div
-                className="mt-12 bg-black/40 border border-yellow-500/30
+            </div>
+            {/* ===== FEEDBACK HISTORY ===== */}
+            <div
+              className="mt-12 bg-black/40 border border-yellow-500/30
                             rounded-2xl p-6 shadow-xl"
-              >
-                <h3
-                  className="text-xl font-bold text-yellow-400 mb-6
+            >
+              <h3
+                className="text-xl font-bold text-yellow-400 mb-6
                              text-center uppercase tracking-wider"
-                >
-                  Lịch sử Feedback
-                </h3>
+              >
+                Lịch sử Feedback
+              </h3>
 
-                <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
-                  {feedbacks.map((fb) => (
-                    <div
-                      key={fb.id}
-                      className="bg-black/60 border border-gray-700
+              <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+                {feedbacks.map((fb) => (
+                  <div
+                    key={fb.id}
+                    className="bg-black/60 border border-gray-700
                                rounded-xl p-4 shadow
                                hover:shadow-yellow-500/20 transition"
-                    >
-                      <p>
-                        <span className="text-yellow-400 font-semibold">
-                          Shop:
-                        </span>{" "}
-                        {fb.shopName}
-                      </p>
-                      <p>
-                        <span className="text-yellow-400 font-semibold">
-                          Barber:
-                        </span>{" "}
-                        {fb.barberName}
-                      </p>
-                      <p className="text-yellow-400">{"★".repeat(fb.rating)}</p>
-                      <p className="text-gray-300">{fb.comment}</p>
-                      <p className="text-sm text-gray-500">
-                        {fb.createdAt[2]}/{fb.createdAt[1]}/
-                        {fb.createdAt[0]}{" "}
-                      </p>
-                    </div>
-                  ))}
-                </div>
+                  >
+                    <p>
+                      <span className="text-yellow-400 font-semibold">
+                        Shop:
+                      </span>{" "}
+                      {fb.shopName}
+                    </p>
+                    <p>
+                      <span className="text-yellow-400 font-semibold">
+                        Barber:
+                      </span>{" "}
+                      {fb.barberName}
+                    </p>
+                    <p className="text-yellow-400">{"★".repeat(fb.rating)}</p>
+                    <p className="text-white-300">{fb.comment}</p>
+                    <p className="text-sm text-white-500">
+                      {fb.createdAt[2]}/{fb.createdAt[1]}/{fb.createdAt[0]}{" "}
+                    </p>
+                  </div>
+                ))}
               </div>
-              <div className="flex justify-end gap-4 mt-6">
-                <button
-                  onClick={prevPageFeed}
-                  disabled={pageFeed === 0}
-                  className={`px-4 py-2 rounded-md text-sm font-medium
+            </div>
+            <div className="flex justify-end gap-4 mt-6">
+              <button
+                onClick={prevPageFeed}
+                disabled={pageFeed === 0}
+                className={`px-4 py-2 rounded-md text-sm font-medium
                               ${pageFeed === 0 ? "bg-gray-700 text-gray-400 cursor-not-allowed" : "bg-yellow-400 text-black hover:bg-yellow-500 transition"}`}
-                >
-                  Trang trước
-                </button>
-                <button
-                  onClick={nextPageFeed}
-                  disabled={pageFeed >= totalPagesFeed - 1}
-                  className={`px-4 py-2 rounded-md text-sm font-medium
+              >
+                Trang trước
+              </button>
+              <button
+                onClick={nextPageFeed}
+                disabled={pageFeed >= totalPagesFeed - 1}
+                className={`px-4 py-2 rounded-md text-sm font-medium
                               ${pageFeed >= totalPagesFeed - 1 ? "bg-gray-700 text-gray-400 cursor-not-allowed" : "bg-yellow-400 text-black hover:bg-yellow-500 transition"}`}
-                >
-                  Trang sau
-                </button>
-              </div>
+              >
+                Trang sau
+              </button>
             </div>
           </>
         )}

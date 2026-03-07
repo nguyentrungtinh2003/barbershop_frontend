@@ -3,8 +3,10 @@ import instance from "../utils/axiosInstance";
 export const createAppointment = (data) =>
   instance.post("/appointments/add", data);
 
-export const getAppointmentByCustomerId = (customerId) =>
-  instance.get(`/appointments/customer/${customerId}`);
+export const getAppointmentByCustomerId = (customerId, page, size) =>
+  instance.get(
+    `/appointments/customer/${customerId}?page=${page}&size=${size}`,
+  );
 
 export const getAppointmentByBarberId = (barberId) =>
   instance.get(`/appointments/barber/${barberId}`);

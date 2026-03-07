@@ -12,12 +12,12 @@ export default function Profile() {
   const fetchUserInfo = async () => {
     const res = await getUserInfo(id);
     setUser(res.data.data);
+    console.log(res.data.data);
     if (!res.data.data) {
       toast.warning("Bạn không có quyền xem thông tin người khác");
     }
-    if (res.data.data) {
-      toast.success("Không chia sẽ thông tin cho bất kì ai");
-    }
+
+    toast.success("Không chia sẽ thông tin cho bất kì ai");
   };
 
   useEffect(() => {

@@ -82,6 +82,7 @@ export default function Payments() {
     const confirmed = window.confirm(
       `Bạn có chắc chắn muốn thanh toán đơn hàng #${order.id} bằng tiền mặt?`,
     );
+
     if (confirmed) {
       const data = {
         userId: order.customer.id,

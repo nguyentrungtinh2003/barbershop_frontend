@@ -48,7 +48,7 @@ export default function EditProduct({ product, onClose }) {
 
       data.append(
         "product",
-        new Blob([JSON.stringify(productData)], { type: "application/json" })
+        new Blob([JSON.stringify(productData)], { type: "application/json" }),
       );
 
       if (img) {
@@ -137,18 +137,6 @@ export default function EditProduct({ product, onClose }) {
             className="w-full p-2 rounded bg-gray-800 border border-gray-600 text-white"
           />
         </div>
-
-        <div>
-          <label className="block mb-1 text-sm">Số lượng</label>
-          <input
-            type="number"
-            name="stock"
-            required
-            value={formData.stock}
-            onChange={handleChange}
-            className="w-full p-2 rounded bg-gray-800 border border-gray-600 text-white"
-          />
-        </div>
         <div className="md:col-span-2">
           <label className="block mb-1 text-sm">Shop</label>
           <Select
@@ -182,8 +170,8 @@ export default function EditProduct({ product, onClose }) {
                 backgroundColor: state.isSelected
                   ? "#facc15"
                   : state.isFocused
-                  ? "#374151"
-                  : "#1f2937",
+                    ? "#374151"
+                    : "#1f2937",
                 color: state.isSelected ? "black" : "white",
               }),
               multiValue: (base) => ({
@@ -219,6 +207,18 @@ export default function EditProduct({ product, onClose }) {
                 overflow: "hidden",
               }),
             }}
+          />
+        </div>
+
+        <div>
+          <label className="block mb-1 text-sm">Số lượng</label>
+          <input
+            type="number"
+            name="stock"
+            required
+            value={formData.stock}
+            onChange={handleChange}
+            className="w-full p-2 rounded bg-gray-800 border border-gray-600 text-white"
           />
         </div>
 

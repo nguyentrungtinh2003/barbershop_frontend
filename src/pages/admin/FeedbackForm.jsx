@@ -11,12 +11,14 @@ export default function FeedbackForm({ show, onHide, appointment }) {
   const [comment, setComment] = useState("");
   const [img, setImg] = useState(null);
 
+  const customerId = JSON.parse(localStorage.getItem("user")).id;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const feedback = {
       id: null,
-      customerId: appointment.customer.id,
+      customerId: customerId,
       barberId: appointment.barber.id,
       shopId: appointment.shop.id,
       appointmentId: appointment.id,

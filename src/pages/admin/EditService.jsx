@@ -44,7 +44,7 @@ export default function EditService({ service, onClose }) {
 
       data.append(
         "service",
-        new Blob([JSON.stringify(serviceData)], { type: "application/json" })
+        new Blob([JSON.stringify(serviceData)], { type: "application/json" }),
       );
 
       if (img) {
@@ -99,21 +99,20 @@ export default function EditService({ service, onClose }) {
           />
         </div>
 
-        <div>
-          <label className="block mb-1 text-sm">Hình ảnh</label>
-          <input
-            type="file"
-            name="img"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="w-full p-2 rounded bg-gray-800 border border-gray-600 text-white"
+        <div className="flex items-center gap-4">
+          <img
+            src={img ? URL.createObjectURL(img) : imgPre}
+            alt="Ảnh đại diện"
+            className="w-24 h-24 object-cover rounded-lg border border-yellow-400"
           />
-          {/* Hiển thị ảnh nếu có */}
-          <div className="mt-4">
-            <img
-              src={img ? URL.createObjectURL(img) : imgPre}
-              alt="Ảnh đại diện"
-              className="w-20 h-20 object-cover rounded-full border-2 border-yellow-400"
+
+          <div className="flex-1">
+            <label className="block mb-1 text-sm">Hình ảnh</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="w-full p-2 rounded bg-gray-800 border border-gray-600 text-white"
             />
           </div>
         </div>
@@ -125,18 +124,6 @@ export default function EditService({ service, onClose }) {
             name="price"
             required
             value={formData.price}
-            onChange={handleChange}
-            className="w-full p-2 rounded bg-gray-800 border border-gray-600 text-white"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1 text-sm">Thời lượng (phút)</label>
-          <input
-            type="number"
-            name="duration"
-            required
-            value={formData.duration}
             onChange={handleChange}
             className="w-full p-2 rounded bg-gray-800 border border-gray-600 text-white"
           />
@@ -174,8 +161,8 @@ export default function EditService({ service, onClose }) {
                 backgroundColor: state.isSelected
                   ? "#facc15"
                   : state.isFocused
-                  ? "#374151"
-                  : "#1f2937",
+                    ? "#374151"
+                    : "#1f2937",
                 color: state.isSelected ? "black" : "white",
               }),
               multiValue: (base) => ({
@@ -211,6 +198,17 @@ export default function EditService({ service, onClose }) {
                 overflow: "hidden",
               }),
             }}
+          />
+        </div>
+        <div>
+          <label className="block mb-1 text-sm">Thời lượng (phút)</label>
+          <input
+            type="number"
+            name="duration"
+            required
+            value={formData.duration}
+            onChange={handleChange}
+            className="w-full p-2 rounded bg-gray-800 border border-gray-600 text-white"
           />
         </div>
 

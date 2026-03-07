@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { register } from "../../services/userServices";
 import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
+import { PiDivideFill } from "react-icons/pi";
 
 export default function AddUser({ onAdd, onClose }) {
+  const { id } = useParams();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -12,6 +15,7 @@ export default function AddUser({ onAdd, onClose }) {
     birthDay: "",
     roleEnum: "CUSTOMER",
     description: "",
+    shopId: id,
   });
 
   const [img, setImg] = useState(null);
@@ -29,9 +33,7 @@ export default function AddUser({ onAdd, onClose }) {
     setImg(file);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleSubmit = async () => {
     try {
       const formDataToSend = new FormData();
 
@@ -41,23 +43,28 @@ export default function AddUser({ onAdd, onClose }) {
 
       // Tạo object user (loại bỏ file)
       const user = { ...formData };
-      user.birthDay = formData.birthDay + "T00:00:00";
+      user.birthDay = formData.birthDay;
       // Gửi user dưới dạng JSON blob
       formDataToSend.append(
         "user",
-        new Blob([JSON.stringify(user)], { type: "application/json" })
+        new Blob([JSON.stringify(user)], { type: "application/json" }),
       );
 
+      console.log("Dữ liệu gửi đi:", {
+        formDataToSend: JSON.parse(await formDataToSend.get("user").text()),
+        img: formDataToSend.get("img"),
+      });
       const res = await register(formDataToSend);
-
+      if (!res || res.status !== 200) {
+        throw new Error("Đăng ký thất bại");
+      }
       toast.success("Thêm thành công");
       onAdd && onAdd(); // gọi callback nếu có
       setTimeout(() => {
         onClose();
       }, 3000);
     } catch (error) {
-      toast.error("Thêm thất bại");
-      console.error("Lỗi thêm người dùng:", error);
+      console.error("Lỗi thêm người dùng:", error.message);
     }
   };
 
@@ -70,7 +77,7 @@ export default function AddUser({ onAdd, onClose }) {
         </button>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-4">
         <input
           type="text"
           name="username"
@@ -133,7 +140,6 @@ export default function AddUser({ onAdd, onClose }) {
           name="img"
           accept="image/*"
           onChange={handleFileChange}
-          required
           className="w-full px-3 py-2 rounded bg-gray-800 text-white"
         />
 
@@ -143,61 +149,6 @@ export default function AddUser({ onAdd, onClose }) {
           onChange={handleChange}
           className="bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow"
         >
-          styles=
-          {{
-            control: (base) => ({
-              ...base,
-              backgroundColor: "#1f2937", // bg-gray-800
-              borderColor: "#4b5563", // border-gray-600
-              color: "white",
-              borderRadius: "0.75rem",
-              boxShadow: "none",
-              "&:hover": {
-                borderColor: "#facc15", // hover: yellow-400
-              },
-            }),
-            option: (base, state) => ({
-              ...base,
-              backgroundColor: state.isSelected
-                ? "#facc15"
-                : state.isFocused
-                ? "#374151"
-                : "#1f2937",
-              color: state.isSelected ? "black" : "white",
-            }),
-            multiValue: (base) => ({
-              ...base,
-              backgroundColor: "#facc15",
-              color: "black",
-              borderRadius: "0.5rem",
-            }),
-            multiValueLabel: (base) => ({
-              ...base,
-              color: "black",
-            }),
-            multiValueRemove: (base) => ({
-              ...base,
-              color: "black",
-              ":hover": {
-                backgroundColor: "#f59e0b",
-                color: "white",
-              },
-            }),
-            placeholder: (base) => ({
-              ...base,
-              color: "#9ca3af", // text-gray-400
-            }),
-            singleValue: (base) => ({
-              ...base,
-              color: "white",
-            }),
-            menu: (base) => ({
-              ...base,
-              backgroundColor: "#1f2937", // dropdown bg
-              borderRadius: "0.75rem",
-              overflow: "hidden",
-            }),
-          }}
           <option value="OWNER">Chủ tiệm</option>
           <option value="BARBER">Thợ cắt</option>
           <option value="CUSTOMER">Khách hàng</option>
@@ -212,12 +163,13 @@ export default function AddUser({ onAdd, onClose }) {
         ></textarea>
 
         <button
-          type="submit"
+          type="button"
+          onClick={() => handleSubmit()}
           className="bg-yellow-400 text-black px-4 py-2 rounded hover:bg-yellow-500"
         >
           Thêm người dùng
         </button>
-      </form>
+      </div>
     </div>
   );
 }

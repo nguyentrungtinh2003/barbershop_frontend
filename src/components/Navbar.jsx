@@ -30,7 +30,6 @@ export default function Navbar() {
     ],
     BARBER: [
       { label: "Lịch của tôi", path: "/barber/dashboard" },
-      { label: "Hồ sơ", path: "/barber/profile" },
       { label: "Profile", path: `/barber/profile/${userId}` },
       { label: "Giỏ hàng", path: "/customer/cart" },
       { label: "Hoá đơn", path: "/customer/order-history" },
